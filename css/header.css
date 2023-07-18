@@ -1,0 +1,108 @@
+
+/*First Section - Always True*/
+header {
+    height: 30px;
+    width: 100%;
+    position: fixed;
+    display: grid;
+    top: 0;
+    left: 0;
+}
+
+nav {
+    background-color: var(--secondary-color);
+    top: 0;
+    line-height: 30px;
+    height: 100%;
+    min-width: 250px;
+}
+
+nav ul {
+    display: grid;
+    list-style: none;
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+nav ul li {
+    text-align: center;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--main-font-color, black);
+    font-weight: 500;
+}
+
+/*Second Section - Mobile Widths*/
+@media only screen and (min-width: 0px) {
+    header {
+        background-color: transparent;
+    }
+    
+    .menuBtn {
+        cursor: pointer;
+        width: 30px;
+    }
+
+    .menuBtn > span {
+        display: grid;
+        width: 24px;
+        height: 3px;
+        background-color: white;
+        margin: 5px 3px;
+        border-radius: 2px;
+      }
+
+    nav {
+        margin: 0px;
+    }
+
+    nav ul {
+        display: none;
+    }
+
+    .navLinks {
+        width: 50%;
+        min-width: 125px;
+        background-color: transparent;
+    }
+
+    /* Show the navigation links when the menu button is clicked */
+    .showNav {
+        display: grid;
+        width: 50%;
+        min-width: 125px;
+        z-index: 9999;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: var(--secondary-color);
+    }
+}
+
+/*Third Section - Tablet / Desktop Widths*/
+@media only screen and (min-width: 768px) {
+    .menuBtn {
+        cursor: none;
+        display: none;
+    }
+
+    nav ul {
+        display: grid;
+        grid-auto-flow: column;
+    }
+
+    nav ul li {
+        grid-template-columns: 1fr;
+        text-decoration: none;
+    }
+
+    .navLinks {
+        position: static;
+        top: auto;
+        left: auto;
+        width: 100%;
+    }
+}
