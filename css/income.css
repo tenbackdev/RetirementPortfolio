@@ -1,0 +1,67 @@
+#summaryCards {
+    display: flex;
+    flex-direction: row;
+    padding: 0px 20px;
+    justify-content: space-around;
+}
+
+#summaryCards > div {
+    background-color: var(--secondary-color);
+    border: 1px solid red;
+    height: 150px;
+    flex: 1;
+    margin: 10px 5px; 
+    min-width: 150px;
+    max-width: 300px;
+    border-radius: 20px;
+}
+
+#estimatedIncomeTableContainer {
+    height: 300px;
+    overflow: auto;   
+    width: auto; 
+    margin: 10px 20px;
+
+}
+
+#estimatedIncomeTableContainer::-webkit-scrollbar {
+    width: 12px;
+}
+
+#estimatedIncomeTableContainer::-webkit-scrollbar-track {
+    background: neonpink;
+}
+
+#estimatedIncomeTableContainer::-webkit-scrollbar-thumb {
+    background: pink;
+}
+
+#estimatedIncomeTableContainer::-webkit-scrollbar-thumb:hover {
+    background: red;
+}
+
+table {
+    width: 100%;
+    border: 1px solid white;
+    border-collapse: collapse;
+    
+}
+
+thead {
+    background-color: gray;
+}
+
+th, td {
+    border: 1px solid white;
+    text-align: center;
+}
+
+.mainRow {
+    background-color: rgb(179, 179, 179);
+}
+
+.altRow {
+    background-color: lightslategray;
+}
+
+
