@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Retirement Portfolio</title>
     <link rel="stylesheet" href="css\variables.css">
+    <link rel="stylesheet" href="css\index.css">
     <link rel="stylesheet" href="css\header.css">
 </head>
 <body>
@@ -17,12 +18,41 @@
                 <span></span>
             </div>
             <ul class="navLinks">
-                <li><a href="one.html">One</a></li>
-                <li><a href="two.html">Two</a></li>
-                <li><a href="three.html">Three</a></li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="performance.html">Performance</a></li>
+                <li><a href="income.html">Income</a></li>
             </ul>
         </nav>            
     </header>
+    <main>
+        <section id="summary">
+            <div id="balanceSummary" class="summaryCard">
+                <p id="balanceTotal" class="content">$1,000,000.00</p>
+                <p id="balanceTotalInfo" class="informational">Balance as of 2023-07-01</p>
+            </div>
+            <div id="recentIncomeSummary" class="summaryCard">
+                <p id="incomeTotal" class="content">$1,234.56</p>
+                <p id="incomeTotalInfo" class="informational">Recent Income as of 2023-07-01</p>
+            </div>
+            <div id="estimatedIncomeSummary" class="summaryCard">
+                <p id="estimatedIncomeTotal" class="content">$1,234.56</p>
+                <p id="estiamtedIncomeTotalInfo" class="informational">Estimate as of 2023-07-01</p>
+            </div>
+            <div id="nextDividenSummary" class="summaryCard">
+                <p id="nextDividendTotal" class="content">O: $14.23</p>
+                <p id="nextDividendTotalInfo" class="informational">Next Dividend on 2023-07-01</p>
+            </div>
+        </section>
+        <section id="balance">
+            <div id="balanceTimeChartContainer" class="balanceItem"></div>
+            <div id="balanceHoldingsChartContainer" class="balanceItem"></div>
+        </section>
+        <section id="income">
+            <div id="incomeTimeChartContainer" class="incomeItem"></div>
+        </section>
+    </main>
 </body>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="js\index.js"></script>
 <script src="js\header.js"></script>
 </html>

@@ -1,0 +1,154 @@
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--main-color);
+    min-width: 250px;
+    margin: 0px;
+  }
+  
+  main {
+    height: 1200px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-top: 30px;
+  }
+  
+  #balance, #income {
+    border-width: 2px;
+    margin: 10px;
+    height: 45%;
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .summaryCard {
+    justify-content: space-around;
+    flex: 1;
+    min-width: 50px;
+    background-color: var(--summary-item-bg-color);
+  }
+  
+  .summaryCard p {
+    text-align: center;
+    color: var(--main-font-color);
+  }
+  
+  .summaryCard > p.content {
+    font-size: 25px;
+    flex: 2;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0;
+  }
+  
+  .summaryCard > p.informational {
+    font-size: 18px;
+    flex: 1;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 0;
+  }
+  
+  .balanceItem {
+    justify-content: space-around;
+    flex: 1;
+    display: flex;
+    background-color: var(--summary-item-bg-color);
+  }
+  
+  .incomeItem {
+    justify-content: space-around;
+    display: flex;
+    flex: 1;
+    background-color: var(--summary-item-bg-color);
+    padding: 20px;
+  }
+  
+  .balanceDonutLabel {
+    font-size: 14px;
+    padding: 12px;
+  }
+  
+  .xAxisGroup {
+    stroke: #fff;
+  }
+  
+  
+  #estimatedIncomeTableContainer {
+    color: var(--main-font-color);
+  }
+  
+  /* Styles for phones */
+  @media only screen and (min-width: 0px) {
+  
+      /*Need to make nav items collaps into a dropdown menu*/
+  
+      #summary {
+        height: 280px;
+        margin: 10px;
+        display: flex;
+        flex-direction: column;
+      }
+  
+      .summaryItem {
+        margin: 5px 0px;
+        border-radius: 10px;
+      }
+  
+      .balanceItem {
+        margin: 0px 10px;
+        padding: 2px 5px;
+        border-radius: 10px;
+      }
+  
+      #balance {
+        flex-direction: column;
+      }
+  
+    }
+  
+  /* Styles for tablets */
+  @media only screen and (min-width: 768px) {
+  
+    #summary {
+      height: 6%;
+      margin: 10px;
+      display: flex;
+      flex-direction: row;
+    }
+  
+    #summary > div {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .summaryItem {
+      margin: 0px 20px;
+      border-radius: 10px;
+    }
+  
+    .balanceItem {
+      margin: 0px 20px;
+      padding: 10px;
+      border-radius: 10px;
+    }
+  
+    #balance {
+      flex-direction: row;
+    }
+  
+    .incomeItem {
+      margin: 0px 20px;
+      padding: 10px;
+      border-radius: 10px;
+    }
+  
+  }
+    
+  /* Styles for desktops */
+  @media only screen and (min-width: 1024px) {
+    /* Desktop-specific styles */
+  }
