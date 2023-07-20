@@ -1,7 +1,7 @@
 
 /*First Section - Always True*/
 header {
-    height: 30px;
+    height: var(--header-height);
     width: 100%;
     position: fixed;
     display: grid;

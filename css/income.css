@@ -1,8 +1,23 @@
+body {
+    display: grid;
+    /*Needed because fixed position of header is taken out of doc flow consideration*/
+    margin-top: var(--header-height);
+}
+
+header {
+    border: 1px solid blue;
+}
+
+main {
+    border: 1px solid red;
+}
+
 #summaryCards {
     display: flex;
     flex-direction: row;
     padding: 0px 20px;
     justify-content: space-around;
+    margin: 5px;
 }
 
 #summaryCards > div {
@@ -63,5 +78,4 @@ th, td {
 .altRow {
     background-color: lightslategray;
 }
-
 
