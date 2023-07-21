@@ -31,6 +31,21 @@ main {
     border-radius: 20px;
 }
 
+#avgIncCard {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 15% 35% 25% 25%;
+    align-content: center;
+}
+
+#avgIncCard > p {
+    text-align: center;
+}
+
+p.fullWidth {
+    grid-column: span 2;
+}
+
 #estimatedIncomeTableContainer {
     height: 300px;
     overflow: auto;   
