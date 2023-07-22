@@ -1,9 +1,24 @@
 const dateFormat = new Date().toISOString().split('T')[0]
+const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
 
 //Serves As The Main Function To Go Get The Contents Of curEstInc Endpoint
 function getCurEstIncTickerPayDt() {
     return new Promise((resolve, reject) => {
         fetch('http://localhost:5501/curEstIncTickerPayDt')
+        .then(response => response.json())
+        .then(data => {
+            resolve(data);
+        })
+        .catch(error => {
+            reject(error);
+        });
+    })
+}
+
+//Serves As The Main Function To Go Get The Contents Of curEstIncAvg Endpoint
+function getCurEstIncAvg() {
+    return new Promise((resolve, reject) => {
+        fetch('http://localhost:5501/curEstIncAvg')
         .then(response => response.json())
         .then(data => {
             resolve(data);
@@ -69,6 +84,10 @@ function createHtmlTable(tblData) {
 function loadCurEstIncomeData() {
     getCurEstIncTickerPayDt()
         .then(curEstIncData => {
+
+
+
+            //Load Detail Table of All Estimated Income Pay Dates / Tickers
             const keysOfInterest = ["acct_nm", "inst_nm", "ticker", "ticker_nm", "pay_dt", "inc_status", "inc_freq", "inc_qty", "inc_rate", "inc_amt"]
             curEstIncDataFiltered = filterKeys(curEstIncData, keysOfInterest)
             curEstIncDataFiltered.sort((a, b) => new Date(a.pay_dt) - new Date(b.pay_dt));
@@ -81,4 +100,21 @@ function loadCurEstIncomeData() {
         });
 }
 
-loadCurEstIncomeData()
+function loadCurEstIncomeAvg() {
+    getCurEstIncAvg()
+        .then(curEstIncAvgData => {
+            //Load values into Summary Card for Total / Avg Income Rates
+            const annualEstInc = document.getElementById("annualEstInc");
+            const monthlyAvgInc = document.getElementById("monthlyAvgInc");
+            const dlyAvgInc = document.getElementById("dlyAvgInc");
+            annualEstInc.textContent = currencyFormat.format(curEstIncAvgData[0].inc_amt_annual);
+            monthlyAvgInc.textContent = currencyFormat.format(curEstIncAvgData[0].inc_amt_mnly);
+            dlyAvgInc.textContent = currencyFormat.format(curEstIncAvgData[0].inc_amt_dly);
+        })
+        .catch(error => {
+            console.log('Error:', error);
+        });
+}
+
+loadCurEstIncomeData();
+loadCurEstIncomeAvg();

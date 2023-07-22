@@ -4,10 +4,6 @@ body {
     margin-top: var(--header-height);
 }
 
-header {
-    border: 1px solid blue;
-}
-
 main {
     border: 1px solid red;
 }
@@ -40,10 +36,16 @@ main {
 
 #avgIncCard > p {
     text-align: center;
+    align-self: start;
 }
 
 p.fullWidth {
     grid-column: span 2;
+}
+
+#annualEstInc {
+    font-size: 25px;
+    font-weight: 700;
 }
 
 #estimatedIncomeTableContainer {
