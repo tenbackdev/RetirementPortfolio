@@ -56,6 +56,11 @@ p.fullWidth {
 
 }
 
+#estimatedIncomeSnapshotHistory {
+    height: 400px;
+}
+
+
 #estimatedIncomeTableContainer::-webkit-scrollbar {
     width: 12px;
 }
