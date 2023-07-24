@@ -15,6 +15,20 @@ function getCurEstIncTickerPayDt() {
     })
 }
 
+//Serves As The Main Function To Go Get The Contents Of curEstInc Endpoint
+function getHistEstIncAvg() {
+    return new Promise((resolve, reject) => {
+        fetch('http://localhost:5501/histEstIncAvg')
+        .then(response => response.json())
+        .then(data => {
+            resolve(data);
+        })
+        .catch(error => {
+            reject(error);
+        });
+    })
+}
+
 //Serves As The Main Function To Go Get The Contents Of curEstIncAvg Endpoint
 function getCurEstIncAvg() {
     return new Promise((resolve, reject) => {
@@ -86,7 +100,7 @@ function loadCurEstIncomeData() {
         .then(curEstIncData => {
 
 
-
+            
             //Load Detail Table of All Estimated Income Pay Dates / Tickers
             const keysOfInterest = ["acct_nm", "inst_nm", "ticker", "ticker_nm", "pay_dt", "inc_status", "inc_freq", "inc_qty", "inc_rate", "inc_amt"]
             curEstIncDataFiltered = filterKeys(curEstIncData, keysOfInterest)
@@ -116,5 +130,79 @@ function loadCurEstIncomeAvg() {
         });
 }
 
+function loadHistEstIncomeAvg() {
+    getHistEstIncAvg()
+        .then(histEstIncAvgData => {
+            const keysOfInterest = ["snsh_dt", "inc_amt_annual"];
+            histEstIncAvgDataFiltered = filterKeys(histEstIncAvgData, keysOfInterest);
+            histEstIncAvgDataFiltered.sort((a, b) => new Date(a.snsh_dt) - new Date(b.snsh_dt))
+            estimatedIncomeSnapshotHistory = document.getElementById('estimatedIncomeSnapshotHistory');
+
+            console.log(histEstIncAvgDataFiltered);
+            console.log(d3.min(histEstIncAvgDataFiltered, data => data.inc_amt_annual));
+
+            const incomeChartWidth = estimatedIncomeSnapshotHistory.offsetWidth;
+            const incomeChartHeight = estimatedIncomeSnapshotHistory.offsetHeight * 0.90;
+            const incomeChartMargin = {top: 20, right: 20, bottom: 100, left: 20};
+
+            const xScale = d3.scaleBand()
+                .domain(histEstIncAvgDataFiltered.map(data => new Date(data.snsh_dt).toISOString().split('T')[0]))
+                .range([incomeChartMargin.left, incomeChartWidth - incomeChartMargin.right])
+                .padding(0.1);
+
+            const yScale = d3.scaleLinear()
+                .domain([0, d3.max(histEstIncAvgDataFiltered, data => data.inc_amt_annual)])
+                .range([incomeChartHeight - incomeChartMargin.bottom, incomeChartMargin.top])
+
+            const svg = d3.select('#estimatedIncomeSnapshotHistory')
+                .append("svg")
+                .attr("width", incomeChartWidth)
+                .attr("heigh", incomeChartHeight)
+
+            svg.selectAll("rect")
+                .data(histEstIncAvgDataFiltered)
+                .enter()
+                .append("rect")
+                .attr("x", data => xScale(new Date(data.snsh_dt).toISOString().split('T')[0]))
+                .attr("y", data => yScale(data.inc_amt_annual))
+                .attr("width", xScale.bandwidth())
+                .attr("height", data => incomeChartHeight - incomeChartMargin.bottom - yScale(data.inc_amt_annual))
+                .attr("fill", "steelblue");
+
+            //Add Labels on top of each bar
+            svg.selectAll("text")
+                .data(histEstIncAvgDataFiltered)
+                .enter()
+                .append("text")
+                .text(data => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(data.inc_amt_annual))
+                .attr("x", data => xScale(new Date(data.snsh_dt).toISOString().split('T')[0]) + xScale.bandwidth() / 2)
+                .attr("y", data => yScale(data.inc_amt_annual) - 5)
+                .attr("text-anchor", "middle")
+                .attr("fill", "black");
+            
+            const xAxis = d3.axisBottom(xScale)
+
+            const xAxisGroup = svg.append('g')
+                .attr("transform", `translate(0, ${incomeChartHeight - incomeChartMargin.bottom})`)
+                .attr("class", "xAxisGroup")
+                .attr("stroke", "#black");
+                //.attr("opacity", "0.5");
+                
+            xAxisGroup.call(xAxis);
+
+            xAxisGroup.selectAll("text")
+                .style("text-anchor", "end")
+                //.text(data => data.snsh_dt)
+                .attr("transform", "rotate(-45)")
+                .attr("fill", "black")
+                .attr("dx", "-0.8em")
+                .attr("dy", "0.15em");
+        })
+        .catch(error => {
+            console.log('Error:', error);
+        });
+}
+
 loadCurEstIncomeData();
 loadCurEstIncomeAvg();
+loadHistEstIncomeAvg();
