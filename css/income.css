@@ -57,7 +57,7 @@ p.fullWidth {
 }
 
 #estimatedIncomeSnapshotHistory {
-    height: 400px;
+    height: 500px;
 }
 
 
@@ -99,5 +99,10 @@ th, td {
 
 .altRow {
     background-color: lightslategray;
+}
+
+
+#testCentralChart {
+    height: 500px;
 }
 

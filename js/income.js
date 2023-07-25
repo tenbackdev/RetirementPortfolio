@@ -137,10 +137,7 @@ function loadHistEstIncomeAvg() {
             histEstIncAvgDataFiltered = filterKeys(histEstIncAvgData, keysOfInterest);
             histEstIncAvgDataFiltered.sort((a, b) => new Date(a.snsh_dt) - new Date(b.snsh_dt))
             estimatedIncomeSnapshotHistory = document.getElementById('estimatedIncomeSnapshotHistory');
-
-            console.log(histEstIncAvgDataFiltered);
-            console.log(d3.min(histEstIncAvgDataFiltered, data => data.inc_amt_annual));
-
+            
             const incomeChartWidth = estimatedIncomeSnapshotHistory.offsetWidth;
             const incomeChartHeight = estimatedIncomeSnapshotHistory.offsetHeight * 0.90;
             const incomeChartMargin = {top: 20, right: 20, bottom: 100, left: 20};
