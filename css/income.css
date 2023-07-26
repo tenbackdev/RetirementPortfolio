@@ -104,5 +104,6 @@ th, td {
 
 #testCentralChart {
     height: 500px;
+    align-content: center;
 }
 

@@ -218,6 +218,7 @@ function loadRecentIncomeData() {
 function loadCurEstIncomeData() {
     getCurEstIncome()
         .then(curEstIncData => {
+            console.log(curEstIncData)
             //Update the Recent Income Total in the Summary
             const estiamtedTotalIncome = curEstIncData.reduce((sum, record) => sum + record.inc_amt, 0);
             const formattedEstimatedTotalIncome = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(estiamtedTotalIncome);
