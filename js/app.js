@@ -18,11 +18,11 @@ function sumByGroup(sumData, groupKey, sumKey) {
 
 //Transform data from Row-Store to Column-Store to prepare
 //Initial use case being inputs for the presentation of a stacked bar chart
-function transformData(data, dimKey, pivotKey) {
+function transformData(data, dimKey, pivotKey, measKey) {
     // Group data by unique dimKey and pivotKey combination and calculate the sum of inc_amt
     const groupedData = d3.rollup(
         data,
-        v => d3.sum(v, d => d.inc_amt),
+        v => d3.sum(v, d => d[measKey]),
         d => d[dimKey],
         d => d[pivotKey]
     );
@@ -47,13 +47,14 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, stackKe
 
     //This will handle creating all bar charts, including stacked bar charts
     containerElement = document.getElementById(divId.replace('#', ''));
-    var containerWidth = containerElement.offsetWidth;
-    var containerHeight = containerElement.offsetHeight;
+    const containerStyle = window.getComputedStyle(containerElement);
+    var containerWidth = containerElement.getBoundingClientRect().width - parseInt(containerStyle.marginLeft) - parseInt(containerStyle.marginRight);
+    var containerHeight = containerElement.offsetHeight - parseInt(containerStyle.marginTop) - parseInt(containerStyle.marginBottom);
 
     const chartWidth = containerWidth - chartMargin.left - chartMargin.right
     const chartHeight = containerHeight - chartMargin.top - chartMargin.bottom
 
-    var svg = d3.select(divId) //d3.select("test")
+    var svg = d3.select(divId)
         .append("svg")
             .attr("width", chartWidth + chartMargin.left + chartMargin.right) 
             .attr("height", chartHeight + chartMargin.top + chartMargin.bottom)
@@ -90,9 +91,9 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, stackKe
     var stackVals = Array.from(new Set(chartData.map(obj => obj[stackKey])));
     var color = d3.scaleOrdinal()
         .domain(stackVals)
-        .range(colorsArray);
+        .range(['#4682b4', '#4d90c7']);
 
-    var transformedChartData = transformData(chartData, dimKey, stackKey);
+    var transformedChartData = transformData(chartData, dimKey, stackKey, plotKey);
     transformedChartData.sort((a, b) => a[dimKey] - b[dimKey]);
     var stackedData = d3.stack()
         .keys(stackVals)

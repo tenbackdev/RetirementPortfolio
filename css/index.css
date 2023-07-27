@@ -3,7 +3,8 @@ body {
     flex-direction: column;
     background-color: var(--main-color);
     min-width: 250px;
-    margin: 0px;
+    max-width: 1500px;
+    margin: 10px;
   }
   
   main {
@@ -76,9 +77,28 @@ body {
     stroke: #fff;
   }
   
+  #income {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 20% 80%;
+    align-content: center;
+  }
+
+  #income .chartContent {
+    grid-column: span 3;
+    width: 100%;
+  }
   
   #estimatedIncomeTableContainer {
     color: var(--main-font-color);
+  }
+
+  .chartHeader {
+    margin: 0px;
+    padding: 15px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
   }
   
   /* Styles for phones */
