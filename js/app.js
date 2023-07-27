@@ -1,123 +1,8 @@
-
 const colorsArray = ["#FF5733", "#33FF6C", "#3366FF", "#FF33A3", "#33FFB3", "#FF33CC",
             "#33FFFF", "#FF3366", "#66FF33", "#336633", "#33FF33", "#33FFA3", "#FF6633",
             "#66FF66", "#6633FF", "#FF3366", "#33CCFF", "#FFA333", "#FF33A3", "#FF9933",
             "#33CC66", "#FF9933", "#33FF66", "#66FF33", "#FF3366", "#3366FF", "#FF33A3",
             "#33FFB3", "#3366FF", "#FF3366"];
-  
-
-const example_dtata = [
-    {
-      "group": "banana",
-      "Nitrogen": 12,
-      "normal": 1,
-      "stress": 13
-    },
-    {
-      "group": "poacee",
-      "Nitrogen": 6,
-      "normal": 6,
-      "stress": 33
-    },
-    {
-      "group": "sorgho",
-      "Nitrogen": 11,
-      "normal": 28,
-      "stress": 12
-    },
-    {
-      "group": "triticum",
-      "Nitrogen": 19,
-      "normal": 6,
-      "stress": 1
-    }
-   ]
-
-
-
-
-function createBarChartOld (divId, chartData, dimKey, plotKeys) {
-
-    //This will handle creating all bar charts, including stacked bar charts
-    containerElement = document.getElementById(divId.replace('#', ''));
-    var containerWidth = containerElement.offsetWidth;
-    var containerHeight = containerElement.offsetHeight;
-    //will look to make this an argument as well
-    const chartMargin = {top: 20, right: 20, bottom: 20, left: 20}
-
-    const chartWidth = containerWidth - chartMargin.left - chartMargin.right
-    const chartHeight = containerHeight - chartMargin.top - chartMargin.bottom
-
-    var svg = d3.select("test") //d3.select(divId)
-        .append("svg")
-            .attr("width", chartWidth + chartMargin.left + chartMargin.right) 
-            .attr("height", chartHeight + chartMargin.top + chartMargin.bottom)
-        .append("g")
-            .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
-
-    //Add the X axis
-    var xVals = chartData.map(obj => obj[dimKey]);
-    var x = d3.scaleBand()
-        .domain(xVals)
-        .range([0, chartWidth])
-        .padding([0.2])
-    svg.append("g")
-        .attr("transform", `translate(0, ${chartHeight})`)
-        .call(d3.axisBottom(x).tickSizeOuter(0));
-
-    var y = d3.scaleLinear()
-        .domain([0, 60]) //Work to make this dynamic to the data
-        .range([chartHeight, 0]);
-    svg.append("g")
-        .call(d3.axisLeft(y))
-        .attr("transform", `translate(0, 0)`);
-
-    var color = d3.scaleOrdinal()
-        .domain(plotKeys)
-        .range(['#e41a1c','#377eb8','#4daf4a'])
-
-    console.log('hi')
-    console.log(chartData)
-
-    console.log(plotKeys)
-    var stackedData = d3.stack()
-        .keys(plotKeys)
-        (chartData)
-
-    console.log(stackedData)
-
-    svg.append("g")
-        .selectAll("g")
-        //Enter in Stack Data = Loop Per key
-        .data (stackedData)
-        .enter().append("g")
-            .attr("fill", function(d) {return color(d.key); })
-            .selectAll("rect")
-            .data(function(d) {return d; })
-            .enter().append("rect")
-                .attr("x", function(d) {return x(d.data.group); })
-                .attr("y", function(d) {return y(d[1]); })
-                .attr("height", function(d) {return y(d[0]) - y(d[1]); })
-                .attr("width", x.bandwidth())
-
-};
-
-
-
-const exData = [{pay_mnth_nm_yr_nbr: "July 2023", inc_status: "Estimated", ticker: "O", inc_amt: 12.26}
-                , {pay_mnth_nm_yr_nbr: "July 2023", inc_status: "Announced", ticker: "KO", inc_amt: 37.08}
-                , {pay_mnth_nm_yr_nbr: "August 2023", inc_status: "Announced", ticker: "PG", inc_amt: 26.34}
-                , {pay_mnth_nm_yr_nbr: "August 2023", inc_status: "Estimated", ticker: "SYY", inc_amt: 26.5}
-                , {pay_mnth_nm_yr_nbr: "Sep 2023", inc_status: "Estimated", ticker: "PEP", inc_amt: 14.56}
-                , {pay_mnth_nm_yr_nbr: "Sep 2023", inc_status: "Estimated", ticker: "JNJ", inc_amt: 17.89}]
-
-
-/*const exDataPivot = [{pay_mnth_nm_yr_nbr: "July 2023", Estimated: 12.26, Announced: 37.08}
-                , {pay_mnth_nm_yr_nbr: "August 2023", Estimated: 26.5, Announced: 26.34}
-                , {pay_mnth_nm_yr_nbr: "Sep 2023", Estimated: 32.45}
-*/
-
-const exMargin = {top: 20, right: 20, bottom: 20, left: 20}
 
 //Function to sum any JSON data given, while grouping by a specified column name
 //Function will return JSON data with 2 keys, the column names will match the argument values for groupKey & sumKey
@@ -134,16 +19,23 @@ function sumByGroup(sumData, groupKey, sumKey) {
 //Transform data from Row-Store to Column-Store to prepare
 //Initial use case being inputs for the presentation of a stacked bar chart
 function transformData(data, dimKey, pivotKey) {
-    // Group data by unique dimKey and pivotKey combination
-    const groupedData = data.reduce((acc, curr) => {
-      const key = curr[dimKey];
-      if (!acc[key]) acc[key] = { [dimKey]: key };
-      acc[key][curr[pivotKey]] = curr.inc_amt;
-      return acc;
-    }, {});
-  
-    // Convert the grouped object to an array of objects
-    const exDataPivot = Object.values(groupedData);
+    // Group data by unique dimKey and pivotKey combination and calculate the sum of inc_amt
+    const groupedData = d3.rollup(
+        data,
+        v => d3.sum(v, d => d.inc_amt),
+        d => d[dimKey],
+        d => d[pivotKey]
+    );
+
+    // Convert the grouped data to an array of objects
+    const exDataPivot = Array.from(groupedData, ([key, values]) => {
+        const obj = { [dimKey]: key };
+        values.forEach((value, pivot) => {
+        obj[pivot] = value;
+        });
+        return obj;
+    });
+
     return exDataPivot;
   }
 
@@ -170,6 +62,7 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, stackKe
 
     //Add the X axis
     var xVals = Array.from(new Set(chartData.map(obj => obj[dimKey])));
+    xVals.sort((a, b) => a - b); //Need to revisit to better handle wider range of sort scenarios.
     var x = d3.scaleBand()
         .domain(xVals)
         .range([0, chartWidth])
@@ -182,15 +75,13 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, stackKe
     if (stackFlag) {
         //Find the highest a bar will reach, regardess of how many stacks needed
         const dimKeyGroupedData = sumByGroup(chartData, dimKey, plotKey);
-        console.log('test')
-        console.log(dimKeyGroupedData);
         yMax = dimKeyGroupedData.reduce((max, record) => record[plotKey] > max ? record[plotKey] : max, 0);
     } else {
         yMax = chartData.reduce((max, record) => record[plotKey] > max ? record[plotKey] : max, 0);
     }
     
     var y = d3.scaleLinear()
-        .domain([0, yMax * 1.03]) //Work to make this dynamic to the data
+        .domain([0, yMax * 1.03])
         .range([chartHeight, 0]);
     svg.append("g")
         .call(d3.axisLeft(y))
@@ -202,13 +93,10 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, stackKe
         .range(colorsArray);
 
     var transformedChartData = transformData(chartData, dimKey, stackKey);
+    transformedChartData.sort((a, b) => a[dimKey] - b[dimKey]);
     var stackedData = d3.stack()
         .keys(stackVals)
         (transformedChartData)
-
-    console.log(stackedData);
-    
-    console.log(transformedChartData);
 
     svg.append("g")
         .selectAll("g")
@@ -221,37 +109,10 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, stackKe
             .enter().append("rect")
                 .attr("x", function(d) {return x(d.data[dimKey]); })
                 .attr("y", function(d) {return y(d[1]); })
-                .attr("height", function(d) {return y(d[0]) - y(d[1]); })
+                .attr("height", function(d) {return y(d[0]) - (y(d[1]) || y(d[0])); }) //Revisit this line to better calculate
                 .attr("width", x.bandwidth())
     
 };
 
-createBarChartOld("#testCentralChart", example_dtata, "group", ["Nitrogen", "normal", "stress"]); 
-createBarChart("#testCentralChart", exData, "pay_mnth_nm_yr_nbr", "inc_amt", exMargin, "inc_status"); 
-
-
-function transformData(data, dimKey, pivotKey) {
-    // Group data by unique dimKey and pivotKey combination
-    const groupedData = data.reduce((acc, curr) => {
-      const key = curr[dimKey];
-      if (!acc[key]) acc[key] = { [dimKey]: key };
-      acc[key][curr[pivotKey]] = curr.inc_amt;
-      return acc;
-    }, {});
-  
-    // Convert the grouped object to an array of objects
-    const exDataPivot = Object.values(groupedData);
-    return exDataPivot;
-  }
-  
-  const exDataTwo = [
-    { pay_mnth_nm_yr_nbr: "July 2023", inc_status: "Estimated", ticker: "O", inc_amt: 12.26 },
-    { pay_mnth_nm_yr_nbr: "July 2023", inc_status: "Announced", ticker: "KO", inc_amt: 37.08 },
-    { pay_mnth_nm_yr_nbr: "August 2023", inc_status: "Announced", ticker: "PG", inc_amt: 26.34 },
-    { pay_mnth_nm_yr_nbr: "August 2023", inc_status: "Estimated", ticker: "SYY", inc_amt: 26.5 },
-    { pay_mnth_nm_yr_nbr: "Sep 2023", inc_status: "Estimated", ticker: "PEP", inc_amt: 14.56 },
-    { pay_mnth_nm_yr_nbr: "Sep 2023", inc_status: "Estimated", ticker: "JNJ", inc_amt: 17.89 },
-  ];
-  
-  const exDataPivot = transformData(exDataTwo, "pay_mnth_nm_yr_nbr", "inc_status");
-  console.log(exDataPivot);
+//Example of how to call function:
+//createBarChart("#testCentralChart", exData, "pay_mnth_nm_yr_nbr", "inc_amt", exMargin, "inc_status"); 

@@ -218,7 +218,6 @@ function loadRecentIncomeData() {
 function loadCurEstIncomeData() {
     getCurEstIncome()
         .then(curEstIncData => {
-            console.log(curEstIncData)
             //Update the Recent Income Total in the Summary
             const estiamtedTotalIncome = curEstIncData.reduce((sum, record) => sum + record.inc_amt, 0);
             const formattedEstimatedTotalIncome = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(estiamtedTotalIncome);
@@ -251,6 +250,7 @@ function loadCurEstIncomeData() {
             const nextDividendAsOfElement = document.getElementById('nextDividendTotalInfo');
             nextDividendAsOfElement.textContent = `Next Dividend on ${formattedNextPayDate}`;
 
+            /*
             //Create the Bar Chart Broken Out By Month
             curEstIncData.sort((a, b) => a.pay_yr_mnth_nbr - b.pay_yr_mnth_nbr)
             const payMonthYearIncome = d3.group(curEstIncData, d => d.pay_mnth_nm_yr_nbr)
@@ -263,9 +263,12 @@ function loadCurEstIncomeData() {
 
             incomeTimeChartContainer = document.getElementById('incomeTimeChartContainer');
             const incomeChartWidth = incomeTimeChartContainer.offsetWidth;
-            const incomeChartHeight = incomeTimeChartContainer.offsetHeight * 0.8;
-            const incomeChartMargin = {top: 20, right: 20, bottom: 70, left: 20}
-
+            const incomeChartHeight = incomeTimeChartContainer.offsetHeight;
+            const incomeChartMargin = {top: 20, right: 20, bottom: 20, left: 20}
+              */
+            const incomeChartMargin = {top: 20, right: 20, bottom: 20, left: 40}
+            createBarChart("#incomeTimeChartContainer", curEstIncData, "pay_yr_mnth_nbr", "inc_amt", incomeChartMargin, "inc_status")
+            /*
             // Set up the scales
             const xScale = d3.scaleBand()
                 .domain(payMonthYearIncomeTotals.map(data => data.pay_mnth_nm_yr_nbr))
@@ -322,6 +325,7 @@ function loadCurEstIncomeData() {
                 .attr("fill", "#fff")
                 .attr("dx", "-0.8em")
                 .attr("dy", "0.15em");
+            */
 
         })
         .catch(error => {
