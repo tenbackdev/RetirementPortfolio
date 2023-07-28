@@ -100,6 +100,33 @@ body {
     justify-content: left;
     align-items: center;
   }
+
+  .chartLegend {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    text-align: center;
+    align-items: center;
+    padding: 10px;
+  }
+
+  .chartLegend > div {
+
+    height: 100%;
+    margin: 10px;
+  }
+
+  #incomeLegendEstimatedColor {
+    background-color: #4682b4;
+  }
+
+  #incomeLegendAnnouncedColor {
+    background-color: #4d90c7;
+  }
+
+  #incomeTimeChartContainer {
+    padding: 0px;
+  }
   
   /* Styles for phones */
   @media only screen and (min-width: 0px) {

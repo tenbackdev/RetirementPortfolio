@@ -267,7 +267,7 @@ function loadCurEstIncomeData() {
             const incomeChartMargin = {top: 20, right: 20, bottom: 20, left: 20}
               */
             const incomeChartMargin = {top: 20, right: 20, bottom: 20, left: 40}
-            createBarChart("#incomeTimeChartContainer", curEstIncData, "pay_yr_mnth_nbr", "inc_amt", incomeChartMargin, "inc_status")
+            createBarChart("#incomeTimeChartContainer", curEstIncData, "pay_yr_mnth_nbr", "inc_amt", incomeChartMargin, "inc_status", ['#4682b4', '#4d90c7'])
             /*
             // Set up the scales
             const xScale = d3.scaleBand()

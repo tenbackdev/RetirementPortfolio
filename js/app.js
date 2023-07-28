@@ -39,7 +39,7 @@ function transformData(data, dimKey, pivotKey, measKey) {
     return exDataPivot;
   }
 
-function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, stackKey) {
+function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, stackKey, colorRange) {
     var stackFlag = true;
     if (stackKey === undefined) {
         stackFlag = false;
@@ -56,7 +56,7 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, stackKe
 
     var svg = d3.select(divId)
         .append("svg")
-            .attr("width", chartWidth + chartMargin.left + chartMargin.right) 
+            .attr("width", chartWidth + chartMargin.left + chartMargin.right - 40) 
             .attr("height", chartHeight + chartMargin.top + chartMargin.bottom)
         .append("g")
             .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
@@ -91,7 +91,7 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, stackKe
     var stackVals = Array.from(new Set(chartData.map(obj => obj[stackKey])));
     var color = d3.scaleOrdinal()
         .domain(stackVals)
-        .range(['#4682b4', '#4d90c7']);
+        .range(colorRange);
 
     var transformedChartData = transformData(chartData, dimKey, stackKey, plotKey);
     transformedChartData.sort((a, b) => a[dimKey] - b[dimKey]);
