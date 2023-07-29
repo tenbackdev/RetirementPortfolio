@@ -1,201 +1,94 @@
+
+* {
+  border: 1px solid red;
+}
+
 body {
+  background-color: var(--var-main-color, ivory);
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: var(--var-header-height, 30px) 0 0 0;
+  border: none;
+}
+
+/*May Need To Move This To Header CSS Once Hooked Back Up*/
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: var(--var-header-height, 30px);
+  width: 100%;
+  background-color: var(--var-header-color, slategrey);
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  min-width: 300px;
+  margin: 20px;
+  width: 100%;
+  border: none;
+}
+
+.sectionContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 15px 0;
+}
+
+.sectionContainer > div {
+  flex: 1fr;
+  width: 100%;
+}
+
+#summary {
+  height: 100px;
+}
+
+#balance, #income {
+  height: 500px;
+}
+
+.summaryCard {
+  height: 100%;
+  width: 100%;
+}
+
+@media only screen and (max-width: 768px) {
+
+  header {
+    border: 1px solid blue;
+  }
+
+  .sectionContainer {
     display: flex;
     flex-direction: column;
-    background-color: var(--main-color);
-    min-width: 250px;
-    max-width: 1500px;
-    margin: 10px;
-  }
-  
-  main {
-    height: 1200px;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    padding-top: 30px;
-  }
-  
-  #balance, #income {
-    border-width: 2px;
-    margin: 10px;
-    height: 45%;
-    display: flex;
-    justify-content: space-around;
-  }
-  
-  .summaryCard {
-    justify-content: space-around;
-    flex: 1;
-    min-width: 50px;
-    background-color: var(--summary-item-bg-color);
-  }
-  
-  .summaryCard p {
-    text-align: center;
-    color: var(--main-font-color);
-  }
-  
-  .summaryCard > p.content {
-    font-size: 25px;
-    flex: 2;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin: 0;
-  }
-  
-  .summaryCard > p.informational {
-    font-size: 18px;
-    flex: 1;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin: 0;
-  }
-  
-  .balanceItem {
-    justify-content: space-around;
-    flex: 1;
-    display: flex;
-    background-color: var(--summary-item-bg-color);
-  }
-  
-  .incomeItem {
-    justify-content: space-around;
-    display: flex;
-    flex: 1;
-    background-color: var(--summary-item-bg-color);
-    padding: 20px;
-  }
-  
-  .balanceDonutLabel {
-    font-size: 14px;
-    padding: 12px;
-  }
-  
-  .xAxisGroup {
-    stroke: #fff;
-  }
-  
-  #income {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: 20% 80%;
-    align-content: center;
+    justify-content: center;
+    gap: 0;
   }
 
-  #income .chartContent {
-    grid-column: span 3;
-    width: 100%;
-  }
-  
-  #estimatedIncomeTableContainer {
-    color: var(--main-font-color);
-  }
-
-  .chartHeader {
-    margin: 0px;
-    padding: 15px;
-    display: flex;
-    justify-content: left;
-    align-items: center;
-  }
-
-  .chartLegend {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    text-align: center;
-    align-items: center;
-    padding: 10px;
-  }
-
-  .chartLegend > div {
-
+  .sectionContainer > div {
+    flex: 1fr;
     height: 100%;
-    margin: 10px;
   }
 
-  #incomeLegendEstimatedColor {
-    background-color: #4682b4;
+  #summary {
+    height: 400px;
   }
 
-  #incomeLegendAnnouncedColor {
-    background-color: #4d90c7;
+  #balance {
+    height: 1000px;
   }
 
-  #incomeTimeChartContainer {
-    padding: 0px;
+  #income {
+    height: 500px;
   }
-  
-  /* Styles for phones */
-  @media only screen and (min-width: 0px) {
-  
-      /*Need to make nav items collaps into a dropdown menu*/
-  
-      #summary {
-        height: 280px;
-        margin: 10px;
-        display: flex;
-        flex-direction: column;
-      }
-  
-      .summaryItem {
-        margin: 5px 0px;
-        border-radius: 10px;
-      }
-  
-      .balanceItem {
-        margin: 0px 10px;
-        padding: 2px 5px;
-        border-radius: 10px;
-      }
-  
-      #balance {
-        flex-direction: column;
-      }
-  
-    }
-  
-  /* Styles for tablets */
-  @media only screen and (min-width: 768px) {
-  
-    #summary {
-      height: 6%;
-      margin: 10px;
-      display: flex;
-      flex-direction: row;
-    }
-  
-    #summary > div {
-      display: flex;
-      flex-direction: column;
-    }
-  
-    .summaryItem {
-      margin: 0px 20px;
-      border-radius: 10px;
-    }
-  
-    .balanceItem {
-      margin: 0px 20px;
-      padding: 10px;
-      border-radius: 10px;
-    }
-  
-    #balance {
-      flex-direction: row;
-    }
-  
-    .incomeItem {
-      margin: 0px 20px;
-      padding: 10px;
-      border-radius: 10px;
-    }
-  
-  }
-    
-  /* Styles for desktops */
-  @media only screen and (min-width: 1024px) {
-    /* Desktop-specific styles */
-  }
+
+}

@@ -1,11 +1,7 @@
-/* Default styles */
 :root {
-    --main-color: #A0A4B8;
-    --secondary-color: #99CEFF;
-    --accent-color: #EDE7B1;
-    --contrast-color: #F6BC79;
-    --alternate-color: #78A57B;
-    --main-font-color: #000000;
+  --var-background-color: #F4F4F6;
+  --var-header-color: #54627B;
+  --var-main-color: #ADC8D2;
 
-    --header-height: 30px;
-  }
+  --var-header-height: 30px;
+}
