@@ -61,15 +61,16 @@ function loadBalanceData() {
         //Aggregate & Display Total Balance
         const totalBalance = curAcctBalanceData.reduce((sum, record) => sum + record.acct_bal, 0);
         const formattedBalance = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(totalBalance);
-        const balanceTotalElement = document.getElementById('balanceTotal');
-        balanceTotalElement.textContent = formattedBalance;
+        const balanceTotalTextElement = document.getElementById('balanceTotalText');
+        balanceTotalTextElement.textContent = formattedBalance;
 
         //Determine Relevant Snapshost Date & Display Total Balance Info
         const infoDate = curAcctBalanceData.reduce((max, record) => record.snsh_dt > max ? record.snsh_dt : max, '');
         const formattedInfoDate = new Date(infoDate).toISOString().split('T')[0];
-        const balanceInfoElement = document.getElementById('balanceTotalInfo');
-        balanceInfoElement.textContent = `Balance as of ${formattedInfoDate}`;
-    
+        const balanceAsOfElement = document.getElementById('balanceAsOf');
+        balanceAsOfElement.textContent = `as of ${formattedInfoDate}`;
+        
+        /*
         //Aggregate Data & Sort By Inst
         const instBalanceGroupData = d3.group(curAcctBalanceData, d => d.inst_nm);
         const instBalanceAggData = Array.from(instBalanceGroupData, ([inst_nm, values]) => ({
@@ -115,6 +116,7 @@ function loadBalanceData() {
             .text(d => `${d.data.inst_nm}: ${new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(d.data.inst_bal)}`)
             .style("top", d => `${arc.centroid(d)[1]}px`)
             .style("left", d => `${arc.centroid(d)[0]}px`);
+            */
     })
     .catch(error => {
         console.log('Error:', error);
@@ -201,14 +203,14 @@ function loadRecentIncomeData() {
             //Update the Recent Income Total in the Summary
             const totalIncome = recIncData.reduce((sum, record) => sum + record.trans_amt, 0);
             const formattedTotalIncome = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(totalIncome);
-            const incomeTotalElement = document.getElementById('incomeTotal');
-            incomeTotalElement.textContent = formattedTotalIncome;
+            const incomeRecentTextElement = document.getElementById('incomeRecentText');
+            incomeRecentTextElement.textContent = formattedTotalIncome;
 
             //Update the Information for the Summary
             const incomeAsOfDate = recIncData.reduce((max, record) => record.trans_dt > max ? record.trans_dt : max, '')
             const formattedIncomeAsOfDate = new Date(incomeAsOfDate).toISOString().split('T')[0]
-            const incomeAsOfElement = document.getElementById('incomeTotalInfo');
-            incomeAsOfElement.textContent = `Recent Income as of ${formattedIncomeAsOfDate}`;
+            const incomeRecentAsOfElement = document.getElementById('incomeRecentAsOf');
+            incomeRecentAsOfElement.textContent = `as of ${formattedIncomeAsOfDate}`;
         })
         .catch(error => {
             console.log('Error:', error);
@@ -221,14 +223,16 @@ function loadCurEstIncomeData() {
             //Update the Recent Income Total in the Summary
             const estiamtedTotalIncome = curEstIncData.reduce((sum, record) => sum + record.inc_amt, 0);
             const formattedEstimatedTotalIncome = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(estiamtedTotalIncome);
-            const estimatedIncomeTotalElement = document.getElementById('estimatedIncomeTotal');
-            estimatedIncomeTotalElement.textContent = formattedEstimatedTotalIncome;
+            const incomeEstimateTextElement = document.getElementById('incomeEstimateText');
+            incomeEstimateTextElement.textContent = formattedEstimatedTotalIncome;
 
             //Update the Information for the Summary
             const estimatedIncomeAsOfDate = curEstIncData.reduce((max, record) => record.snsh_dt > max ? record.snsh_dt : max, '')
             const formattedEstimatedIncomeAsOfDate = new Date(estimatedIncomeAsOfDate).toISOString().split('T')[0]
-            const estimatedIncomeAsOfElement = document.getElementById('estiamtedIncomeTotalInfo');
-            estimatedIncomeAsOfElement.textContent = `Estimated Income as of ${formattedEstimatedIncomeAsOfDate}`;
+            const incomeEstimateAsOfElement = document.getElementById('incomeEstimateAsOf');
+            incomeEstimateAsOfElement.textContent = `as of ${formattedEstimatedIncomeAsOfDate}`;
+
+            console.log('Test')
 
             //Find The Next Dividend Regardless of How Many Accounts It Spans
             const today = new Date()
@@ -245,10 +249,10 @@ function loadCurEstIncomeData() {
             const currencyFormat = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'})
             const nextDividendDetail = nextDividendAggData.map(item => `${item.ticker}: ${currencyFormat.format(item.ticker_amt)}`).join(", ");
             const formattedNextPayDate = new Date(nextPayDate).toISOString().split('T')[0]
-            const NextDividendTotalElement = document.getElementById('nextDividendTotal');
-            NextDividendTotalElement.textContent = nextDividendDetail;
-            const nextDividendAsOfElement = document.getElementById('nextDividendTotalInfo');
-            nextDividendAsOfElement.textContent = `Next Dividend on ${formattedNextPayDate}`;
+            const nextIncomeTextElement = document.getElementById('nextIncomeText');
+            nextIncomeTextElement.textContent = nextDividendDetail;
+            const nextIncomeAsOfElement = document.getElementById('nextIncomeAsOf');
+            nextIncomeAsOfElement.textContent = `on ${formattedNextPayDate}`;
 
             /*
             //Create the Bar Chart Broken Out By Month
