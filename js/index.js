@@ -234,9 +234,10 @@ function loadCurEstIncomeData() {
             incomeEstimateAsOfElement.textContent = `as of ${formattedEstimatedIncomeAsOfDate}`;
 
             //Find The Next Dividend Regardless of How Many Accounts It Spans
-            const today = new Date()
-            today.setHours(0, 0, 0, 0);
-            const formattedToday = today.toISOString()
+            var yesterday = new Date()
+            yesterday.setDate(yesterday.getDate() - 1)
+            yesterday.setHours(0, 0, 0, 0);
+            const formattedToday = yesterday.toISOString()
             const futurePayDateData = curEstIncData.filter(item => item.pay_dt >= formattedToday)
             const nextPayDate = futurePayDateData.reduce((min, record) => record.pay_dt < min ? record.pay_dt : min, '9999-12-31')
             const nextDividendData = futurePayDateData.filter(item => item.pay_dt === nextPayDate)
