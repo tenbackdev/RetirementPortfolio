@@ -3,6 +3,10 @@
   border: 1px solid red;
 }
 
+svg {
+  border: none;
+}
+
 body {
   background-color: var(--var-main-color, ivory);
   display: flex;
@@ -42,32 +46,32 @@ main {
   margin: 15px 0;
 }
 
-.sectionContainer > div {
+#summary > div {
   flex: 1fr;
   width: 100%;
   border: none;
 }
 
 #summary {
-  height: 100px;
+  height: 120px;
   border: none;
 }
 
 .summaryCard {
   display: flex;
   flex-direction: column;
-  background-color: black;
-  opacity: .45;
+  background-color: var(--var-background-color, white);
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
   border-radius: 15px;
   width: 100%;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: black;
   border: none;
 }
 
 .cardTitle {
-  flex: 2fr;
+  flex: 25%;
   font-size: 1.5rem;
   margin: 0;
   width: 100%;
@@ -78,7 +82,7 @@ main {
 
 .cardText {
   display: flex;
-  flex: 5fr;
+  flex: 65%;
   font-size: 2.5rem;
   margin: 0;
   height: 100%;
@@ -90,7 +94,7 @@ main {
 }
 
 .cardInfo {
-  flex: 1fr;
+  flex: 10%;
   font-size: .8rem;
   margin: 0;
   width: 100%;
@@ -100,6 +104,71 @@ main {
 
 #balance, #income {
   height: 500px;
+  border: none;
+}
+
+#balance > div{
+  width: 100%;
+  background-color: var(--var-background-color, white);
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  border: none;
+}
+
+#balanceChart, #balanceBreakoutChart {
+  flex: 67%; /*Specifying width % of parent container*/
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  gap: 0;
+  border: none;
+}
+
+#balanceChartTitleContainer, #balanceBreakoutChartTitleContainer {
+  display: flex;
+  flex-direction: row;
+  flex: 10%;
+  font-size: 2rem;
+  margin: 0;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+#balanceChartTitleLeftSpacer, #balanceBreakoutChartTitleLeftSpacer {
+  flex: 5%;
+  max-width: 50px;
+  height: 100%;
+  margin: 0;
+  border: none;
+}
+
+#balanceChartTitleRightSpacer, #balanceBreakoutChartTitleRightSpacer {
+  flex: 50%;
+  height: 100%;
+  margin: 0;
+  border: none;
+}
+
+#balanceChartTitle, #balanceBreakoutChartTitle {
+  margin: 0;
+  border: none;
+}
+
+#balanceChartContent, #balanceBreakoutChartContent {
+  flex: 90%;
+  border: none;
+}
+
+#balanceBreakoutChart {
+  display: flex;
+  flex: 33%;
+}
+
+#balanceBreakoutChartContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @media only screen and (max-width: 768px) {
@@ -113,7 +182,7 @@ main {
     flex-direction: column;
     width: 100%;
     justify-content: center;
-    gap: 2px;
+    gap: 10px;
   }
 
   .sectionContainer > div {

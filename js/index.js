@@ -70,7 +70,6 @@ function loadBalanceData() {
         const balanceAsOfElement = document.getElementById('balanceAsOf');
         balanceAsOfElement.textContent = `as of ${formattedInfoDate}`;
         
-        /*
         //Aggregate Data & Sort By Inst
         const instBalanceGroupData = d3.group(curAcctBalanceData, d => d.inst_nm);
         const instBalanceAggData = Array.from(instBalanceGroupData, ([inst_nm, values]) => ({
@@ -79,18 +78,19 @@ function loadBalanceData() {
         }))
         instBalanceAggData.sort((a, b) => b.inst_bal - a.inst_bal);
 
-        balanceHoldingsChartContainer = document.getElementById('balanceHoldingsChartContainer');
-        const donutChartWidth = balanceHoldingsChartContainer.offsetWidth;
-        const donutChartContainerHeight = balanceHoldingsChartContainer.offsetHeight;
+        balanceHoldingsChartContainer = document.getElementById('balanceBreakoutChartContent');
+        const donutChartMargin = {top: 20, right: 20, bottom: 20, left: 20}
+        const donutChartWidth = balanceHoldingsChartContainer.offsetWidth - donutChartMargin.left - donutChartMargin.right;
+        const donutChartContainerHeight = balanceHoldingsChartContainer.offsetHeight - donutChartMargin.top - donutChartMargin.bottom;
         const donutChartHeight = donutChartContainerHeight * 0.9;
         const donutChartRadius = Math.min(donutChartWidth, donutChartHeight) / 2;
 
-        const svgBalanceChart = d3.select('#balanceHoldingsChartContainer')
+        const svgBalanceChart = d3.select('#balanceBreakoutChartContent')
             .append("svg")
             .attr("width", donutChartWidth)
             .attr("height", donutChartContainerHeight)
             .append("g")
-            .attr("transform", `translate(${donutChartWidth / 2}, ${donutChartContainerHeight / 2})`);
+            .attr("transform", `translate(${(donutChartWidth / 2)}, ${donutChartContainerHeight / 2})`);
 
         const pie = d3.pie()
             .value(d => d.inst_bal);
@@ -116,7 +116,6 @@ function loadBalanceData() {
             .text(d => `${d.data.inst_nm}: ${new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(d.data.inst_bal)}`)
             .style("top", d => `${arc.centroid(d)[1]}px`)
             .style("left", d => `${arc.centroid(d)[0]}px`);
-            */
     })
     .catch(error => {
         console.log('Error:', error);
@@ -135,10 +134,12 @@ function loadBalanceHistData() {
             }))
             snshBalHistTotals.sort((a, b) => a.snsh_dt - b.snsh_dt);
 
-            balanceTimeChartContainer = document.getElementById('balanceTimeChartContainer');
+            balanceTimeChartContainer = document.getElementById('balanceChartContent');
             const balanceChartWidth = balanceTimeChartContainer.offsetWidth;
-            const balanceChartHeight = balanceTimeChartContainer.offsetHeight * 0.80;
+            const balanceChartHeight = balanceTimeChartContainer.offsetHeight;
             const balanceChartMargin = {top: 20, right: 20, bottom: 20, left: 20}
+
+            console.log(`W: ${balanceChartWidth}, H: ${balanceChartHeight}`)
 
             const xScale = d3.scaleBand()
                 .domain(snshBalHistTotals.map(data => new Date(data.snsh_dt).toISOString().split('T')[0]))
@@ -149,10 +150,10 @@ function loadBalanceHistData() {
                 .domain([d3.min(snshBalHistTotals, data => data.snsh_bal) * 0.9, d3.max(snshBalHistTotals, data => data.snsh_bal)])
                 .range([balanceChartHeight - balanceChartMargin.bottom, balanceChartMargin.top])
 
-            const svg = d3.select('#balanceTimeChartContainer')
+            const svg = d3.select('#balanceChartContent')
                 .append("svg")
                 .attr("width", balanceChartWidth)
-                .attr("heigh", balanceChartHeight)
+                .attr("height", balanceChartHeight)
 
             svg.selectAll("rect")
                 .data(snshBalHistTotals)
@@ -173,7 +174,7 @@ function loadBalanceHistData() {
                 .attr("x", data => xScale(new Date(data.snsh_dt).toISOString().split('T')[0]) + xScale.bandwidth() / 2)
                 .attr("y", data => yScale(data.snsh_bal) - 5)
                 .attr("text-anchor", "middle")
-                .attr("fill", "#fff");
+                .attr("fill", "#000");
             
             const xAxis = d3.axisBottom(xScale)
 
@@ -232,8 +233,6 @@ function loadCurEstIncomeData() {
             const incomeEstimateAsOfElement = document.getElementById('incomeEstimateAsOf');
             incomeEstimateAsOfElement.textContent = `as of ${formattedEstimatedIncomeAsOfDate}`;
 
-            console.log('Test')
-
             //Find The Next Dividend Regardless of How Many Accounts It Spans
             const today = new Date()
             today.setHours(0, 0, 0, 0);
@@ -270,8 +269,8 @@ function loadCurEstIncomeData() {
             const incomeChartHeight = incomeTimeChartContainer.offsetHeight;
             const incomeChartMargin = {top: 20, right: 20, bottom: 20, left: 20}
               */
-            const incomeChartMargin = {top: 20, right: 20, bottom: 20, left: 40}
-            createBarChart("#incomeTimeChartContainer", curEstIncData, "pay_yr_mnth_nbr", "inc_amt", incomeChartMargin, "inc_status", ['#4682b4', '#4d90c7'])
+            //const incomeChartMargin = {top: 20, right: 20, bottom: 20, left: 40}
+            //createBarChart("#incomeTimeChartContainer", curEstIncData, "pay_yr_mnth_nbr", "inc_amt", incomeChartMargin, "inc_status", ['#4682b4', '#4d90c7'])
             /*
             // Set up the scales
             const xScale = d3.scaleBand()

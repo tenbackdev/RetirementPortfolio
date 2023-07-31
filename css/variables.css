@@ -1,7 +1,11 @@
 :root {
-  --var-background-color: #F4F4F6;
+  --var-background-color: #FFFAFA;
   --var-header-color: #54627B;
   --var-main-color: #ADC8D2;
 
   --var-header-height: 30px;
+
+  /*
+  #EAFBFF, #77DDF9, #FFA0A3, #7F8FA3
+  */
 }
