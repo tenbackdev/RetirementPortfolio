@@ -102,12 +102,12 @@ main {
   border: none;
 }
 
-#balance, #income {
+#balance{
   height: 500px;
   border: none;
 }
 
-#balance > div{
+#balance > div, #income > div{
   width: 100%;
   background-color: var(--var-background-color, white);
   box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
@@ -169,6 +169,56 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
+  border: none;
+}
+
+#income {
+  display: flex;
+  flex-direction: row;
+  height: 500px;
+  border: none;
+}
+
+#incomeChart {
+  display: flex;
+  flex-direction: column;
+  flex: 100%;
+  border: none;
+}
+
+#incomeChartTitleContainer {
+  flex: 10%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  border: none;
+}
+
+#incomeChartTitleLeftSpacer {
+  flex: 5%;
+  max-width: 50px;
+  height: 100%;
+  margin: 0;
+  border: none;
+}
+
+#incomeChartTitleRightSpacer {
+  flex: 50%;
+  height: 100%;
+  margin: 0;
+  border: none;
+}
+
+#incomeChartTitle {
+  margin: 0;
+  border: none;
+}
+
+#incomeChartContent {
+  flex: 90%;
+  border: none;
 }
 
 @media only screen and (max-width: 768px) {
