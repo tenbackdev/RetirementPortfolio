@@ -253,83 +253,8 @@ function loadCurEstIncomeData() {
             const nextIncomeAsOfElement = document.getElementById('nextIncomeAsOf');
             nextIncomeAsOfElement.textContent = `on ${formattedNextPayDate}`;
 
-            /*
-            //Create the Bar Chart Broken Out By Month
-            curEstIncData.sort((a, b) => a.pay_yr_mnth_nbr - b.pay_yr_mnth_nbr)
-            const payMonthYearIncome = d3.group(curEstIncData, d => d.pay_mnth_nm_yr_nbr)
-
-            //This is total by month, will need to break down in a further version by hodling.
-            const payMonthYearIncomeTotals = Array.from(payMonthYearIncome, ([pay_mnth_nm_yr_nbr, values]) => ({
-                pay_mnth_nm_yr_nbr
-                , pay_ttl: d3.sum(values, d => d.inc_amt)
-              }))
-
-            incomeTimeChartContainer = document.getElementById('incomeTimeChartContainer');
-            const incomeChartWidth = incomeTimeChartContainer.offsetWidth;
-            const incomeChartHeight = incomeTimeChartContainer.offsetHeight;
-            const incomeChartMargin = {top: 20, right: 20, bottom: 20, left: 20}
-              */
-            //const incomeChartMargin = {top: 20, right: 20, bottom: 20, left: 40}
-            //createBarChart("#incomeTimeChartContainer", curEstIncData, "pay_yr_mnth_nbr", "inc_amt", incomeChartMargin, "inc_status", ['#4682b4', '#4d90c7'])
-            /*
-            // Set up the scales
-            const xScale = d3.scaleBand()
-                .domain(payMonthYearIncomeTotals.map(data => data.pay_mnth_nm_yr_nbr))
-                .range([incomeChartMargin.left, incomeChartWidth - incomeChartMargin.right])
-                .padding(0.1);
-            
-            const yScale = d3.scaleLinear()
-                .domain([0, d3.max(payMonthYearIncomeTotals, data => data.pay_ttl)])
-                .range([incomeChartHeight - incomeChartMargin.bottom, incomeChartMargin.top]);
-
-            // Create the SVG element
-            const svg = d3.select("#incomeTimeChartContainer")
-                .append("svg")
-                .attr("width", incomeChartWidth)
-                .attr("height", incomeChartHeight);
-
-             // Create the bars
-            svg.selectAll("rect")
-                .data(payMonthYearIncomeTotals)
-                .enter()
-                .append("rect")
-                .attr("x", data => xScale(data.pay_mnth_nm_yr_nbr))
-                .attr("y", data => yScale(data.pay_ttl))
-                .attr("width", xScale.bandwidth())
-                .attr("height", data => incomeChartHeight - incomeChartMargin.bottom - yScale(data.pay_ttl))
-                .attr("fill", "steelblue");
-            
-            // Add labels
-            svg.selectAll("text")
-                .data(payMonthYearIncomeTotals)
-                .enter()
-                .append("text")
-                .text(data => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(data.pay_ttl))
-                //.text(data => new Date(data.pay_mnth_nm_yr_nbr).toISOString().slice(0, 10))
-                .attr("x", data => xScale(data.pay_mnth_nm_yr_nbr) + xScale.bandwidth() / 2)
-                .attr("y", data => yScale(data.pay_ttl) - 5)
-                .attr("text-anchor", "middle")
-                .attr("fill", "#fff");
-
-            const xAxis = d3.axisBottom(xScale)
-
-            const xAxisGroup = svg.append('g')
-                .attr("transform", `translate(0, ${incomeChartHeight - incomeChartMargin.bottom})`)
-                .attr("class", "xAxisGroup")
-                .attr("stroke", "#fff");
-                //.attr("opacity", "0.5");
-                
-            xAxisGroup.call(xAxis);
-
-            xAxisGroup.selectAll("text")
-                .style("text-anchor", "end")
-                //.text(data => data.snsh_dt)
-                .attr("transform", "rotate(-45)")
-                .attr("fill", "#fff")
-                .attr("dx", "-0.8em")
-                .attr("dy", "0.15em");
-            */
-
+            const incomeChartMargin = {top: 20, right: 20, bottom: 20, left: 40}
+            createBarChart("#incomeChartContent", curEstIncData, "pay_yr_mnth_nbr", "inc_amt", incomeChartMargin, "inc_status", ['#4682b4', '#4d90c7'])
         })
         .catch(error => {
             console.log('Error:', error);
