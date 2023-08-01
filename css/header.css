@@ -1,4 +1,6 @@
-
+* {
+    border: none;
+}
 /*First Section - Always True*/
 header {
     height: var(--header-height);
@@ -10,7 +12,7 @@ header {
 }
 
 nav {
-    background-color: var(--secondary-color);
+    background-color: var(--var-header-color, slategrey);
     top: 0;
     line-height: 30px;
     height: 100%;
@@ -78,7 +80,7 @@ nav ul li a {
         position: absolute;
         top: 100%;
         left: 0;
-        background-color: var(--secondary-color);
+        background-color: var(--var-header-color, slategrey);
     }
 }
 
