@@ -126,71 +126,11 @@ function loadBalanceHistData() {
     getAccountBalanceHist()
         .then(acctBalHistData => {
 
-            //get the data by snapshot and prepare for individual bars
-            const snshBalHistData = d3.group(acctBalHistData, d => d.snsh_dt)
-            const snshBalHistTotals = Array.from(snshBalHistData, ([snsh_dt, values]) => ({
-                snsh_dt,
-                snsh_bal: d3.sum(values, d => d.acct_bal)
-            }))
-            snshBalHistTotals.sort((a, b) => a.snsh_dt - b.snsh_dt);
-
-            balanceTimeChartContainer = document.getElementById('balanceChartContent');
-            const balanceChartWidth = balanceTimeChartContainer.offsetWidth;
-            const balanceChartHeight = balanceTimeChartContainer.offsetHeight;
-            const balanceChartMargin = {top: 20, right: 20, bottom: 20, left: 20}
-
-            console.log(`W: ${balanceChartWidth}, H: ${balanceChartHeight}`)
-
-            const xScale = d3.scaleBand()
-                .domain(snshBalHistTotals.map(data => new Date(data.snsh_dt).toISOString().split('T')[0]))
-                .range([balanceChartMargin.left, balanceChartWidth - balanceChartMargin.right])
-                .padding(0.1);
-
-            const yScale = d3.scaleLinear()
-                .domain([d3.min(snshBalHistTotals, data => data.snsh_bal) * 0.9, d3.max(snshBalHistTotals, data => data.snsh_bal)])
-                .range([balanceChartHeight - balanceChartMargin.bottom, balanceChartMargin.top])
-
-            const svg = d3.select('#balanceChartContent')
-                .append("svg")
-                .attr("width", balanceChartWidth)
-                .attr("height", balanceChartHeight)
-
-            svg.selectAll("rect")
-                .data(snshBalHistTotals)
-                .enter()
-                .append("rect")
-                .attr("x", data => xScale(new Date(data.snsh_dt).toISOString().split('T')[0]))
-                .attr("y", data => yScale(data.snsh_bal))
-                .attr("width", xScale.bandwidth())
-                .attr("height", data => balanceChartHeight - balanceChartMargin.bottom - yScale(data.snsh_bal))
-                .attr("fill", "steelblue");
-
-            //Add Labels on top of each bar
-            svg.selectAll("text")
-                .data(snshBalHistTotals)
-                .enter()
-                .append("text")
-                .text(data => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(data.snsh_bal))
-                .attr("x", data => xScale(new Date(data.snsh_dt).toISOString().split('T')[0]) + xScale.bandwidth() / 2)
-                .attr("y", data => yScale(data.snsh_bal) - 5)
-                .attr("text-anchor", "middle")
-                .attr("fill", "#000");
+            //balanceChartContent
+            const balanceHistChartMargin = {top: 25, right: 20, bottom: 30, left: 60}
+            createBarChart("#balanceChartContent", acctBalHistData, "snsh_dt", "acct_bal", balanceHistChartMargin, "inst_nm"
+                , ["#577084", "#8EABA2", "#DECCA8", "#E59C6A", "#DC475C"])
             
-            const xAxis = d3.axisBottom(xScale)
-
-            const xAxisGroup = svg.append('g')
-                .attr("transform", `translate(0, ${balanceChartHeight})`)
-                //.attr("opacity", "0.5");
-                
-            xAxisGroup.call(xAxis);
-
-            xAxisGroup.selectAll("text")
-                .style("text-anchor", "end")
-                //.text(data => data.snsh_dt)
-                .attr("transform", "rotate(-45)")
-                .attr("fill", "#fff")
-                .attr("dx", "-0.8em")
-                .attr("dy", "0.15em");
 
         })
         .catch(error => {

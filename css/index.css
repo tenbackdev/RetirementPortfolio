@@ -132,7 +132,6 @@ main {
   margin: 0;
   align-items: center;
   justify-content: center;
-  border: none;
 }
 
 #balanceChartTitleLeftSpacer, #balanceBreakoutChartTitleLeftSpacer {
@@ -156,6 +155,7 @@ main {
 }
 
 #balanceChartContent, #balanceBreakoutChartContent {
+  display: flex;
   flex: 90%;
   border: none;
 }

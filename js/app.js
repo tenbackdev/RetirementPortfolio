@@ -54,6 +54,8 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, stackKe
     const chartWidth = containerWidth - chartMargin.left - chartMargin.right
     const chartHeight = containerHeight - chartMargin.top - chartMargin.bottom
 
+    console.log(`P: ${plotKey}, W: ${chartWidth}, H: ${chartHeight}, CH: ${containerHeight}`)
+
     var svg = d3.select(divId)
         .append("svg")
             .attr("width", chartWidth + chartMargin.left + chartMargin.right - 40) 
