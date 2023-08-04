@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retirement Portfolio</title>
     <link rel="stylesheet" href="css\variables.css">
     <link rel="stylesheet" href="css\income.css">
     <link rel="stylesheet" href="css\header.css">
+    <title>Retirement Portfolio - Income</title>
 </head>
 <body>
     <header>
@@ -25,30 +25,40 @@
         </nav>            
     </header>
     <main>
-        <section id="summaryCards">
-            <div id="avgIncCard">
-                <p class="fullWidth">Annual Income</p>
-                <p id="annualEstInc" class="fullWidth">$0.00</p>
-                <p>Monthly</p>
-                <p id="monthlyAvgInc">$0.00</p>
-                <p>Daily</p>
-                <p id="dlyAvgInc">$0.00</p>
+        <section id="summary" class="sectionContainer">
+            <div id="estIncCard" class="card contentContainer"></div>
+            <div id="recIncCard" class="card contentContainer"></div>
+            <div id="nextIncCard" class="card contentContainer"></div>
+            <div id="lastCard" class="card contentContainer"></div>
+        </section>
+        <section id="estInc" class="sectionContainer">
+            <div id="estIncBarChart" class="contentContainer"></div>
+            <div id="estIncBreakoutChart" class="contentContainer"></div>
+        </section>
+        <section id="incDtl" class="sectionContainer">
+            <div id="incDtlTbl" class="contentContainer">
+                <div id="incDtlTblTitleContainer" class="titleContainer">
+                    <div id="incDtlTblTitleLeftSpacer" class="chartTitle leftSpacer"></div>
+                    <h2 id="incDtlTblTitle" class="chartTitle titleText">Estimated Income Detail</h3>
+                    <div id="incDtlTblTitleRightSpacer" class="chartTitle rightSpacer"></div>                    
+                </div>
+                <div id="incDtlTblContent" class="tableContainer"></div>
             </div>
-            <div id="cardTwo"></div>
-            <div id="carThree"></div>
-            <div id="cardFour"></div>
         </section>
-        <section class="incomeSchedule">
-            <div id="estimatedIncomeTableContainer"></div>
-            <div id="estimatedIncomeSnapshotHistory"></div>
-        </section>
-        <section class="testSection">
-            <div id="testCentralChart"></div>
+        <section id="incSnshHist" class="sectionContainer">
+            <div id="incSnshHistChart" class="contentContainer">
+                <div id="incSnshHistChartTitleContainer" class="titleContainer">
+                    <div id="incSnshHistChartTitleLeftSpacer" class="chartTitle leftSpacer"></div>
+                    <h3 id="incSnshHistChartTitle" class="chartTitle titleText">Estimated Income History</h3>
+                    <div id="incSnshHistChartTitleRightSpacer" class="chartTitle rightSpacer"></div>
+                </div>
+                <div id="incSnshHistChartContent" class="chartContainer"></div>
+            </div>
         </section>
     </main>
 </body>
 <script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="js/app.js"></script>
 <script src="js/income.js"></script>
 <script src="js/header.js"></script>
-<script src="js/app.js"></script>
 </html>
