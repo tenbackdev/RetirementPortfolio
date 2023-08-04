@@ -89,7 +89,10 @@ h3, h2 {
 }
 
 .chartContainer {
+    display: flex;
     flex: 90%;
+    align-items: center;
+    justify-content: center;
 }
 
 .tableContainer {

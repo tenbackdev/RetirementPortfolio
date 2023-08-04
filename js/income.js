@@ -43,6 +43,20 @@ function getCurEstIncAvg() {
     })
 }
 
+//Serves As The Main Function To Go Get The Contents Of curEstInc Endpoint
+function getCurEstIncome() {
+    return new Promise((resolve, reject) => {
+        fetch('http://localhost:5501/curEstInc')
+        .then(response => response.json())
+        .then(data => {
+            resolve(data);
+        })
+        .catch(error => {
+            reject(error);
+        });
+    })
+}
+
 // Function to filter keys based on specified array
 function filterKeys(data, filterArray) {
     return data.map(obj => {
@@ -95,7 +109,7 @@ function createHtmlTable(tblData) {
     return table;
 }
 
-function loadCurEstIncomeData() {
+function loadCurEstIncomeDataTable() {
     getCurEstIncTickerPayDt()
         .then(curEstIncData => {
 
@@ -136,75 +150,73 @@ function loadHistEstIncomeAvg() {
 
             const incomeChartMargin = {top: 20, right: 20, bottom: 25, left: 50};
             createBarChart("#incSnshHistChartContent", histEstIncAvgData, "snsh_dt", "inc_amt_annual", incomeChartMargin, ["#E59C6A"])
-            /*
-            const keysOfInterest = ["snsh_dt", "inc_amt_annual"];
-            histEstIncAvgDataFiltered = filterKeys(histEstIncAvgData, keysOfInterest);
-            histEstIncAvgDataFiltered.sort((a, b) => new Date(a.snsh_dt) - new Date(b.snsh_dt))
-            estimatedIncomeSnapshotHistory = document.getElementById('estimatedIncomeSnapshotHistory');
-            
-            const incomeChartWidth = estimatedIncomeSnapshotHistory.offsetWidth;
-            const incomeChartHeight = estimatedIncomeSnapshotHistory.offsetHeight * 0.90;
-            //const incomeChartMargin = {top: 20, right: 20, bottom: 100, left: 20};
-
-            const xScale = d3.scaleBand()
-                .domain(histEstIncAvgDataFiltered.map(data => new Date(data.snsh_dt).toISOString().split('T')[0]))
-                .range([incomeChartMargin.left, incomeChartWidth - incomeChartMargin.right])
-                .padding(0.1);
-
-            const yScale = d3.scaleLinear()
-                .domain([0, d3.max(histEstIncAvgDataFiltered, data => data.inc_amt_annual)])
-                .range([incomeChartHeight - incomeChartMargin.bottom, incomeChartMargin.top])
-
-            const svg = d3.select('#estimatedIncomeSnapshotHistory')
-                .append("svg")
-                .attr("width", incomeChartWidth)
-                .attr("heigh", incomeChartHeight)
-
-            svg.selectAll("rect")
-                .data(histEstIncAvgDataFiltered)
-                .enter()
-                .append("rect")
-                .attr("x", data => xScale(new Date(data.snsh_dt).toISOString().split('T')[0]))
-                .attr("y", data => yScale(data.inc_amt_annual))
-                .attr("width", xScale.bandwidth())
-                .attr("height", data => incomeChartHeight - incomeChartMargin.bottom - yScale(data.inc_amt_annual))
-                .attr("fill", "steelblue");
-
-            //Add Labels on top of each bar
-            svg.selectAll("text")
-                .data(histEstIncAvgDataFiltered)
-                .enter()
-                .append("text")
-                .text(data => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(data.inc_amt_annual))
-                .attr("x", data => xScale(new Date(data.snsh_dt).toISOString().split('T')[0]) + xScale.bandwidth() / 2)
-                .attr("y", data => yScale(data.inc_amt_annual) - 5)
-                .attr("text-anchor", "middle")
-                .attr("fill", "black");
-            
-            const xAxis = d3.axisBottom(xScale)
-
-            const xAxisGroup = svg.append('g')
-                .attr("transform", `translate(0, ${incomeChartHeight - incomeChartMargin.bottom})`)
-                .attr("class", "xAxisGroup")
-                .attr("stroke", "#black");
-                //.attr("opacity", "0.5");
-                
-            xAxisGroup.call(xAxis);
-
-            xAxisGroup.selectAll("text")
-                .style("text-anchor", "end")
-                //.text(data => data.snsh_dt)
-                .attr("transform", "rotate(-45)")
-                .attr("fill", "black")
-                .attr("dx", "-0.8em")
-                .attr("dy", "0.15em");
-                */
         })
         .catch(error => {
             console.log('Error:', error);
         });
 }
 
+function loadCurEstIncomeData() {
+    getCurEstIncome()
+        .then(curEstIncData => {
+
+            const incomeChartMargin = {top: 20, right: 20, bottom: 20, left: 40}
+            createBarChart("#estIncBarChartContent", curEstIncData, "pay_yr_mnth_nbr", "inc_amt", incomeChartMargin, ['#4682b4', '#4d90c7'], "inc_status")
+
+            const curEstIncTickerData = d3.group(curEstIncData, d => d.ticker)
+            const curEstIncTickerAggData = Array.from(curEstIncTickerData, ([ticker, values]) => ({
+                ticker
+                , ticker_inc_ttl: d3.sum(values, d => d.inc_amt)
+            }))
+            curEstIncTickerAggData.sort((a, b) => b.ticker_inc_ttl - a.ticker_inc_ttl);
+
+            balanceHoldingsChartContainer = document.getElementById('estIncBreakoutChartContent');
+            const donutChartMargin = {top: 20, right: 20, bottom: 20, left: 20}
+            const donutChartWidth = balanceHoldingsChartContainer.offsetWidth - donutChartMargin.left - donutChartMargin.right;
+            const donutChartContainerHeight = balanceHoldingsChartContainer.offsetHeight - donutChartMargin.top - donutChartMargin.bottom;
+            const donutChartHeight = donutChartContainerHeight * 0.9;
+            const donutChartRadius = Math.min(donutChartWidth, donutChartHeight) / 2;
+    
+            const svgBalanceChart = d3.select('#estIncBreakoutChartContent')
+                .append("svg")
+                .attr("width", donutChartWidth)
+                .attr("height", donutChartContainerHeight)
+                .append("g")
+                .attr("transform", `translate(${(donutChartWidth / 2)}, ${donutChartContainerHeight / 2})`);
+    
+            const pie = d3.pie()
+                .value(d => d.ticker_inc_ttl);
+    
+            const arc = d3.arc()
+                .innerRadius(donutChartRadius * 0.2)
+                .outerRadius(donutChartRadius);
+    
+            const arcs = svgBalanceChart.selectAll("arc")
+                .data(pie(curEstIncTickerAggData))
+                .enter()
+                .append("g")
+                .attr("class", "arc");
+    
+            arcs.append("path")
+                .attr("d", arc)
+                .attr("fill", (d, i) => d3.schemeCategory10[i % 10]);
+    
+            arcs.append("text")
+                .attr("transform", d => `translate(${arc.centroid(d)})`)
+                .attr("text-anchor", "middle")
+                .attr("class", "balanceDonutLabel")
+                .text(d => `${d.data.ticker}: ${new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(d.data.ticker_inc_ttl)}`)
+                .style("top", d => `${arc.centroid(d)[1]}px`)
+                .style("left", d => `${arc.centroid(d)[0]}px`);
+        
+        })
+        .catch(error => {
+            console.log('Error:', error);
+        });
+}
+
+
 loadCurEstIncomeData();
+loadCurEstIncomeDataTable();
 //loadCurEstIncomeAvg();
 loadHistEstIncomeAvg();
