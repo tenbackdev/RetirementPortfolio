@@ -128,8 +128,8 @@ function loadBalanceHistData() {
 
             //balanceChartContent
             const balanceHistChartMargin = {top: 25, right: 20, bottom: 30, left: 60}
-            createBarChart("#balanceChartContent", acctBalHistData, "snsh_dt", "acct_bal", balanceHistChartMargin, "inst_nm"
-                , ["#577084", "#8EABA2", "#DECCA8", "#E59C6A", "#DC475C"])
+            createBarChart("#balanceChartContent", acctBalHistData, "snsh_dt", "acct_bal", balanceHistChartMargin
+                , ["#577084", "#8EABA2", "#DECCA8", "#E59C6A", "#DC475C"], "inst_nm")
             
 
         })
@@ -195,7 +195,7 @@ function loadCurEstIncomeData() {
             nextIncomeAsOfElement.textContent = `on ${formattedNextPayDate}`;
 
             const incomeChartMargin = {top: 20, right: 20, bottom: 20, left: 40}
-            createBarChart("#incomeChartContent", curEstIncData, "pay_yr_mnth_nbr", "inc_amt", incomeChartMargin, "inc_status", ['#4682b4', '#4d90c7'])
+            createBarChart("#incomeChartContent", curEstIncData, "pay_yr_mnth_nbr", "inc_amt", incomeChartMargin, ['#4682b4', '#4d90c7'], "inc_status")
         })
         .catch(error => {
             console.log('Error:', error);

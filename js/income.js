@@ -106,7 +106,7 @@ function loadCurEstIncomeData() {
             curEstIncDataFiltered = filterKeys(curEstIncData, keysOfInterest)
             curEstIncDataFiltered.sort((a, b) => new Date(a.pay_dt) - new Date(b.pay_dt));
             const estIncTable = createHtmlTable(curEstIncDataFiltered);
-            const estIncTableContainer = document.getElementById("estimatedIncomeTableContainer")
+            const estIncTableContainer = document.getElementById("incDtlTblContent")
             estIncTableContainer.appendChild(estIncTable);
         })
         .catch(error => {
@@ -133,6 +133,10 @@ function loadCurEstIncomeAvg() {
 function loadHistEstIncomeAvg() {
     getHistEstIncAvg()
         .then(histEstIncAvgData => {
+
+            const incomeChartMargin = {top: 20, right: 20, bottom: 25, left: 50};
+            createBarChart("#incSnshHistChartContent", histEstIncAvgData, "snsh_dt", "inc_amt_annual", incomeChartMargin, ["#E59C6A"])
+            /*
             const keysOfInterest = ["snsh_dt", "inc_amt_annual"];
             histEstIncAvgDataFiltered = filterKeys(histEstIncAvgData, keysOfInterest);
             histEstIncAvgDataFiltered.sort((a, b) => new Date(a.snsh_dt) - new Date(b.snsh_dt))
@@ -140,7 +144,7 @@ function loadHistEstIncomeAvg() {
             
             const incomeChartWidth = estimatedIncomeSnapshotHistory.offsetWidth;
             const incomeChartHeight = estimatedIncomeSnapshotHistory.offsetHeight * 0.90;
-            const incomeChartMargin = {top: 20, right: 20, bottom: 100, left: 20};
+            //const incomeChartMargin = {top: 20, right: 20, bottom: 100, left: 20};
 
             const xScale = d3.scaleBand()
                 .domain(histEstIncAvgDataFiltered.map(data => new Date(data.snsh_dt).toISOString().split('T')[0]))
@@ -194,6 +198,7 @@ function loadHistEstIncomeAvg() {
                 .attr("fill", "black")
                 .attr("dx", "-0.8em")
                 .attr("dy", "0.15em");
+                */
         })
         .catch(error => {
             console.log('Error:', error);
@@ -201,5 +206,5 @@ function loadHistEstIncomeAvg() {
 }
 
 loadCurEstIncomeData();
-loadCurEstIncomeAvg();
+//loadCurEstIncomeAvg();
 loadHistEstIncomeAvg();

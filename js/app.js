@@ -39,7 +39,7 @@ function transformData(data, dimKey, pivotKey, measKey) {
     return exDataPivot;
   }
 
-function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, stackKey, colorRange) {
+function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, colorRange, stackKey) {
     var stackFlag = true;
     if (stackKey === undefined) {
         stackFlag = false;
@@ -53,9 +53,7 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, stackKe
 
     const chartWidth = containerWidth - chartMargin.left - chartMargin.right
     const chartHeight = containerHeight - chartMargin.top - chartMargin.bottom
-
-    console.log(`P: ${plotKey}, W: ${chartWidth}, H: ${chartHeight}, CH: ${containerHeight}`)
-
+    
     var svg = d3.select(divId)
         .append("svg")
             .attr("width", chartWidth + chartMargin.left + chartMargin.right - 40) 
@@ -90,30 +88,46 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, stackKe
         .call(d3.axisLeft(y))
         .attr("transform", `translate(0, 0)`);
 
-    var stackVals = Array.from(new Set(chartData.map(obj => obj[stackKey])));
-    var color = d3.scaleOrdinal()
-        .domain(stackVals)
-        .range(colorRange);
+    if (stackFlag) {
+        var stackVals = Array.from(new Set(chartData.map(obj => obj[stackKey])));
+        var color = d3.scaleOrdinal()
+            .domain(stackVals)
+            .range(colorRange);
 
-    var transformedChartData = transformData(chartData, dimKey, stackKey, plotKey);
-    transformedChartData.sort((a, b) => a[dimKey] - b[dimKey]);
-    var stackedData = d3.stack()
-        .keys(stackVals)
-        (transformedChartData)
+        var transformedChartData = transformData(chartData, dimKey, stackKey, plotKey);
+        transformedChartData.sort((a, b) => a[dimKey] - b[dimKey]);
+        var stackedData = d3.stack()
+            .keys(stackVals)
+            (transformedChartData)
 
-    svg.append("g")
-        .selectAll("g")
-        //Enter in Stack Data = Loop Per key
-        .data (stackedData)
-        .enter().append("g")
-            .attr("fill", function(d) {return color(d.key); })
-            .selectAll("rect")
-            .data(function(d) {return d; })
-            .enter().append("rect")
-                .attr("x", function(d) {return x(d.data[dimKey]); })
-                .attr("y", function(d) {return y(d[1]); })
-                .attr("height", function(d) {return y(d[0]) - (y(d[1]) || y(d[0])); }) //Revisit this line to better calculate
-                .attr("width", x.bandwidth())
+        svg.append("g")
+            .selectAll("g")
+            //Enter in Stack Data = Loop Per key
+            .data (stackedData)
+            .enter().append("g")
+                .attr("fill", function(d) {return color(d.key); })
+                .selectAll("rect")
+                .data(function(d) {return d; })
+                .enter().append("rect")
+                    .attr("x", function(d) {return x(d.data[dimKey]); })
+                    .attr("y", function(d) {return y(d[1]); })
+                    .attr("height", function(d) {return y(d[0]) - (y(d[1]) || y(d[0])); }) //Revisit this line to better calculate
+                    .attr("width", x.bandwidth())
+    } else {
+        svg.append("g")
+            .selectAll("g")
+            .data(chartData)
+            .enter()
+            .append("rect")
+            .attr("x", data => x(data[dimKey]))
+            .attr("y", data => y(data[plotKey]))
+            .attr("height", data => chartHeight - y(data[plotKey])) //Revisit this line to better calculate
+            .attr("width", x.bandwidth())
+            .attr("fill", colorRange[0])
+
+    }
+
+
     
 };
 
