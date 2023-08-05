@@ -75,13 +75,14 @@ main {
 }
 
 .leftSpacer {
-    flex: 5%;
+    flex: 0 0 5%;
 }
 
-h3, h2 {
+h3, h2, h1 {
     margin: 0;
-    width: 575px;
-    font-size: 1.75rem;
+    flex: 1;
+    white-space: nowrap;
+    font-size: 1.5rem;
 }
 
 .rightSpacer {
