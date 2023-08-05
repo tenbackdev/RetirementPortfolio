@@ -160,6 +160,18 @@ function loadCurEstIncomeData() {
     getCurEstIncome()
         .then(curEstIncData => {
 
+            //Update the Recent Income Total in the Summary
+            const estiamtedTotalIncome = curEstIncData.reduce((sum, record) => sum + record.inc_amt, 0);
+            const formattedEstimatedTotalIncome = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(estiamtedTotalIncome);
+            const incomeEstimateTextElement = document.getElementById('estIncCardText');
+            incomeEstimateTextElement.textContent = formattedEstimatedTotalIncome;
+
+            //Update the Information for the Summary
+            const estimatedIncomeAsOfDate = curEstIncData.reduce((max, record) => record.snsh_dt > max ? record.snsh_dt : max, '')
+            const formattedEstimatedIncomeAsOfDate = new Date(estimatedIncomeAsOfDate).toISOString().split('T')[0]
+            const incomeEstimateAsOfElement = document.getElementById('estIncCardAsOf');
+            incomeEstimateAsOfElement.textContent = `as of ${formattedEstimatedIncomeAsOfDate}`;
+
             const incomeChartMargin = {top: 20, right: 20, bottom: 20, left: 40}
             createBarChart("#estIncBarChartContent", curEstIncData, "pay_yr_mnth_nbr", "inc_amt", incomeChartMargin, ['#4682b4', '#4d90c7'], "inc_status")
 
