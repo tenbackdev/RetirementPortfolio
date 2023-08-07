@@ -227,7 +227,21 @@ function loadCurEstIncomeData() {
         });
 }
 
+function loadExampleChart() {
 
+    const elementId = '#default_bar_chart'
+    const apiURL = `http://localhost:5501/getChartConfig/${elementId.replace('#', '')}`
+
+    fetch(apiURL)
+        .then(chartConfigData => {
+            console.log(chartConfigData)
+        })
+
+    console.log(apiURL);
+
+}
+
+loadExampleChart();
 loadCurEstIncomeData();
 loadCurEstIncomeDataTable();
 //loadCurEstIncomeAvg();
