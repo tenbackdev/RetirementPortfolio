@@ -233,13 +233,31 @@ function loadExampleChart() {
     const apiURL = `http://localhost:5501/getChartConfig/${elementId.replace('#', '')}`
 
     fetch(apiURL)
+        .then(response => response.json())
         .then(chartConfigData => {
             console.log(chartConfigData)
+            console.log(chartConfigData.margin.top)
+            console.log(chartConfigData.x.type)
+        });
+
+};
+
+/*
+//Serves As The Main Function To Go Get The Contents Of curEstInc Endpoint
+function getCurEstIncTickerPayDt() {
+    return new Promise((resolve, reject) => {
+        fetch('http://localhost:5501/curEstIncTickerPayDt')
+        .then(response => response.json())
+        .then(data => {
+            resolve(data);
         })
-
-    console.log(apiURL);
-
+        .catch(error => {
+            reject(error);
+        });
+    })
 }
+*/
+
 
 loadExampleChart();
 loadCurEstIncomeData();

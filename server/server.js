@@ -223,14 +223,27 @@ app.get('/getChartConfig/:chartId', (req, res) => {
 
     const chartId = req.params.chartId;
     // Execute the SQL query
-    const query = `select * from invest.util.chart_style_settings as s where s.chart_nm = '${chartId}'`;
+    const query = `select * from invest.util.v_chart_style_settings_tsfm as s where s.chart_nm = '${chartId}'`;
     new sql.Request().query(query, (err, result) => {
       if (err) {
         console.log('Error executing query:', err);
         res.status(500).json({ error: 'Error executing query' });
       } else {
+        
+        const chartConfig = {
+          margin: {
+            top: result.recordset[0].margin_top,
+            right: result.recordset[0].margin_right,
+            bottom: result.recordset[0].margin_bottom,
+            left: result.recordset[0].margin_left
+          },
+          x: {
+            type: result.recordset[0].x_type
+          }
+        }
+        
         // Return the query results as JSON
-        res.json(result.recordset);
+        res.json(chartConfig);
       }
 
       // Close the SQL Server connection
