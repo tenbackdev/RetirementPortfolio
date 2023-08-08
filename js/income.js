@@ -229,24 +229,82 @@ function loadCurEstIncomeData() {
 
 function loadExampleChart() {
 
-    const elementId = '#default_bar_chart'
+    const elementId = '#incSnshHistChartContent'
+    const dataSourceURL = "http://localhost:5501/histEstIncAvg"
     const apiURL = `http://localhost:5501/getChartConfig/${elementId.replace('#', '')}`
 
     fetch(apiURL)
         .then(response => response.json())
-        .then(chartConfigData => {
-            console.log(chartConfigData)
-            console.log(chartConfigData.margin.top)
-            console.log(chartConfigData.x.type)
+        .then(chartConfigJSON => {
+            console.log(chartConfigJSON)
+
+            containerElement = document.getElementById(elementId.replace('#', ''));
+            var containerWidth = containerElement.getBoundingClientRect().width;
+            var containerHeight = containerElement.offsetHeight;
+
+            //Set Up Dimensions
+            const chartWidth = containerWidth - chartConfigJSON.margin.left - chartConfigJSON.margin.right
+            const chartHeight = containerHeight - chartConfigJSON.margin.top - chartConfigJSON.margin.bottom  
+            
+            //Create SVG Container
+            const svg = d3.select(elementId).append("svg")
+                .attr("width", chartWidth)
+                .attr("height", chartHeight)
+                .append("g")
+                .attr("transform", `translate(${chartConfigJSON.margin.left}, ${chartConfigJSON.margin.right})`)
+
+            //Add Chart Title
+            svg.append("g").append("text")
+                .attr("x", chartConfigJSON.margin.left - chartConfigJSON.title.margin.left)
+                .attr("y", chartConfigJSON.margin.top - chartConfigJSON.title.margin.top)
+                .attr("class", `${chartConfigJSON.title.class}`)
+                .text(chartConfigJSON.title.text)
+
+            //Load & Process Data
+            fetch(dataSourceURL)
+                .then(dataResponse => dataResponse.json())
+                .then(chartData => {
+
+                    const x = d3.scaleLinear()
+                        .range([0, chartWidth])
+                        .domain([0, d3.max(chartData, function(d) {return d.total})]);
+
+                    const xAxis = d3.axisBottom(x)
+                        .ticks(5)
+                        .tickSize(1);
+
+                    svg.append("g")
+                        .attr("class", "xAxis")
+                        .attr("transform", `translate(${0}, ${chartHeight})`)
+                        .attr("stroke", "black")
+                        .call(xAxis);
+
+                });
+
+            
+
         });
+
+        
+        
+        //Sort Data
+        //Set x & y Scales
+        //Create x & y Axes
+        //Add Vertical Gridlines
+        //Create Bars
+        //Add x & y Axes To Chart
+        //Add Labels At End of Bar
+        //Add Total Label
+        
+        //Add Data Source
 
 };
 
 /*
 //Serves As The Main Function To Go Get The Contents Of curEstInc Endpoint
-function getCurEstIncTickerPayDt() {
+function getHistEstIncAvg() {
     return new Promise((resolve, reject) => {
-        fetch('http://localhost:5501/curEstIncTickerPayDt')
+        fetch('http://localhost:5501/histEstIncAvg')
         .then(response => response.json())
         .then(data => {
             resolve(data);
@@ -263,4 +321,4 @@ loadExampleChart();
 loadCurEstIncomeData();
 loadCurEstIncomeDataTable();
 //loadCurEstIncomeAvg();
-loadHistEstIncomeAvg();
+//loadHistEstIncomeAvg();

@@ -231,6 +231,14 @@ app.get('/getChartConfig/:chartId', (req, res) => {
       } else {
         
         const chartConfig = {
+          title: {
+            text: result.recordset[0].title_text,
+            class: result.recordset[0].title_class,
+            margin: {
+              top: result.recordset[0].title_marginTop,
+              left: result.recordset[0].title_marginLeft              
+            }
+          },
           margin: {
             top: result.recordset[0].margin_top,
             right: result.recordset[0].margin_right,

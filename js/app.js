@@ -39,6 +39,9 @@ function transformData(data, dimKey, pivotKey, measKey) {
     return exDataPivot;
   }
 
+
+  
+
 function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, colorRange, stackKey) {
     var stackFlag = true;
     if (stackKey === undefined) {
