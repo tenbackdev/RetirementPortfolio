@@ -178,3 +178,14 @@ h3, h2, h1 {
         height: 500px;
     }
 }
+
+#incSnshHistChartContent {
+    display: block;
+}
+
+#incSnshHistChartContent > svg {
+    border: 1px solid red;
+}
+
+
+

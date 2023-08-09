@@ -239,35 +239,50 @@ function loadExampleChart() {
             console.log(chartConfigJSON)
 
             containerElement = document.getElementById(elementId.replace('#', ''));
-            var containerWidth = containerElement.getBoundingClientRect().width;
-            var containerHeight = containerElement.offsetHeight;
+            var containerWidth = containerElement.getBoundingClientRect().width - chartConfigJSON.margin.left - chartConfigJSON.margin.right;
+            var containerHeight = containerElement.offsetHeight - chartConfigJSON.margin.top - chartConfigJSON.margin.bottom;
 
             //Set Up Dimensions
-            const chartWidth = containerWidth - chartConfigJSON.margin.left - chartConfigJSON.margin.right
-            const chartHeight = containerHeight - chartConfigJSON.margin.top - chartConfigJSON.margin.bottom  
+            const chartWidth = containerWidth + chartConfigJSON.margin.left + chartConfigJSON.margin.right
+            const chartHeight = containerHeight + chartConfigJSON.margin.top + chartConfigJSON.margin.bottom  
             
+            console.log(`CW: ${containerWidth}, W: ${chartWidth}, CH: ${containerHeight}, H: ${chartHeight}, BM: ${chartConfigJSON.margin.bottom}`);
+
             //Create SVG Container
             const svg = d3.select(elementId).append("svg")
                 .attr("width", chartWidth)
                 .attr("height", chartHeight)
                 .append("g")
-                .attr("transform", `translate(${chartConfigJSON.margin.left}, ${chartConfigJSON.margin.right})`)
+                .attr("transform", `translate(${chartConfigJSON.margin.left}, ${chartConfigJSON.margin.top})`)
 
             //Add Chart Title
-            svg.append("g").append("text")
-                .attr("x", chartConfigJSON.margin.left - chartConfigJSON.title.margin.left)
-                .attr("y", chartConfigJSON.margin.top - chartConfigJSON.title.margin.top)
+            svg.append("text")
+                .attr("x", chartConfigJSON.title.margin.left)
+                .attr("y", chartConfigJSON.title.margin.top)
                 .attr("class", `${chartConfigJSON.title.class}`)
                 .text(chartConfigJSON.title.text)
+
 
             //Load & Process Data
             fetch(dataSourceURL)
                 .then(dataResponse => dataResponse.json())
                 .then(chartData => {
 
-                    const x = d3.scaleLinear()
-                        .range([0, chartWidth])
-                        .domain([0, d3.max(chartData, function(d) {return d.total})]);
+                    console.log(chartData);
+                    console.log(d3.min(chartData, chartData => chartData.snsh_dt))
+
+                    //Note: Move this to API, to allow for all consumption points to utilize
+                    const chartDataFormatted = chartData.map(record => ({
+                        ...record
+                        , snsh_dt: new Date(record.snsh_dt)
+                    }));
+
+                    console.log(chartDataFormatted);
+
+                    //Add xAxis
+                    const x = d3.scaleTime()
+                        .range([0, containerWidth])
+                        .domain([d3.min(chartDataFormatted, d => d.snsh_dt), d3.max(chartDataFormatted, d => d.snsh_dt)]);
 
                     const xAxis = d3.axisBottom(x)
                         .ticks(5)
@@ -275,10 +290,24 @@ function loadExampleChart() {
 
                     svg.append("g")
                         .attr("class", "xAxis")
-                        .attr("transform", `translate(${0}, ${chartHeight})`)
+                        .attr("transform", `translate(${0}, ${containerHeight})`)
                         .attr("stroke", "black")
                         .call(xAxis);
 
+                    //Add yAxis
+                    const y = d3.scaleLinear()
+                        .range([0, chartHeight - 25])
+                        .domain([0, d3.max(chartDataFormatted, d => d.inc_amt_annual)]);
+
+                    const yAxis = d3.axisLeft(y)
+                        .ticks(5)
+                        .tickSize(1);
+
+                    svg.append("g")
+                        .attr("class", "yAxis")
+                        .attr("transform", `translate(${chartConfigJSON.margin.left}, 0)`)
+                        .attr("stroke", "black")
+                        .call(yAxis);
                 });
 
             
