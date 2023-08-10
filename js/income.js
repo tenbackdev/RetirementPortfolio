@@ -239,26 +239,25 @@ function loadExampleChart() {
             console.log(chartConfigJSON)
 
             containerElement = document.getElementById(elementId.replace('#', ''));
-            var containerWidth = containerElement.getBoundingClientRect().width - chartConfigJSON.margin.left - chartConfigJSON.margin.right;
-            var containerHeight = containerElement.offsetHeight - chartConfigJSON.margin.top - chartConfigJSON.margin.bottom;
+            var svgWidth = containerElement.getBoundingClientRect().width;
+            var svgHeight = containerElement.getBoundingClientRect().height;
+            var chartWidth = svgWidth - chartConfigJSON.margin.left - chartConfigJSON.margin.right;
+            var chartHeight = svgHeight - chartConfigJSON.margin.top - chartConfigJSON.margin.bottom;
 
-            //Set Up Dimensions
-            const chartWidth = containerWidth + chartConfigJSON.margin.left + chartConfigJSON.margin.right
-            const chartHeight = containerHeight + chartConfigJSON.margin.top + chartConfigJSON.margin.bottom  
-            
-            console.log(`CW: ${containerWidth}, W: ${chartWidth}, CH: ${containerHeight}, H: ${chartHeight}, BM: ${chartConfigJSON.margin.bottom}`);
+            console.log(`SW: ${svgWidth}, GW: ${chartWidth}, SH: ${svgHeight}, GH: ${chartHeight}, BM: ${chartConfigJSON.margin.bottom}`);
+
 
             //Create SVG Container
             const svg = d3.select(elementId).append("svg")
-                .attr("width", chartWidth)
-                .attr("height", chartHeight)
+                .attr("width", svgWidth)
+                .attr("height", svgHeight)
                 .append("g")
                 .attr("transform", `translate(${chartConfigJSON.margin.left}, ${chartConfigJSON.margin.top})`)
 
             //Add Chart Title
             svg.append("text")
-                .attr("x", chartConfigJSON.title.margin.left)
-                .attr("y", chartConfigJSON.title.margin.top)
+                .attr("x", chartConfigJSON.margin.left + chartConfigJSON.title.margin.left)
+                .attr("y", chartConfigJSON.margin.top + chartConfigJSON.title.margin.top)
                 .attr("class", `${chartConfigJSON.title.class}`)
                 .text(chartConfigJSON.title.text)
 
@@ -268,36 +267,43 @@ function loadExampleChart() {
                 .then(dataResponse => dataResponse.json())
                 .then(chartData => {
 
-                    console.log(chartData);
-                    console.log(d3.min(chartData, chartData => chartData.snsh_dt))
+                    //console.log(chartData);
+                    //console.log(d3.min(chartData, chartData => chartData.snsh_dt))
 
                     //Note: Move this to API, to allow for all consumption points to utilize
                     const chartDataFormatted = chartData.map(record => ({
                         ...record
-                        , snsh_dt: new Date(record.snsh_dt)
+                        , snsh_dt: new Date(record.snsh_dt.toLocaleString('en-US', { timeZone: "America/New_York" }))
                     }));
+
+                    //Make this handling both ascending / descending via if / else.
+                    //Sort Data
+                    chartDataFormatted.sort((a, b) => d3.ascending(a.snsh_dt, b.snsh_dt));
 
                     console.log(chartDataFormatted);
 
+
                     //Add xAxis
+                    const xWidth = chartWidth - chartConfigJSON.margin.left
                     const x = d3.scaleTime()
-                        .range([0, containerWidth])
+                        .range([0, xWidth])
                         .domain([d3.min(chartDataFormatted, d => d.snsh_dt), d3.max(chartDataFormatted, d => d.snsh_dt)]);
+                        //.padding(0.1);
 
                     const xAxis = d3.axisBottom(x)
                         .ticks(5)
-                        .tickSize(1);
+                        .tickSize(1)
 
                     svg.append("g")
                         .attr("class", "xAxis")
-                        .attr("transform", `translate(${0}, ${containerHeight})`)
+                        .attr("transform", `translate(${chartConfigJSON.margin.left}, ${chartHeight})`)
                         .attr("stroke", "black")
                         .call(xAxis);
 
                     //Add yAxis
                     const y = d3.scaleLinear()
-                        .range([0, chartHeight - 25])
-                        .domain([0, d3.max(chartDataFormatted, d => d.inc_amt_annual)]);
+                        .range([chartHeight, 0])
+                        .domain([0, 1.1 * d3.max(chartDataFormatted, d => d.inc_amt_annual)]);
 
                     const yAxis = d3.axisLeft(y)
                         .ticks(5)
@@ -308,6 +314,42 @@ function loadExampleChart() {
                         .attr("transform", `translate(${chartConfigJSON.margin.left}, 0)`)
                         .attr("stroke", "black")
                         .call(yAxis);
+
+                    /*
+                    //Example of adding secondary axis when needed
+
+                    //Add yAxis
+                    const yl = d3.scaleLinear()
+                    .range([chartHeight, 0])
+                    .domain([0, d3.max(chartDataFormatted, d => d.inc_amt_annual)]);
+
+                    const ylAxis = d3.axisRight(yl)
+                        .ticks(5)
+                        .tickSize(1);
+
+                    svg.append("g")
+                        .attr("class", "ylAxis")
+                        .attr("transform", `translate(${chartWidth}, 0)`)
+                        .attr("stroke", "black")
+                        .call(ylAxis);
+                        
+                    */
+
+                    const barWidth = x(chartDataFormatted[1].snsh_dt) - x(chartDataFormatted[0].snsh_dt)
+
+                    //Create Bars
+                    svg.selectAll(".bar")
+                        .data(chartDataFormatted)
+                        .enter().append("rect")
+                        .attr("class", "bar")
+                        .attr("y", data => y(data.inc_amt_annual))
+                        .attr("height", data => chartHeight - y(data.inc_amt_annual))
+                        //.attr("height", function (data) { console.log(`A: ${data.inc_amt_annual}, B: ${y(data.inc_amt_annual)}`); return y(data.inc_amt_annual); })
+                        .attr("x", data => x(data.snsh_dt))
+                        .attr("width", barWidth)
+                        .attr('fill', 'steelblue')
+
+
                 });
 
             
@@ -316,11 +358,10 @@ function loadExampleChart() {
 
         
         
-        //Sort Data
-        //Set x & y Scales
-        //Create x & y Axes
+        
+        
         //Add Vertical Gridlines
-        //Create Bars
+        
         //Add x & y Axes To Chart
         //Add Labels At End of Bar
         //Add Total Label
