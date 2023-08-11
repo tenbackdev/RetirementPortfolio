@@ -284,21 +284,23 @@ function loadExampleChart() {
 
 
                     //Add xAxis
-                    const xWidth = chartWidth - chartConfigJSON.margin.left
+                    var xMin = new Date(d3.min(chartDataFormatted, d => d.snsh_dt))
+                    var xMax = new Date(d3.max(chartDataFormatted, d => d.snsh_dt))
+                    const xWidth = chartWidth - chartConfigJSON.margin.left - chartConfigJSON.margin.right
+
+                    console.log(xWidth)
+                    //Will need to set a config param to undestand how much the x with domain should be padded by
+                    //Figure out a way to force the ticks on axis 
                     const x = d3.scaleTime()
                         .range([0, xWidth])
-                        .domain([d3.min(chartDataFormatted, d => d.snsh_dt), d3.max(chartDataFormatted, d => d.snsh_dt)]);
+                        .domain([xMin.setDate(xMin.getDate() - 3), xMax.setDate(xMax.getDate() + 2)]);
                         //.padding(0.1);
 
                     const xAxis = d3.axisBottom(x)
                         .ticks(5)
-                        .tickSize(1)
+                        .tickSize(1);
 
-                    svg.append("g")
-                        .attr("class", "xAxis")
-                        .attr("transform", `translate(${chartConfigJSON.margin.left}, ${chartHeight})`)
-                        .attr("stroke", "black")
-                        .call(xAxis);
+
 
                     //Add yAxis
                     const y = d3.scaleLinear()
@@ -309,11 +311,7 @@ function loadExampleChart() {
                         .ticks(5)
                         .tickSize(1);
 
-                    svg.append("g")
-                        .attr("class", "yAxis")
-                        .attr("transform", `translate(${chartConfigJSON.margin.left}, 0)`)
-                        .attr("stroke", "black")
-                        .call(yAxis);
+
 
                     /*
                     //Example of adding secondary axis when needed
@@ -326,30 +324,50 @@ function loadExampleChart() {
                     const ylAxis = d3.axisRight(yl)
                         .ticks(5)
                         .tickSize(1);
+                        
+                    */
 
+                    const barWidth = 50 //x(chartDataFormatted[1].snsh_dt) - x(chartDataFormatted[0].snsh_dt)
+
+                    console.log(`${chartDataFormatted[0].snsh_dt}: ${x(chartDataFormatted[0].snsh_dt)}`);
+                    console.log(`${chartDataFormatted[1].snsh_dt}: ${x(chartDataFormatted[1].snsh_dt)}`);
+                    console.log(`${chartDataFormatted[2].snsh_dt}: ${x(chartDataFormatted[2].snsh_dt)}`);
+                    console.log(`${chartDataFormatted[6].snsh_dt}: ${x(chartDataFormatted[6].snsh_dt)}`);
+
+                    //Create Bars
+                    svg.selectAll(".bar")
+                        .data(chartDataFormatted)
+                        .enter()
+                        .append("rect")
+                        .attr("class", "bar")
+                        .attr("x", data => x(data.snsh_dt) - (barWidth / 2))
+                        .attr("y", data => y(data.inc_amt_annual))
+                        .attr("width", barWidth)
+                        //.attr("height", data => data.inc_amt_annual)
+                        .attr("height", data => chartHeight - y(data.inc_amt_annual))
+                        //.attr("height", function (data) { console.log(`A: ${data.inc_amt_annual}, B: ${y(data.inc_amt_annual)}`); return y(data.inc_amt_annual); })
+                        .attr('fill', 'steelblue');
+
+                    //Add Axes On Top
+                    svg.append("g")
+                        .attr("class", "yAxis")
+                        .attr("transform", `translate(${chartConfigJSON.margin.left}, 0)`)
+                        .attr("stroke", "black")
+                        .call(yAxis);
+
+                    svg.append("g")
+                        .attr("class", "xAxis")
+                        .attr("transform", `translate(${chartConfigJSON.margin.left}, ${chartHeight})`)
+                        .attr("stroke", "black")
+                        .call(xAxis);
+
+                    /*
                     svg.append("g")
                         .attr("class", "ylAxis")
                         .attr("transform", `translate(${chartWidth}, 0)`)
                         .attr("stroke", "black")
                         .call(ylAxis);
-                        
                     */
-
-                    const barWidth = x(chartDataFormatted[1].snsh_dt) - x(chartDataFormatted[0].snsh_dt)
-
-                    //Create Bars
-                    svg.selectAll(".bar")
-                        .data(chartDataFormatted)
-                        .enter().append("rect")
-                        .attr("class", "bar")
-                        .attr("y", data => y(data.inc_amt_annual))
-                        .attr("height", data => chartHeight - y(data.inc_amt_annual))
-                        //.attr("height", function (data) { console.log(`A: ${data.inc_amt_annual}, B: ${y(data.inc_amt_annual)}`); return y(data.inc_amt_annual); })
-                        .attr("x", data => x(data.snsh_dt))
-                        .attr("width", barWidth)
-                        .attr('fill', 'steelblue')
-
-
                 });
 
             
