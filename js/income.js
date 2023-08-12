@@ -280,8 +280,6 @@ function loadExampleChart() {
                     //Sort Data
                     chartDataFormatted.sort((a, b) => d3.ascending(a.snsh_dt, b.snsh_dt));
 
-                    console.log(chartDataFormatted);
-
 
                     //Add xAxis
                     var xMin = new Date(d3.min(chartDataFormatted, d => d.snsh_dt))
@@ -329,10 +327,35 @@ function loadExampleChart() {
 
                     const barWidth = 50 //x(chartDataFormatted[1].snsh_dt) - x(chartDataFormatted[0].snsh_dt)
 
-                    console.log(`${chartDataFormatted[0].snsh_dt}: ${x(chartDataFormatted[0].snsh_dt)}`);
-                    console.log(`${chartDataFormatted[1].snsh_dt}: ${x(chartDataFormatted[1].snsh_dt)}`);
-                    console.log(`${chartDataFormatted[2].snsh_dt}: ${x(chartDataFormatted[2].snsh_dt)}`);
-                    console.log(`${chartDataFormatted[6].snsh_dt}: ${x(chartDataFormatted[6].snsh_dt)}`);
+                    //Add Horizontal Gridlines
+                    svg.selectAll('line.horizontalGrid')
+                        .data(y.ticks(5))
+                        .enter()
+                        .append('line')
+                        .attr("class", "horizontalGrid")
+                        .attr("x1", chartConfigJSON.margin.left)
+                        .attr("y1", d => y(d))
+                        .attr("x2", xWidth)
+                        .attr("y2", d => y(d))
+                        .style("stroke", "gray")
+                        .style("stroke-width", 1)
+                        .style("stroke-dasharray", '3, 3');
+
+                    /*
+                    //Add Vertical Gridlines
+                    svg.selectAll('line.verticalGrid')
+                        .data(x.ticks(5))
+                        .enter()
+                        .append('line')
+                        .attr("class", "verticalGrid")
+                        .attr("x1", d => x(d) + chartConfigJSON.margin.left)
+                        .attr("y1", 0)
+                        .attr("x2",  d => x(d) + chartConfigJSON.margin.left)
+                        .attr("y2", chartHeight)
+                        .style("stroke", "gray")
+                        .style("stroke-width", 1)
+                        .style("stroke-dasharray", '3, 3');
+                    */
 
                     //Create Bars
                     svg.selectAll(".bar")
@@ -343,9 +366,7 @@ function loadExampleChart() {
                         .attr("x", data => x(data.snsh_dt) - (barWidth / 2))
                         .attr("y", data => y(data.inc_amt_annual))
                         .attr("width", barWidth)
-                        //.attr("height", data => data.inc_amt_annual)
                         .attr("height", data => chartHeight - y(data.inc_amt_annual))
-                        //.attr("height", function (data) { console.log(`A: ${data.inc_amt_annual}, B: ${y(data.inc_amt_annual)}`); return y(data.inc_amt_annual); })
                         .attr('fill', 'steelblue');
 
                     //Add Axes On Top
@@ -379,8 +400,6 @@ function loadExampleChart() {
         
         
         //Add Vertical Gridlines
-        
-        //Add x & y Axes To Chart
         //Add Labels At End of Bar
         //Add Total Label
         
