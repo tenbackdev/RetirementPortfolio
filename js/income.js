@@ -369,6 +369,18 @@ function loadExampleChart() {
                         .attr("height", data => chartHeight - y(data.inc_amt_annual))
                         .attr('fill', 'steelblue');
 
+                    const line = d3.line()
+                        .x(d => x(d.snsh_dt))
+                        .y(d => y(d.inc_amt_annual));
+
+                    //Add TrendLine
+                    const path = svg.append("path")
+                        .datum(chartDataFormatted)
+                        .attr("fill", "none")
+                        .attr("stroke", "red")
+                        .attr("stroke-width", 1)
+                        .attr("d", line);
+
                     //Add Axes On Top
                     svg.append("g")
                         .attr("class", "yAxis")
