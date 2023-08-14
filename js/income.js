@@ -246,6 +246,7 @@ function loadExampleChart() {
 
             console.log(`SW: ${svgWidth}, GW: ${chartWidth}, SH: ${svgHeight}, GH: ${chartHeight}, BM: ${chartConfigJSON.margin.bottom}`);
 
+            
 
             //Create SVG Container
             const svg = d3.select(elementId).append("svg")
@@ -254,6 +255,11 @@ function loadExampleChart() {
                 .append("g")
                 .attr("transform", `translate(${chartConfigJSON.margin.left}, ${chartConfigJSON.margin.top})`)
 
+            const tooltip = d3.select('body')
+                .append('div')
+                .attr('class', 'tooltip')
+                .attr('id', 'tooltip');
+
             //Add Chart Title
             svg.append("text")
                 .attr("x", chartConfigJSON.margin.left + chartConfigJSON.title.margin.left)
@@ -261,6 +267,8 @@ function loadExampleChart() {
                 .attr("class", `${chartConfigJSON.title.class}`)
                 .text(chartConfigJSON.title.text)
 
+
+            
 
             //Load & Process Data
             fetch(dataSourceURL)
@@ -382,6 +390,11 @@ function loadExampleChart() {
                         .attr('x', d => x(d.snsh_dt) - (barWidth / 2))
                         .attr('y', d => y(d.inc_amt_annual) - 5)
 
+                    const listeningRect = svg.append('rect')
+                        .attr('width', svgWidth)
+                        .attr('height', svgHeight)
+                        .attr('opacity', '0');
+
                     //Add TrendLine
                     const path = svg.append("path")
                         .datum(chartDataFormatted)
@@ -410,9 +423,33 @@ function loadExampleChart() {
                         .attr("stroke", "black")
                         .call(ylAxis);
                     */
+
+
+                    listeningRect.on("mousemove", function(event) {
+                        const [xCoord] = d3.pointer(event, this);
+                        const bisectX = d3.bisector(d => d.snsh_dt).left;
+                        const x0 = x.invert(xCoord);
+                        const i = bisectX(chartDataFormatted, x0, 1);
+                        const d0 = chartDataFormatted[i - 1];
+                        const d1 = chartDataFormatted[i];
+                        const d = x0 - d0.snsh_dt > d1.snsh_dt - x0 ? d1 : d0;
+                        const xPos = x(d.snsh_dt);
+                        const yPos = y(d.inc_amt_annual);
+    
+                        //need to figure out how to get the tool tip to show in the 
+                        //respective container without hardcoding a # of px to bring it
+                        //down to within view.
+                        tooltip
+                            .style('display', 'block')
+                            .style('left', `${xPos}px`)
+                            .style('top', `${1300 + yPos}px`)
+                            .html(`<p>Test this ${xPos}</p>`)
+                    });
+
+                   
                 });
 
-            
+
 
         });
 
