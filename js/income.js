@@ -367,11 +367,20 @@ function loadExampleChart() {
                         .attr("y", data => y(data.inc_amt_annual))
                         .attr("width", barWidth)
                         .attr("height", data => chartHeight - y(data.inc_amt_annual))
+                        .style("margin", "5px")
                         .attr('fill', 'steelblue');
 
                     const line = d3.line()
                         .x(d => x(d.snsh_dt))
                         .y(d => y(d.inc_amt_annual));
+
+                    svg.selectAll('.label')
+                        .data(chartDataFormatted)
+                        .enter()
+                        .append("text")
+                        .text(d => currencyFormat.format(d.inc_amt_annual))
+                        .attr('x', d => x(d.snsh_dt) - (barWidth / 2))
+                        .attr('y', d => y(d.inc_amt_annual) - 5)
 
                     //Add TrendLine
                     const path = svg.append("path")
