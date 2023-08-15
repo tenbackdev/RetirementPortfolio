@@ -1,3 +1,122 @@
 body {
     background-color: var(--main-color, grey);
 }
+
+body {
+    background-color: var(--var-main-color, ivory);
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: var(--var-header-height, 30px) 0 0 0;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    min-width: 300px;
+    margin: 20px;
+    width: 100%;
+}
+
+.sectionContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 15px 0;
+    border-radius: 15px;
+}
+
+.contentContainer {
+    background-color: var(--var-background-color, white);
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    height: 500px;
+}
+
+#summary > .contentContainer {
+    flex: 1fr;
+    width: 100%;
+    height: 120px;
+}
+
+.summaryCard {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--var-background-color, white);
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    color: black;
+  }
+  
+  .cardTitle {
+    flex: 25%;
+    font-size: 1.5rem;
+    margin: 0;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+  
+  .cardText {
+    display: flex;
+    flex: 65%;
+    font-size: 2.5rem;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .cardInfo {
+    flex: 10%;
+    font-size: .8rem;
+    margin: 0;
+    width: 100%;
+    text-align: center;
+  }
+
+.contentContainer {
+    background-color: var(--var-background-color, white);
+    box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    height: 500px;
+}
+
+
+.sectionContainer > .contentContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.titleContainer {
+    display: flex;
+    flex: 10%;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.chartContainer {
+    display: flex;
+    flex: 90%;
+    align-items: center;
+    justify-content: center;
+}
+
+.tableContainer {
+    height: 100%;
+    overflow: auto;
+    flex: 100%;
+    margin: 10px 20px;
+}

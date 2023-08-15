@@ -4,6 +4,21 @@ const colorsArray = ["#FF5733", "#33FF6C", "#3366FF", "#FF33A3", "#33FFB3", "#FF
             "#33CC66", "#FF9933", "#33FF66", "#66FF33", "#FF3366", "#3366FF", "#FF33A3",
             "#33FFB3", "#3366FF", "#FF3366"];
 
+
+//Serves As The Main Function To Go Get The Contents Of curAcctBal Endpoint
+function getAccountBalanceHist() {
+    return new Promise((resolve, reject) => {
+        fetch('http://localhost:5501/acctBalHist')
+        .then(response => response.json())
+        .then(data => {
+            resolve(data);
+        })
+        .catch(error => {
+            reject(error);
+        });
+    })
+}
+
 //Function to sum any JSON data given, while grouping by a specified column name
 //Function will return JSON data with 2 keys, the column names will match the argument values for groupKey & sumKey
 function sumByGroup(sumData, groupKey, sumKey) {
@@ -133,6 +148,13 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, colorRa
 
     
 };
+
+
+
+
+
+
+
 
 //Example of how to call function:
 //createBarChart("#testCentralChart", exData, "pay_mnth_nm_yr_nbr", "inc_amt", exMargin, "inc_status"); 
