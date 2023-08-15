@@ -25,9 +25,23 @@
         </nav>            
     </header>
     <main>
-        <!--Will fill this in later-->>
+        <section id="summary" class="sectionContainer">
+            <div id="balanceTotalCard" class="summaryCard contentContainer">
+                <h2 id="balanceTotalCardTitle" class="cardTitle">Balance</h2>
+                <p id="balanceTotalCardText" class="cardText">No Data</p>
+                <span id="balanceTotalCardAsOf" class="cardInfo">as of YYYY-MM-DD</span>
+            </div>
+            <div id="recIncCard" class="card contentContainer"></div>
+            <div id="nextIncCard" class="card contentContainer"></div>
+            <div id="lastCard" class="card contentContainer"></div>
+        </section>
+        <section id="balance" class="sectionContainer">
+            <div id="balanceChartContent" class="contentContainer chartContainer"></div>
+        </section>
     </main>
 </body>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="js\header.js"></script>
+<script src="js\app.js"></script>
+<script src="js\performance.js"></script>
 </html>
