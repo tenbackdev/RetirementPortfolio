@@ -149,7 +149,54 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, colorRa
     
 };
 
+function errorHandler(error) {
+    console.error('Error: ', error);
+}
 
+function addChartTitle(svg, marginConfig, titleConfig) {
+    try {
+
+        svg.append('text')
+            .attr('x', marginConfig.left + titleConfig.margin.left)
+            .attr('y', marginConfig.top + titleConfig.margin.top)
+            .attr('class', `${titleConfig.class}`)
+            .text(titleConfig.text);
+
+    } catch {
+        errorHandler(error);
+    }
+}
+
+async function createChart(elementId, dataSourceURL) {
+
+    const apiURL = `http://localhost:5501/getChartConfig/${elementId.replace('#', '')}`
+
+    const chartConfigResponse = await fetch(apiURL);
+    const chartConfig = await chartConfigResponse.json();
+
+    const dataResponse = await fetch(dataSourceURL);
+    const data = await dataResponse.json(); 
+
+    //Get the position and dims of the containing element
+    var element = document.getElementById(elementId.replace('#', ''));
+    const elementRect = element.getBoundingClientRect();
+    //console.log(elementRect.top, elementRect.right, elementRect.bottom, elementRect.left)
+    //console.log(elementRect.width,elementRect.height);
+    const svgWidth = elementRect.width;
+    const svgHeight = elementRect.height;
+
+    const svg = d3.select(elementId)
+        .append('svg')
+        .attr('width', svgWidth)
+        .attr('height', svgHeight);
+
+    if (chartConfig.title) {
+        addChartTitle(svg, chartConfig.margin, chartConfig.title)
+    }
+        
+    data.sort((a, b) => d3.ascending(a.snsh_dt, b.snsh_dt))
+    console.log(data);
+}
 
 
 

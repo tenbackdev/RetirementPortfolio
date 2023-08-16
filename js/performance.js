@@ -1,6 +1,9 @@
 function loadBalanceHistChart() {
-    const balanceHistData = getAccountBalanceHist();
-    console.log(balanceHistData);
+
+    const elementId = '#balanceChartContent'
+    const dataSourceURL = "http://localhost:5501/acctBalHist"
+
+    createChart(elementId, dataSourceURL);
 };
 
 loadBalanceHistChart();
