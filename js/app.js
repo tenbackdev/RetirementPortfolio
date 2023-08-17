@@ -197,15 +197,34 @@ async function createChart(elementId, dataSourceURL) {
     }
         
     data.sort((a, b) => d3.ascending(a.snsh_dt, b.snsh_dt))
+    aggData = sumByGroup(data, 'snsh_dt', 'acct_bal')
     console.log(data);
+    console.log(aggData);
 
-    bottomMinMax = d3.extent(data, d => new Date(d.snsh_dt))
+    bottomMinMax = d3.extent(aggData, d => new Date(d.snsh_dt))
     bottomMinMax[0] = new Date(bottomMinMax[0].setDate(bottomMinMax[0].getDate() - 4))
     bottomMinMax[1] = new Date(bottomMinMax[1].setDate(bottomMinMax[1].getDate() + 4))
 
     bottomScale = d3.scaleTime()
         .domain(bottomMinMax)
         .range([0, chartWidth]);
+
+    leftScale = d3.scaleLinear()
+        //.domain([0, 400000])
+        .domain(d3.extent(aggData, d => d.acct_bal)).nice()
+        .range([chartHeight, 0]);
+
+    const line = d3.line()
+        .x(d => bottomScale(new Date(d.snsh_dt)))
+        .y(d => leftScale(d.acct_bal));
+
+    const path = svg.append('path')
+        .attr('transform', `translate(${chartConfig.margin.left}, ${chartConfig.margin.top})`)
+        .datum(aggData)
+        .attr('fill', 'none')
+        .attr('stroke', 'green')
+        .attr('stroke-width', 1)
+        .attr('d', line);
 
     bottomAxis = d3.axisBottom(bottomScale)
         .ticks(d3.timeSaturday)
@@ -216,15 +235,11 @@ async function createChart(elementId, dataSourceURL) {
         .attr('class', 'bottomAxis')
         .attr('transform', `translate(${chartConfig.margin.left}, ${chartHeight + chartConfig.margin.top})`)
         .call(bottomAxis)
-        .attr('stroke', 'black');
-
-    leftScale = d3.scaleLinear()
-        .domain(d3.extent(data, d => d.acct_bal)).nice()
-        .range([chartHeight, 0]);
+        //.attr('stroke', 'black');
 
     leftAxis = d3.axisLeft(leftScale)
         .ticks(5)
-        .tickFormat(d => `${d / 1000}K`)
+        .tickFormat(d => `$${d / 1000}K`)
         .tickSize(5);
 
     svg.append('g')
