@@ -184,6 +184,8 @@ async function createChart(elementId, dataSourceURL) {
     //console.log(elementRect.width,elementRect.height);
     const svgWidth = elementRect.width;
     const svgHeight = elementRect.height;
+    const chartWidth = svgWidth - chartConfig.margin.left - chartConfig.margin.right;
+    const chartHeight = svgHeight - chartConfig.margin.top - chartConfig.margin.bottom;
 
     const svg = d3.select(elementId)
         .append('svg')
@@ -196,6 +198,41 @@ async function createChart(elementId, dataSourceURL) {
         
     data.sort((a, b) => d3.ascending(a.snsh_dt, b.snsh_dt))
     console.log(data);
+
+    bottomMinMax = d3.extent(data, d => new Date(d.snsh_dt))
+    bottomMinMax[0] = new Date(bottomMinMax[0].setDate(bottomMinMax[0].getDate() - 4))
+    bottomMinMax[1] = new Date(bottomMinMax[1].setDate(bottomMinMax[1].getDate() + 4))
+
+    bottomScale = d3.scaleTime()
+        .domain(bottomMinMax)
+        .range([0, chartWidth]);
+
+    bottomAxis = d3.axisBottom(bottomScale)
+        .ticks(d3.timeSaturday)
+        .tickFormat(d3.timeFormat('%Y-%m-%d'))
+        .tickSize(5);
+
+    svg.append('g')
+        .attr('class', 'bottomAxis')
+        .attr('transform', `translate(${chartConfig.margin.left}, ${chartHeight + chartConfig.margin.top})`)
+        .call(bottomAxis)
+        .attr('stroke', 'black');
+
+    leftScale = d3.scaleLinear()
+        .domain(d3.extent(data, d => d.acct_bal)).nice()
+        .range([chartHeight, 0]);
+
+    leftAxis = d3.axisLeft(leftScale)
+        .ticks(5)
+        .tickFormat(d => `${d / 1000}K`)
+        .tickSize(5);
+
+    svg.append('g')
+        .attr('class', 'leftAxis')
+        .attr('transform', `translate(${chartConfig.margin.left}, ${chartConfig.margin.top})`)
+        .call(leftAxis);
+
+    
 }
 
 
