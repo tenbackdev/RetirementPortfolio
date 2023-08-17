@@ -120,3 +120,13 @@ main {
     flex: 100%;
     margin: 10px 20px;
 }
+
+.tooltip {
+    position: fixed;
+    height: 25px;
+    border: 1px solid red;
+    background-color: var(--var-background-color);
+    z-index: 10;
+    opacity: 1;
+}
+

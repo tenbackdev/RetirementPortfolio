@@ -222,7 +222,7 @@ async function createChart(elementId, dataSourceURL) {
         .attr('transform', `translate(${chartConfig.margin.left}, ${chartConfig.margin.top})`)
         .datum(aggData)
         .attr('fill', 'none')
-        .attr('stroke', 'green')
+        .attr('stroke', 'black')
         .attr('stroke-width', 1)
         .attr('d', line);
 
@@ -247,7 +247,56 @@ async function createChart(elementId, dataSourceURL) {
         .attr('transform', `translate(${chartConfig.margin.left}, ${chartConfig.margin.top})`)
         .call(leftAxis);
 
+    const tooltip = d3.select('body')
+        .append('div')
+        .attr('class', 'tooltip');
+
+    const circle = svg.append('circle')
+        .attr('r', 0)
+        .attr('fill', 'steelblue')
+        .style('stroke', 'white')
+        .attr('opacity', .70)
+        .style('pointer-events', 'none');
+
+    const listRect = svg.append('rect')
+        .attr('width', svgWidth)
+        .attr('height', svgHeight)
+        //.attr('transform', `translate(${chartConfig.margin.left}, ${chartConfig.margin.top})`)
+        .attr('opacity', 0);
+
+    listRect.on('pointermove', function (event) {
+        const [xCoord] = d3.pointer(event, this);
+        const bisectDate = d3.bisector(d => new Date(d.snsh_dt)).left;
+        const x0 = bottomScale.invert(xCoord);
+        const i = bisectDate(aggData, x0, 1);
+        const d0 = aggData[i-1];
+        const d1 = aggData[i];
+        const d = x0 - new Date(d0.snsh_dt) > new Date(d1.snsh_dt) - x0 ? d1 : d0;
+        const xPos = bottomScale(new Date(d.snsh_dt)) + chartConfig.margin.left;
+        const yPos = leftScale(d.acct_bal) + chartConfig.margin.top;
+
+        circle.attr('cx', xPos)
+            .attr('cy', yPos);
+
+        circle.transition()
+            .duration(50)
+            .attr('r', 5);
+
+        tooltip.style('display', 'block')
+            .style('left', `${elementRect.left + xPos + 50}px`)
+            .style('top', `${elementRect.top + yPos + 25}px`)
+            .html(`<p>$${d.acct_bal.toFixed(2).toLocaleString('en-US', {maximumFractionDigits:2})}</p>`)
     
+    });
+
+    listRect.on('pointerleave', function() {
+        circle.transition()
+            .duration(50)
+            .attr('r', 0);
+
+        tooltip.style('display', 'none');
+    })
+
 }
 
 
