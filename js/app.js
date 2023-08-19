@@ -282,10 +282,19 @@ async function createChart(elementId, dataSourceURL) {
             .duration(50)
             .attr('r', 5);
 
-        tooltip.style('display', 'block')
+        const tooltipHTML = `<div class="tooltip">
+                                <h3 id="tooltipHeader">${new Date(d.snsh_dt).toISOString().split('T')[0]}</h3>
+                                <div id="tooltipHeaderLine"></div>
+                                <div class="tooltipDetail"> 
+                                    <h4 class="infoLabel">Balance:</h4>
+                                    <p class="infoDetail">$${d.acct_bal.toFixed(2).toLocaleString('en-US', {maximumFractionDigits:2})}</p>
+                                </div>
+                            </div>`
+
+        tooltip.style('display', 'flex')
             .style('left', `${elementRect.left + xPos + 50}px`)
             .style('top', `${elementRect.top + yPos + 25}px`)
-            .html(`<p>$${d.acct_bal.toFixed(2).toLocaleString('en-US', {maximumFractionDigits:2})}</p>`)
+            .html(tooltipHTML)
     
     });
 
