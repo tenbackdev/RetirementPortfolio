@@ -26,8 +26,17 @@
     </header>
     <main>
         <section id="acctBalSnshInputSection" class="sectionContainer">
-            <div id="acctBalSnshInputContent" class="contentContainer"></div>
+            <div id="acctBalSnshInputContent" class="contentContainer">
+                <label for="acctSelect">Account Name</label>
+                <select name="accounts" id="acctSelect">
+                    <option value="1">House Fund</option>
+                    <option value="2">Roth IRA</option>
+                </select>
+            </div>
         </section>
     </main>
 </body>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="js/app.js"></script>
+<script src="js/input.js"></script>
 </html>

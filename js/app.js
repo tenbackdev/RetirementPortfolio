@@ -4,6 +4,19 @@ const colorsArray = ["#FF5733", "#33FF6C", "#3366FF", "#FF33A3", "#33FFB3", "#FF
             "#33CC66", "#FF9933", "#33FF66", "#66FF33", "#FF3366", "#3366FF", "#FF33A3",
             "#33FFB3", "#3366FF", "#FF3366"];
 
+//Serves As The Main Function To Go Get The Contents Of curAcctBal Endpoint
+function getAccounts() {
+    return new Promise((resolve, reject) => {
+        fetch('http://localhost:5501/acct')
+        .then(response => response.json())
+        .then(data => {
+            resolve(data);
+        })
+        .catch(error => {
+            reject(error);
+        });
+    })
+}
 
 //Serves As The Main Function To Go Get The Contents Of curAcctBal Endpoint
 function getAccountBalanceHist() {
