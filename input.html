@@ -29,9 +29,13 @@
             <div id="acctBalSnshInputContent" class="contentContainer">
                 <label for="acctSelect">Account Name</label>
                 <select name="accounts" id="acctSelect">
-                    <option value="1">House Fund</option>
-                    <option value="2">Roth IRA</option>
+                    <!--Options to be added via JS-->
                 </select>
+                <label for="snapshotDateInput">Snapshot Date:</label>
+                <input type="date" id="snapshotDateInput" onload="getdate()" />
+                <label for="balanceInput">Account Balance:</label>
+                <input type="number" name="balanceInput" id="balanceValue">
+                <button id="acctBalanceSnshBtn">Submit</button>
             </div>
         </section>
     </main>
