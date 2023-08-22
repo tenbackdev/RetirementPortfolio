@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 5501;
+const bodyParser = require('body-parser');
 const cors = require("cors");
 const sql = require('mssql');
 
@@ -21,6 +22,39 @@ const config = {
 app.use(cors({
     Origin: 'http://127.0.0.1'
 }));
+
+app.use(bodyParser.json())
+
+app.post('/acctBalSnshInput', async (req, res) => {
+  
+  const {acct_id, snsh_dt, acct_bal} = req.body;
+
+  if(!acct_id || !snsh_dt || !acct_bal) {
+    return res.status(400).json({error: 'All parameters are required.'});
+  }
+
+  try {
+    await sql.connect(config);
+    const sqlReq = new sql.Request();
+
+    sqlReq.input('acct_id', sql.Int, acct_id);
+    sqlReq.input('snsh_dt', sql.Date, new Date(snsh_dt));
+    sqlReq.input('acct_bal', sql.Decimal, acct_bal);
+    
+    const result = await sqlReq.execute('invest.dat.usp_update_acct_bal_snsh');
+
+    console.log(result);
+
+    return res.json({message: 'Successfully submitted.'})
+
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    return res.status(500).json({error: 'An error occurred.'})
+  } finally {
+    sql.close();
+  }
+
+});
 
 // Define the endpoint for executing the SQL query
 app.get('/acct', (req, res) => {
