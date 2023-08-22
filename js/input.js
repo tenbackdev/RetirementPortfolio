@@ -1,5 +1,19 @@
 function acctBalanceSnshSubmit() {
     console.log('Button Clicked!')
+
+    const postData = {
+        acct_id: 1
+        , snsh_dt: '2023-08-22'
+        , acct_bal: 1000.00
+    }
+
+    axios.post('http://localhost:5501/acctBalSnshInput', postData)
+        .then(response => {
+            console.log(response.data.message);
+        })
+        .catch(error => {
+            console.error(`Error: ${error}`);
+        })
 }
 
 function initialize() {
