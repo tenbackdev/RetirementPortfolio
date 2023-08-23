@@ -1,11 +1,16 @@
 function acctBalanceSnshSubmit() {
-    console.log('Button Clicked!')
+    
+    const acctIdInputValue = document.getElementById('acctSelect').value;
+    const snshDtInputValue = document.getElementById('snapshotDateInput').value;
+    const acctBalInputValue = document.getElementById('balanceValue').value;
 
     const postData = {
-        acct_id: 1
-        , snsh_dt: '2023-08-22'
-        , acct_bal: 1000.00
+        acct_id: acctIdInputValue
+        , snsh_dt: snshDtInputValue
+        , acct_bal: acctBalInputValue
     }
+
+    console.log(acctIdInputValue, snshDtInputValue, acctBalInputValue);
 
     axios.post('http://localhost:5501/acctBalSnshInput', postData)
         .then(response => {
