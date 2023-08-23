@@ -39,7 +39,7 @@ app.post('/acctBalSnshInput', async (req, res) => {
 
     sqlReq.input('acct_id', sql.Int, acct_id);
     sqlReq.input('snsh_dt', sql.Date, new Date(snsh_dt));
-    sqlReq.input('acct_bal', sql.Decimal, acct_bal);
+    sqlReq.input('acct_bal', sql.Decimal(12,2), acct_bal);
     
     const result = await sqlReq.execute('invest.dat.usp_update_acct_bal_snsh');
 
