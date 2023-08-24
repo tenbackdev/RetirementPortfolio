@@ -27,15 +27,22 @@
     <main>
         <section id="acctBalSnshInputSection" class="sectionContainer">
             <div id="acctBalSnshInputContent" class="contentContainer">
-                <label for="acctSelect">Account Name</label>
-                <select name="accounts" id="acctSelect">
-                    <!--Options to be added via JS-->
-                </select>
-                <label for="snapshotDateInput">Snapshot Date:</label>
-                <input type="date" id="snapshotDateInput" onload="getdate()" />
-                <label for="balanceInput">Account Balance:</label>
-                <input type="number" name="balanceInput" id="balanceValue">
-                <button id="acctBalanceSnshBtn">Submit</button>
+                <h2 id="acctBalanceSnshInputHdr" class="inputHeader">Account Balance Snapshot</h2>
+                <div id="acctInputLabel" class="inputLabelDiv">
+                    <label for="acctSelect">Account Name</label>
+                    <select name="accounts" id="acctSelect">
+                        <!--Options to be added via JS-->
+                    </select>
+                </div>
+                <div id="snapshotInputLabel" class="inputLabelDiv">
+                    <label for="snapshotDateInput">Snapshot Date:</label>
+                    <input type="date" id="snapshotDateInput" />
+                </div>
+                <div id="acctBalanceInputLabel" class="inputLabelDiv">
+                    <label for="balanceInput">Account Balance:</label>
+                    <input type="number" name="balanceInput" id="balanceValue">
+                </div>
+                <button id="acctBalanceSnshBtn" class="inputButton">Submit</button>
             </div>
         </section>
     </main>

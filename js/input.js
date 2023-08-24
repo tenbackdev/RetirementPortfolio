@@ -21,11 +21,24 @@ function acctBalanceSnshSubmit() {
         })
 }
 
+function getCurrentDate() {
+    let now = new Date()
+    return `${now.getFullYear()}-${('0' + (now.getMonth() + 1)).slice(-2)}-${('0' + now.getDate()).slice(-2)}`
+}
+
+function setDefaultSnapshotDate() {
+    var snshDefaultDate = getCurrentDate()
+    var snshDtInp = document.getElementById('snapshotDateInput')
+    snshDtInp.value = snshDefaultDate;
+}
+
 function initialize() {
     //Add Event Listeners
     var acctBalanceSnshBtn = document.getElementById('acctBalanceSnshBtn');
-
     acctBalanceSnshBtn.addEventListener('click', acctBalanceSnshSubmit)
+
+    addAccountSelectOptions();
+    setDefaultSnapshotDate();
 }
 
 function addAccountSelectOptions() {
@@ -45,4 +58,3 @@ function addAccountSelectOptions() {
 }
 
 document.addEventListener('DOMContentLoaded', initialize);
-addAccountSelectOptions();
