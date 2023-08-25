@@ -220,7 +220,7 @@ async function createChart(elementId, dataSourceURL) {
 
     bottomScale = d3.scaleTime()
         .domain(bottomMinMax)
-        .range([0, chartWidth]);
+        .range([chartConfig.margin.left, chartWidth]);
 
     leftScale = d3.scaleLinear()
         //.domain([0, 400000])
@@ -232,7 +232,7 @@ async function createChart(elementId, dataSourceURL) {
         .y(d => leftScale(d.acct_bal));
 
     const path = svg.append('path')
-        .attr('transform', `translate(${chartConfig.margin.left}, ${chartConfig.margin.top})`)
+        .attr('transform', `translate(0, ${chartConfig.margin.top})`)
         .datum(aggData)
         .attr('fill', 'none')
         .attr('stroke', 'black')
@@ -246,7 +246,7 @@ async function createChart(elementId, dataSourceURL) {
 
     svg.append('g')
         .attr('class', 'bottomAxis')
-        .attr('transform', `translate(${chartConfig.margin.left}, ${chartHeight + chartConfig.margin.top})`)
+        .attr('transform', `translate(0, ${chartHeight + chartConfig.margin.top})`)
         .call(bottomAxis)
         //.attr('stroke', 'black');
 
@@ -285,7 +285,7 @@ async function createChart(elementId, dataSourceURL) {
         const d0 = aggData[i-1];
         const d1 = aggData[i];
         const d = x0 - new Date(d0.snsh_dt) > new Date(d1.snsh_dt) - x0 ? d1 : d0;
-        const xPos = bottomScale(new Date(d.snsh_dt)) + chartConfig.margin.left;
+        const xPos = bottomScale(new Date(d.snsh_dt));
         const yPos = leftScale(d.acct_bal) + chartConfig.margin.top;
 
         circle.attr('cx', xPos)
