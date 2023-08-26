@@ -1,3 +1,169 @@
+const scaleFunctions = {
+    linear: d3.scaleLinear,
+    time: d3.scaleTime
+}
+
+const domainMethods = {
+    date: dateString => new Date(dateString)
+}
+
+function errorHandler(error) {
+    console.error('Error: ', error);
+}
+
+//Function to sum any JSON data given, while grouping by a specified column name
+//Function will return JSON data with 2 keys, the column names will match the argument values for groupKey & sumKey
+function sumByGroup(sumData, groupKey, sumKey) {
+    const sumByGroup = d3.rollup(
+        sumData,
+        group => d3.sum(group, d => d[sumKey]),
+        d => d[groupKey]
+    );
+
+    return Array.from(sumByGroup, ([key, sum]) => ({[groupKey]: key, [sumKey]: sum}));
+}
+
+function addChartTitle(svg, marginConfig, titleConfig) {
+    try {
+
+        svg.append('text')
+            .attr('x', marginConfig.left + titleConfig.margin.left)
+            .attr('y', marginConfig.top + titleConfig.margin.top)
+            .attr('class', `${titleConfig.class}`)
+            .text(titleConfig.text);
+
+    } catch {
+        errorHandler(error);
+    }
+}
+
+async function createChart(elementId, dataSourceURL) {
+
+    const apiURL = `http://localhost:5501/getChartConfig/${elementId.replace('#', '')}`
+
+    const chartConfigResponse = await fetch(apiURL);
+    const chartConfig = await chartConfigResponse.json();
+
+    console.log(chartConfig);
+
+    const dataResponse = await fetch(dataSourceURL);
+    const data = await dataResponse.json(); 
+    const aggData = sumByGroup(data, 'snsh_dt', 'acct_bal')
+
+    //Get the position and dims of the containing element
+    var element = document.getElementById(elementId.replace('#', ''));
+    const elementRect = element.getBoundingClientRect();
+    //console.log(elementRect.top, elementRect.right, elementRect.bottom, elementRect.left)
+    //console.log(elementRect.width,elementRect.height);
+    const svgWidth = elementRect.width;
+    const svgHeight = elementRect.height;
+    const chartWidth = svgWidth - chartConfig.margin.left - chartConfig.margin.right;
+    const chartHeight = svgHeight - chartConfig.margin.top - chartConfig.margin.bottom;
+
+    const svg = d3.select(elementId)
+        .append('svg')
+        .attr('width', svgWidth)
+        .attr('height', svgHeight);
+
+    if (chartConfig.title) {
+        addChartTitle(svg, chartConfig.margin, chartConfig.title)
+    }
+     
+    var xMin = domainMethods[chartConfig.x.domainType](d3.min(data, d => d[chartConfig.x.xKey]));
+    var xMax = domainMethods[chartConfig.x.domainType](d3.max(data, d => d[chartConfig.x.xKey]));
+    xScale = scaleFunctions[chartConfig.x.scale]()
+        .domain([xMin, xMax])
+        .range([chartConfig.margin.left, chartWidth + chartConfig.margin.left - chartConfig.margin.right]);
+
+    xAxis = d3.axisBottom(xScale)
+        .ticks(d3.timeSaturday)
+        .tickFormat(d3.timeFormat('%Y-%m-%d'))
+        .tickSize(5);
+
+    svg.append('g')
+        .attr('class', 'xAxis')
+        .attr('transform', `translate(0, ${chartHeight + chartConfig.margin.top})`)
+        .call(xAxis)
+        //.attr('stroke', 'black');
+
+    yScale = d3.scaleLinear()
+        .domain(d3.extent(aggData, d => d.acct_bal))
+        .range([chartHeight, 0])
+
+    yAxis = d3.axisLeft(yScale)
+        .ticks(5)
+        .tickFormat(d => `$${d / 1000}K`)
+        .tickSize(5);
+
+    svg.append('g')
+        .attr('class', 'yAxis')
+        .attr('transform', `translate(${chartConfig.margin.left}, ${chartConfig.margin.top})`)
+        .call(yAxis);
+
+    /*
+    data.sort((a, b) => d3.ascending(a, b.snsh_dt))
+    aggData = sumByGroup(data, 'snsh_dt', 'acct_bal')
+    console.log(data);
+    console.log(aggData);
+
+    bottomMinMax = d3.extent(aggData, d => new Date(d.snsh_dt))
+    bottomMinMax[0] = new Date(bottomMinMax[0].setDate(bottomMinMax[0].getDate() - 4))
+    bottomMinMax[1] = new Date(bottomMinMax[1].setDate(bottomMinMax[1].getDate() + 4))
+
+    bottomScale = d3.scaleTime()
+        .domain(bottomMinMax)
+        .range([chartConfig.margin.left, chartWidth]);
+
+    leftScale = d3.scaleLinear()
+        //.domain([0, 400000])
+        .domain(d3.extent(aggData, d => d.acct_bal)).nice()
+        .range([chartHeight, 0]);
+
+    const line = d3.line()
+        .x(d => bottomScale(new Date(d.snsh_dt)))
+        .y(d => leftScale(d.acct_bal));
+
+    const path = svg.append('path')
+        .attr('transform', `translate(0, ${chartConfig.margin.top})`)
+        .datum(aggData)
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', 1)
+        .attr('d', line);
+    */
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const colorsArray = ["#FF5733", "#33FF6C", "#3366FF", "#FF33A3", "#33FFB3", "#FF33CC",
             "#33FFFF", "#FF3366", "#66FF33", "#336633", "#33FF33", "#33FFA3", "#FF6633",
             "#66FF66", "#6633FF", "#FF3366", "#33CCFF", "#FFA333", "#FF33A3", "#FF9933",
@@ -30,18 +196,6 @@ function getAccountBalanceHist() {
             reject(error);
         });
     })
-}
-
-//Function to sum any JSON data given, while grouping by a specified column name
-//Function will return JSON data with 2 keys, the column names will match the argument values for groupKey & sumKey
-function sumByGroup(sumData, groupKey, sumKey) {
-    const sumByGroup = d3.rollup(
-        sumData,
-        group => d3.sum(group, d => d[sumKey]),
-        d => d[groupKey]
-    );
-
-    return Array.from(sumByGroup, ([key, sum]) => ({[groupKey]: key, [sumKey]: sum}));
 }
 
 //Transform data from Row-Store to Column-Store to prepare
@@ -162,25 +316,7 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, colorRa
     
 };
 
-function errorHandler(error) {
-    console.error('Error: ', error);
-}
-
-function addChartTitle(svg, marginConfig, titleConfig) {
-    try {
-
-        svg.append('text')
-            .attr('x', marginConfig.left + titleConfig.margin.left)
-            .attr('y', marginConfig.top + titleConfig.margin.top)
-            .attr('class', `${titleConfig.class}`)
-            .text(titleConfig.text);
-
-    } catch {
-        errorHandler(error);
-    }
-}
-
-async function createChart(elementId, dataSourceURL) {
+async function createChartLegacy(elementId, dataSourceURL) {
 
     const apiURL = `http://localhost:5501/getChartConfig/${elementId.replace('#', '')}`
 
@@ -209,7 +345,7 @@ async function createChart(elementId, dataSourceURL) {
         addChartTitle(svg, chartConfig.margin, chartConfig.title)
     }
         
-    data.sort((a, b) => d3.ascending(a.snsh_dt, b.snsh_dt))
+    data.sort((a, b) => d3.ascending(a, b.snsh_dt))
     aggData = sumByGroup(data, 'snsh_dt', 'acct_bal')
     console.log(data);
     console.log(aggData);

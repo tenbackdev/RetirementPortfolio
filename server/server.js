@@ -307,7 +307,10 @@ app.get('/getChartConfig/:chartId', (req, res) => {
             left: Number(result.recordset[0].margin_left)
           },
           x: {
-            type: result.recordset[0].x_type
+            type: result.recordset[0].x_type,
+            xKey: result.recordset[0].x_key,
+            scale: result.recordset[0].x_scale,
+            domainType: result.recordset[0].x_domainType
           }
         }
         
