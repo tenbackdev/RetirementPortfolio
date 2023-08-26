@@ -1,3 +1,15 @@
+function initialize() {
+    console.log('Hi')
+
+    //Load Charts
+    //Balance Hitory
+    createChart('#acctBalHistStackedLine', 'http://localhost:5501/acctBalHist');
+}
+
+document.addEventListener('DOMContentLoaded', initialize);
+
+
+
 //Serves As The Main Function To Go Get The Contents Of curAcctBal Endpoint
 function getCurrentBalanceData() {
     return new Promise((resolve, reject) => {
@@ -202,6 +214,7 @@ function loadCurEstIncomeData() {
         });
 }
 
+/*
 function init_load() {
     loadBalanceData();
     loadBalanceHistData();
@@ -210,4 +223,4 @@ function init_load() {
 }
  
 init_load();
-
+*/
