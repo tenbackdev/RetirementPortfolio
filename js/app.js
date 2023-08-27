@@ -4,7 +4,15 @@ const scaleFunctions = {
 }
 
 const domainMethods = {
-    date: dateString => new Date(dateString)
+    date: dateString => new Date(dateString),
+    currency: decimal => new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(decimal)
+}
+
+const tickMethods = {
+    date_yyyy_mm_dd: d3.timeFormat('%Y-%m-%d'),
+    date_mm_dd: d3.timeFormat('%m/%d'),
+    saturday: d3.timeSaturday,
+    dollar_thousand: d => `$${d / 1000}K`
 }
 
 function errorHandler(error) {
@@ -69,31 +77,32 @@ async function createChart(elementId, dataSourceURL) {
         addChartTitle(svg, chartConfig.margin, chartConfig.title)
     }
      
-    var xMin = domainMethods[chartConfig.x.domainType](d3.min(data, d => d[chartConfig.x.xKey]));
-    var xMax = domainMethods[chartConfig.x.domainType](d3.max(data, d => d[chartConfig.x.xKey]));
+    var xMin = domainMethods[chartConfig.x.domainType](d3.min(data, d => d[chartConfig.x.key]));
+    var xMax = domainMethods[chartConfig.x.domainType](d3.max(data, d => d[chartConfig.x.key]));
     xScale = scaleFunctions[chartConfig.x.scale]()
         .domain([xMin, xMax])
         .range([chartConfig.margin.left, chartWidth + chartConfig.margin.left - chartConfig.margin.right]);
 
     xAxis = d3.axisBottom(xScale)
-        .ticks(d3.timeSaturday)
-        .tickFormat(d3.timeFormat('%Y-%m-%d'))
-        .tickSize(5);
+        .ticks(tickMethods[chartConfig.x.tick])
+        .tickFormat(tickMethods[chartConfig.x.tickFormat])
+        .tickSize(chartConfig.x.tickSize);
 
     svg.append('g')
         .attr('class', 'xAxis')
         .attr('transform', `translate(0, ${chartHeight + chartConfig.margin.top})`)
         .call(xAxis)
-        //.attr('stroke', 'black');
 
-    yScale = d3.scaleLinear()
-        .domain(d3.extent(aggData, d => d.acct_bal))
-        .range([chartHeight, 0])
+    var yMin = d3.min(aggData, d => d[chartConfig.y.key]);
+    var yMax = d3.max(aggData, d => d[chartConfig.y.key]);
+    yScale = scaleFunctions[chartConfig.y.scale]()
+        .domain([yMin, yMax])
+        .range([chartHeight, 0]);
 
     yAxis = d3.axisLeft(yScale)
-        .ticks(5)
-        .tickFormat(d => `$${d / 1000}K`)
-        .tickSize(5);
+        .ticks(tickMethods[chartConfig.y.tick])
+        .tickFormat(tickMethods[chartConfig.y.tickFormat])
+        .tickSize(chartConfig.y.tickSize);
 
     svg.append('g')
         .attr('class', 'yAxis')
