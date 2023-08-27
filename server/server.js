@@ -308,9 +308,21 @@ app.get('/getChartConfig/:chartId', (req, res) => {
           },
           x: {
             type: result.recordset[0].x_type,
-            xKey: result.recordset[0].x_key,
+            key: result.recordset[0].x_key,
             scale: result.recordset[0].x_scale,
-            domainType: result.recordset[0].x_domainType
+            domainType: result.recordset[0].x_domainType,
+            tickFormat: result.recordset[0].x_tickFormat,
+            tick: result.recordset[0].x_tick,
+            tickSize: result.recordset[0].x_tickSize
+          },
+          y: {
+            type: result.recordset[0].y_type,
+            key: result.recordset[0].y_key,
+            scale: result.recordset[0].y_scale,
+            domainType: result.recordset[0].y_domainType,
+            tickFormat: result.recordset[0].y_tickFormat,
+            tick: result.recordset[0].y_tick,
+            tickSize: result.recordset[0].y_tickSize
           }
         }
         
