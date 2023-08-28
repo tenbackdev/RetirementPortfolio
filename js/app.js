@@ -56,13 +56,11 @@ async function createChart(elementId, dataSourceURL) {
 
     const dataResponse = await fetch(dataSourceURL);
     const data = await dataResponse.json(); 
-    const aggData = sumByGroup(data, 'snsh_dt', 'acct_bal')
+    const aggData = sumByGroup(data, chartConfig.x.key, chartConfig.y.key)
 
     //Get the position and dims of the containing element
     var element = document.getElementById(elementId.replace('#', ''));
     const elementRect = element.getBoundingClientRect();
-    //console.log(elementRect.top, elementRect.right, elementRect.bottom, elementRect.left)
-    //console.log(elementRect.width,elementRect.height);
     const svgWidth = elementRect.width;
     const svgHeight = elementRect.height;
     const chartWidth = svgWidth - chartConfig.margin.left - chartConfig.margin.right;
@@ -109,37 +107,21 @@ async function createChart(elementId, dataSourceURL) {
         .attr('transform', `translate(${chartConfig.margin.left}, ${chartConfig.margin.top})`)
         .call(yAxis);
 
-    /*
-    data.sort((a, b) => d3.ascending(a, b.snsh_dt))
-    aggData = sumByGroup(data, 'snsh_dt', 'acct_bal')
-    console.log(data);
-    console.log(aggData);
-
-    bottomMinMax = d3.extent(aggData, d => new Date(d.snsh_dt))
-    bottomMinMax[0] = new Date(bottomMinMax[0].setDate(bottomMinMax[0].getDate() - 4))
-    bottomMinMax[1] = new Date(bottomMinMax[1].setDate(bottomMinMax[1].getDate() + 4))
-
-    bottomScale = d3.scaleTime()
-        .domain(bottomMinMax)
-        .range([chartConfig.margin.left, chartWidth]);
-
-    leftScale = d3.scaleLinear()
-        //.domain([0, 400000])
-        .domain(d3.extent(aggData, d => d.acct_bal)).nice()
-        .range([chartHeight, 0]);
-
+    /*Add Configs For This Area - BGN*/
     const line = d3.line()
-        .x(d => bottomScale(new Date(d.snsh_dt)))
-        .y(d => leftScale(d.acct_bal));
+        .x(d => xScale(domainMethods[chartConfig.x.domainType](d[chartConfig.x.key])))
+        .y(d => yScale(d[chartConfig.y.key]))
+
+    console.log(aggData)
 
     const path = svg.append('path')
         .attr('transform', `translate(0, ${chartConfig.margin.top})`)
         .datum(aggData)
-        .attr('fill', 'none')
-        .attr('stroke', 'black')
-        .attr('stroke-width', 1)
+        .attr('fill', chartConfig.line.fill)
+        .attr('stroke', chartConfig.line.stroke)
+        .attr('stroke-width', chartConfig.line.strokeWidth)
         .attr('d', line);
-    */
+    /*Add Configs For This Area - END*/
 
 };
 
@@ -150,7 +132,20 @@ async function createChart(elementId, dataSourceURL) {
 
 
 
+/*
 
+
+
+
+EVERYTHING BELOW HERE WILL EVENTUALLY GO AWAY
+
+
+
+
+
+
+
+*/
 
 
 
