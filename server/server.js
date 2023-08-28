@@ -323,6 +323,60 @@ app.get('/getChartConfig/:chartId', (req, res) => {
             tickFormat: result.recordset[0].y_tickFormat,
             tick: result.recordset[0].y_tick,
             tickSize: result.recordset[0].y_tickSize
+          },
+          line: {
+            fill: result.recordset[0].line_fill,
+            stroke: result.recordset[0].line_stroke,
+            strokeWidth: result.recordset[0].line_strokeWidth
+          }
+        }
+        
+        // Return the query results as JSON
+        res.json(chartConfig);
+      }
+
+      // Close the SQL Server connection
+      sql.close();
+    });
+  });
+});
+
+// Define the endpoint for executing the SQL query
+app.get('/getChartConfigBeta/:chartId', (req, res) => {
+  // Connect to the SQL Server
+  sql.connect(config, err => {
+    if (err) {
+      console.log('Error connecting to SQL Server:', err);
+      res.status(500).json({ error: 'Error connecting to SQL Server' });
+      return;
+    }
+
+    const chartId = req.params.chartId;
+    // Execute the SQL query
+    const query = `select * from invest.util.chart_style_settings as s where s.chart_nm = '${chartId}'`;
+    new sql.Request().query(query, (err, result) => {
+      if (err) {
+        console.log('Error executing query:', err);
+        res.status(500).json({ error: 'Error executing query' });
+      } else {
+        
+        const chartConfig = {}
+
+        console.log(result);
+        console.log('hi')
+        console.log(result.recordset)
+        for (const row in result.recordset) {
+
+          const curRow = result.recordset[row]
+          console.log(`1: ${curRow.style_nm}, 2: ${curRow.style_prop}, 3: ${curRow.style_val}`);
+          if (!chartConfig[curRow.style_nm]) {
+            chartConfig[curRow.style_nm] = curRow.style_prop ? {} : curRow.style_val;
+          }
+
+          if (curRow.style_prop) {
+            if (!chartConfig[curRow.style_nm][curRow.style_prop]) {
+              chartConfig[curRow.style_nm][curRow.style_prop] = curRow.style_val;
+            }
           }
         }
         
