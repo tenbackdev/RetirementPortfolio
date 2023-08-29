@@ -92,10 +92,10 @@ async function createChart(elementId, dataSourceURL) {
         .call(xAxis)
 
     var yMin = d3.min(aggData, d => d[chartConfig.y.key]);
-    var yMax = d3.max(aggData, d => d[chartConfig.y.key]);
+    var yMax = d3.max(aggData, d => d[chartConfig.y.key]) * 1.01; /*COME BACK AND MAKE THIS A CONFIG KEY / VALUE*/
     yScale = scaleFunctions[chartConfig.y.scale]()
         .domain([yMin, yMax])
-        .range([chartHeight, 0]);
+        .range([chartHeight, chartConfig.margin.top]);
 
     yAxis = d3.axisLeft(yScale)
         .ticks(tickMethods[chartConfig.y.tick])
@@ -107,12 +107,28 @@ async function createChart(elementId, dataSourceURL) {
         .attr('transform', `translate(${chartConfig.margin.left}, ${chartConfig.margin.top})`)
         .call(yAxis);
 
-    /*Add Configs For This Area - BGN*/
     const line = d3.line()
         .x(d => xScale(domainMethods[chartConfig.x.domainType](d[chartConfig.x.key])))
         .y(d => yScale(d[chartConfig.y.key]))
 
     console.log(aggData)
+
+    console.log(yScale.ticks())
+
+    //Add attributes conditionally
+    //https://stackoverflow.com/questions/18205034/d3-adding-data-attribute-conditionally
+    svg.selectAll('line.horizontalGrid')
+        .data(yScale.ticks())
+        .enter()
+        .append('line')
+        .attr('class', 'horizontalGrid')
+        .attr('x1', chartConfig.margin.left)
+        .attr('y1', d => yScale(d) + chartConfig.margin.top)
+        .attr('x2', chartWidth + chartConfig.margin.left - chartConfig.margin.right)
+        .attr('y2', d => yScale(d) + chartConfig.margin.top)
+        .style('stroke', 'gray')
+        .style('stroke-width', 0.3)
+        .style('stroke-dasharray', '6, 8');
 
     const path = svg.append('path')
         .attr('transform', `translate(0, ${chartConfig.margin.top})`)
@@ -121,7 +137,8 @@ async function createChart(elementId, dataSourceURL) {
         .attr('stroke', chartConfig.line.stroke)
         .attr('stroke-width', chartConfig.line.strokeWidth)
         .attr('d', line);
-    /*Add Configs For This Area - END*/
+
+
 
 };
 
