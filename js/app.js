@@ -90,6 +90,11 @@ async function createChart(elementId, dataSourceURL) {
         .attr('class', 'xAxis')
         .attr('transform', `translate(0, ${chartHeight + chartConfig.margin.top})`)
         .call(xAxis)
+        .selectAll('text')
+        .style('text-anchor', 'end')
+        .attr('dx', '-0.5em')
+        .attr('dy', '0.25em')
+        .attr('transform', 'rotate(-45)');
 
     var yMin = d3.min(aggData, d => d[chartConfig.y.key]);
     var yMax = d3.max(aggData, d => d[chartConfig.y.key]) * 1.01; /*COME BACK AND MAKE THIS A CONFIG KEY / VALUE*/
@@ -134,6 +139,12 @@ async function createChart(elementId, dataSourceURL) {
         .attr('transform', `translate(0, ${chartConfig.margin.top})`)
         .datum(aggData)
         .attr('fill', chartConfig.line.fill)
+        /*.attr(['stroke', 'strokeWidth'].reduce((result, attr) => {
+            result[attr] = function(d) {
+                return attr in d ? d[attr] : null;
+            }
+            return result;
+        }))*/
         .attr('stroke', chartConfig.line.stroke)
         .attr('stroke-width', chartConfig.line.strokeWidth)
         .attr('d', line);
