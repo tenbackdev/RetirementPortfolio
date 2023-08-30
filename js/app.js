@@ -92,8 +92,8 @@ async function createChart(elementId, dataSourceURL) {
         .call(xAxis)
         .selectAll('text')
         .style('text-anchor', 'end')
-        .attr('dx', '-0.5em')
-        .attr('dy', '0.25em')
+        .attr('dx', '-.6em')
+        .attr('dy', '0.4em')
         .attr('transform', 'rotate(-45)');
 
     var yMin = d3.min(aggData, d => d[chartConfig.y.key]);
