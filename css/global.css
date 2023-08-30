@@ -79,7 +79,7 @@ main {
     margin: 15px 0;
 }
 
-.contentContainer {
+.chartContainer {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -128,6 +128,11 @@ main {
     margin: 0;
     width: 100%;
     text-align: center;
+}
+
+.chartTitle {
+    font-size: 1.5rem;
+    color: color-mix(ok lab, purple, white);
 }
 /*Main - End*/
 
