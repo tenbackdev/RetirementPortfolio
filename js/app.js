@@ -91,10 +91,20 @@ async function createChart(elementId, dataSourceURL) {
         .attr('transform', `translate(0, ${chartHeight + chartConfig.margin.top})`)
         .call(xAxis)
         .selectAll('text')
-        .style('text-anchor', 'end')
-        .attr('dx', '-.6em')
-        .attr('dy', '0.4em')
-        .attr('transform', 'rotate(-45)');
+        //.style('text-anchor', 'end')
+        //.attr('dx', '-.6em')
+        //.attr('dy', '0.4em')
+        //.attr('transform', 'rotate(-45)');
+
+    tickConfig = {'transform': 'rotate(-45)', 'dx': '-.6em', 'dy': '0.4em', 'text-anchor': 'end'}
+
+    //Need to add a way to get down to the selectors desired.
+    Object.keys(tickConfig).forEach(
+        key => {
+            console.log(`Key:${key}, Value: ${tickConfig[key]}`);
+            svg.select('g').selectAll('text').attr(key, tickConfig[key]);
+        }
+    )
 
     var yMin = d3.min(aggData, d => d[chartConfig.y.key]);
     var yMax = d3.max(aggData, d => d[chartConfig.y.key]) * 1.01; /*COME BACK AND MAKE THIS A CONFIG KEY / VALUE*/
