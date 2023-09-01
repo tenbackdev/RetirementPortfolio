@@ -135,21 +135,35 @@ async function createChart(elementId, dataSourceURL) {
         .style('stroke-width', 0.3)
         .style('stroke-dasharray', '6, 8');
 
+    console.log(chartConfig.line);
+    console.log(Object.keys(chartConfig.line));
+    //console.log(d3.keys(chartConfig.line));
+    //Object.keys(chartConfig.line).forEach(
+    //    key => {
+    //        console.log(`Key:${key}, Value: ${chartConfig.line[key]}`);
+    //    }
+    //)
+
     const path = svg.append('path')
         .attr('transform', `translate(0, ${chartConfig.margin.top})`)
         .datum(aggData)
-        .attr('fill', chartConfig.line.fill)
-        /*.attr(['stroke', 'strokeWidth'].reduce((result, attr) => {
-            result[attr] = function(d) {
-                return attr in d ? d[attr] : null;
-            }
-            return result;
-        }))*/
-        .attr('stroke', chartConfig.line.stroke)
-        .attr('stroke-width', chartConfig.line.strokeWidth)
+        //.attr('fill', chartConfig.line.fill)
+        //.attr(chartConfig.line)
+        //.attr(['stroke', 'strokeWidth'].reduce((result, attr) => {
+        //    result[attr] = d => {return attr in d ? d[attr] : null;}
+        //    return result;
+        //}))
+        //.attr('stroke', chartConfig.line.stroke)
+        //.attr('stroke-width', chartConfig.line.strokeWidth)
         .attr('d', line);
 
-
+    //Wonder if there is way to add this in line with the const path def above.
+    Object.keys(chartConfig.line).forEach(
+            key => {
+                console.log(`Key:${key}, Value: ${chartConfig.line[key]}`);
+                path.attr(key, chartConfig.line[key]);
+            }
+        )
 
 };
 

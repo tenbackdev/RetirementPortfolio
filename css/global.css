@@ -79,7 +79,7 @@ main {
     margin: 15px 0;
 }
 
-.chartContainer {
+.contentContainer {
     display: flex;
     flex-direction: column;
     width: 100%;

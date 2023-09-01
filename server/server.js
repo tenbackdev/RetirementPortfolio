@@ -327,7 +327,7 @@ app.get('/getChartConfig/:chartId', (req, res) => {
           line: {
             fill: result.recordset[0].line_fill,
             stroke: result.recordset[0].line_stroke,
-            strokeWidth: result.recordset[0].line_strokeWidth
+            'stroke-width': result.recordset[0].line_strokeWidth
           }
         }
         
