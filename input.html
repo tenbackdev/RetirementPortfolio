@@ -47,6 +47,58 @@
                 <button id="acctBalanceSnshBtn" class="inputButton">Submit</button>
             </div>
         </section>
+        <section id="transInputSection" class="sectionContainer">
+            <div id="transInputContent" class="contentContainer">
+                <h2 id="transInputHdr" class="inputHeader">Transaction</h2>
+                <div id="transDateInputLabel" class="inputLabelDiv">
+                    <label for="transDateInput" class="inputLabel">Transaction Date:</label>
+                    <input type="date" id="transDateInput" />
+                </div>
+                <div id="acctInputLabel" class="inputLabelDiv">
+                    <label for="acctSelect" class="inputLabel">Account Name</label>
+                    <select name="accounts" id="transAcctSelect">
+                        <!--Options to be added via JS-->
+                    </select>
+                </div>
+                <div id="tickerInputLabel" class="inputLabelDiv">
+                    <label for="tickerSelect" class="inputLabel">Ticker</label>
+                    <select name="tickers" id="tickerSelect">
+                        <!--Options to be added via JS-->
+                    </select>
+                </div>
+                <div id="transTypeInputLabel" class="inputLabelDiv">
+                    <label for="transTypeSelect" class="inputLabel">Transaction Type</label>
+                    <select name="types" id="transTypeSelect">
+                        <!--Options to be added via JS-->
+                    </select>
+                </div>
+                <div id="transPriceInputLabel" class="inputLabelDiv">
+                    <label for="transPriceInput" class="inputLabel">Price:</label>
+                    <span class="preInputSpan">$</span>
+                    <input type="number" name="transPriceInput" min="0" step="0.01" id="transPrice">
+                    <span class="validity"></span>
+                </div>
+                <div id="transQtyInputLabel" class="inputLabelDiv">
+                    <label for="transQtyInput" class="inputLabel">Quantity:</label>
+                    <span class="preInputSpan">$</span>
+                    <input type="number" name="transQtyInput" min="0" step="0.00001" id="transQty">
+                    <span class="validity"></span>
+                </div>
+                <div id="transAmtInputLabel" class="inputLabelDiv">
+                    <label for="transAmtInput" class="inputLabel">Amount:</label>
+                    <span class="preInputSpan">$</span>
+                    <input type="number" name="transAmtInput" min="0" step="0.01" id="transAmt">
+                    <span class="validity"></span>
+                </div>
+                <div id="transCommInputLabel" class="inputLabelDiv">
+                    <label for="transCommInput" class="inputLabel">Commision:</label>
+                    <span class="preInputSpan">$</span>
+                    <input type="number" name="transCommInput" min="0" step="0.01" id="transComm" placeholder="0">
+                    <span class="validity"></span>
+                </div>
+                <button id="transInputBtn" class="inputButton">Submit</button>
+            </div>
+        </section>
     </main>
 </body>
 <script src="https://d3js.org/d3.v7.min.js"></script>
