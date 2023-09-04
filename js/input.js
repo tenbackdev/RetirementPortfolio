@@ -55,11 +55,7 @@ function getCurrentDate() {
 
 function setDefaultSnapshotDate(elemId) {
     var snshDefaultDate = getCurrentDate()
-    console.log(snshDefaultDate)
-    console.log(elemId)
     var snshDtInp = document.getElementById(elemId)
-    console.log(document.getElementById('snapshotDateInput'))
-    console.log(snshDtInp)
     snshDtInp.value = snshDefaultDate;
 }
 
@@ -89,9 +85,7 @@ function initialize() {
 function addAccountSelectOptions(elemId) {
     getAccounts()
         .then(acctData => {
-            console.log(acctData)
-            
-            const acctDropDown = d3.select(elemId)
+           const acctDropDown = d3.select(elemId)
 
             acctDropDown.selectAll('option')
                 .data(acctData)

@@ -49,7 +49,9 @@
         </section>
         <section id="transInputSection" class="sectionContainer">
             <div id="transInputContent" class="contentContainer">
-                <h2 id="transInputHdr" class="inputHeader">Transaction</h2>
+                <div id="transInputHdrDiv">
+                    <h2 id="transInputHdr" class="inputHeader">Transaction</h2>
+                </div>
                 <div id="transDateInputLabel" class="inputLabelDiv">
                     <label for="transDateInput" class="inputLabel">Transaction Date:</label>
                     <input type="date" id="transDateInput" />
@@ -96,7 +98,10 @@
                     <input type="number" name="transCommInput" min="0" step="0.01" id="transComm" placeholder="0">
                     <span class="validity"></span>
                 </div>
-                <button id="transInputBtn" class="inputButton">Submit</button>
+                <div id="transInputBtnDiv">
+                    <button id="transInputBtn" class="inputButton">Submit</button>
+                </div>
+                
             </div>
         </section>
     </main>
