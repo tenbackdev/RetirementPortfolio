@@ -75,6 +75,7 @@ function initTransactionInput() {
 
     addAccountSelectOptions('#transAcctSelect');
     setDefaultSnapshotDate('transDateInput');
+    addTickerSelectOptions('#tickerSelect');
 }
 
 function initialize() {
@@ -93,6 +94,20 @@ function addAccountSelectOptions(elemId) {
                 .append('option')
                 .text(d => `${d.acct_nm} (${d.acct_nbr}) at ${d.inst_nm}`)
                 .attr('value', d => `${d.acct_id}`);
+        });
+}
+
+function addTickerSelectOptions(elemId) {
+    getTickers()
+        .then(tickerData => {
+           const tickerDropDown = d3.select(elemId)
+
+           tickerDropDown.selectAll('option')
+                .data(tickerData)
+                .enter()
+                .append('option')
+                .text(d => `${d.ticker} - ${d.ticker_nm}`)
+                .attr('value', d => `${d.ticker}`);
         });
 }
 

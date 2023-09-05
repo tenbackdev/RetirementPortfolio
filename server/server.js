@@ -84,6 +84,33 @@ app.get('/acct', (req, res) => {
 });
 
 // Define the endpoint for executing the SQL query
+app.get('/tickers', (req, res) => {
+  // Connect to the SQL Server
+  sql.connect(config, err => {
+    if (err) {
+      console.log('Error connecting to SQL Server:', err);
+      res.status(500).json({ error: 'Error connecting to SQL Server' });
+      return;
+    }
+
+    // Execute the SQL query
+    const query = 'select * from invest.rpt.v_ticker';
+    new sql.Request().query(query, (err, result) => {
+      if (err) {
+        console.log('Error executing query:', err);
+        res.status(500).json({ error: 'Error executing query' });
+      } else {
+        // Return the query results as JSON
+        res.json(result.recordset);
+      }
+
+      // Close the SQL Server connection
+      sql.close();
+    });
+  });
+});
+
+// Define the endpoint for executing the SQL query
 app.get('/acctBalHist', (req, res) => {
     // Connect to the SQL Server
     sql.connect(config, err => {
