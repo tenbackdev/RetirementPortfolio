@@ -56,6 +56,42 @@ app.post('/acctBalSnshInput', async (req, res) => {
 
 });
 
+app.post('/transInput', async (req, res) => {
+  
+  const {trans_dt, acct_id, ticker, trans_type, trans_price, trans_qty, trans_amt, trans_comm} = req.body;
+
+  if(!trans_dt || !acct_id || !ticker || !trans_type || !trans_price || !trans_qty || !trans_amt || !trans_comm) {
+    return res.status(400).json({error: 'All parameters are required.'});
+  }
+
+  try {
+    await sql.connect(config);
+    const sqlReq = new sql.Request();
+
+    sqlReq.input('trans_dt', sql.Date, new Date(trans_dt));
+    sqlReq.input('acct_id', sql.Int, acct_id);
+    sqlReq.input('ticker', sql.VarChar(5), ticker);
+    sqlReq.input('trans_type', sql.VarChar(20), trans_type);
+    sqlReq.input('trans_price', sql.Decimal(7,2), trans_price);
+    sqlReq.input('trans_qty', sql.Decimal(10,5), trans_qty);
+    sqlReq.input('trans_amt', sql.Decimal(7,2), trans_amt);
+    sqlReq.input('trans_comm', sql.Decimal(7,2), trans_comm);
+    
+    const result = await sqlReq.execute('invest.dat.usp_update_acct_trans');
+
+    console.log(result);
+
+    return res.json({message: 'Successfully submitted transaction.'})
+
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    return res.status(500).json({error: 'An error occurred.'})
+  } finally {
+    sql.close();
+  }
+
+});
+
 // Define the endpoint for executing the SQL query
 app.get('/acct', (req, res) => {
   // Connect to the SQL Server

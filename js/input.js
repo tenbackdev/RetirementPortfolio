@@ -25,27 +25,37 @@ function transactionSubmit() {
     
     console.log('Confirming Call')
 
-    /*
-    const acctIdInputValue = document.getElementById('acctSelect').value;
-    const snshDtInputValue = document.getElementById('snapshotDateInput').value;
-    const acctBalInputValue = document.getElementById('balanceValue').value;
-
+    const transDtInputValue = document.getElementById('transDateInput').value;
+    const acctIdInputValue = document.getElementById('transAcctSelect').value;
+    const tickerInputValue = document.getElementById('tickerSelect').value;
+    const transTypeInputValue = document.getElementById('transTypeSelect').value;
+    const transPriceInputValue = document.getElementById('transPrice').value;
+    const transQtyInputValue = document.getElementById('transQty').value;
+    const transAmtInputValue = document.getElementById('transAmt').value;
+    const transCommInputValue = document.getElementById('transComm').value;
+    
+    
     const postData = {
-        acct_id: acctIdInputValue
-        , snsh_dt: snshDtInputValue
-        , acct_bal: acctBalInputValue
+        trans_dt: transDtInputValue
+        , acct_id: acctIdInputValue
+        , ticker: tickerInputValue
+        , trans_type: transTypeInputValue
+        , trans_price: transPriceInputValue
+        , trans_qty: transQtyInputValue
+        , trans_amt: transAmtInputValue
+        , trans_comm: transCommInputValue
     }
 
-    console.log(acctIdInputValue, snshDtInputValue, acctBalInputValue);
-
-    axios.post('http://localhost:5501/acctBalSnshInput', postData)
+    console.log(transDtInputValue, acctIdInputValue, tickerInputValue, transTypeInputValue
+        , transPriceInputValue, transQtyInputValue, transAmtInputValue, transCommInputValue);
+    
+    axios.post('http://localhost:5501/transInput', postData)
         .then(response => {
             console.log(response.data.message);
         })
         .catch(error => {
             console.error(`Error: ${error}`);
         })
-    */
 }
 
 function getCurrentDate() {
