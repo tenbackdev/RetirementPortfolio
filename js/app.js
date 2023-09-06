@@ -206,7 +206,19 @@ function getTickers() {
     })
 }
 
-
+//Serves As The Main Function To Go Get The Contents Of curAcctBal Endpoint
+function getTransTypes() {
+    return new Promise((resolve, reject) => {
+        fetch('http://localhost:5501/transTypes')
+        .then(response => response.json())
+        .then(data => {
+            resolve(data);
+        })
+        .catch(error => {
+            reject(error);
+        });
+    })
+}
 
 /*
 

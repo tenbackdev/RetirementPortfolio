@@ -76,6 +76,7 @@ function initTransactionInput() {
     addAccountSelectOptions('#transAcctSelect');
     setDefaultSnapshotDate('transDateInput');
     addTickerSelectOptions('#tickerSelect');
+    addTransTypesSelectOptions('#transTypeSelect');
 }
 
 function initialize() {
@@ -108,6 +109,20 @@ function addTickerSelectOptions(elemId) {
                 .append('option')
                 .text(d => `${d.ticker} - ${d.ticker_nm}`)
                 .attr('value', d => `${d.ticker}`);
+        });
+}
+
+function addTransTypesSelectOptions(elemId) {
+    getTransTypes()
+        .then(transTypesData => {
+           const transTypesDropDown = d3.select(elemId)
+
+           transTypesDropDown.selectAll('option')
+                .data(transTypesData)
+                .enter()
+                .append('option')
+                .text(d => `${d.trans_type}`)
+                .attr('value', d => `${d.trans_type}`);
         });
 }
 
