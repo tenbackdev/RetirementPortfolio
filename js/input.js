@@ -78,10 +78,30 @@ function initAccountBalanceSnapshotInput() {
     setDefaultSnapshotDate('snapshotDateInput');
 }
 
+function calcTransAmount() {
+    console.log('calcTransAmount called')
+
+    const transPriceInputValue = document.getElementById('transPrice').value;
+    const transQtyInputValue = document.getElementById('transQty').value;
+    var transAmtInput = document.getElementById('transAmt');
+
+    const transAmountCalc = transPriceInputValue * transQtyInputValue;
+
+    if (transAmountCalc) {
+        console.log('hello')
+        transAmtInput.value = transAmountCalc;
+    }
+
+};
+
 function initTransactionInput() {
     //Add Event Listeners
     var transBtn = document.getElementById('transInputBtn');
     transBtn.addEventListener('click', transactionSubmit)
+    var transPrice = document.getElementById('transPrice');
+    transPrice.addEventListener('input', calcTransAmount);
+    var transQty = document.getElementById('transQty');
+    transQty.addEventListener('input', calcTransAmount);
 
     addAccountSelectOptions('#transAcctSelect');
     setDefaultSnapshotDate('transDateInput');
