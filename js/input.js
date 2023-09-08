@@ -52,6 +52,7 @@ function transactionSubmit() {
     axios.post('http://localhost:5501/transInput', postData)
         .then(response => {
             console.log(response.data.message);
+            alert('Transaction Submitted!')
         })
         .catch(error => {
             console.error(`Error: ${error}`);
