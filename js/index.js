@@ -1,9 +1,9 @@
 function initialize() {
-    console.log('Hi')
+    //console.log('Hi')
 
     //Load Charts
     //Balance Hitory
-    createChart('#acctBalHistStackedLine', 'http://localhost:5501/acctBalHist');
+    createChart('#acctBalHistStackedLine', `${apiURLDomainPort}/acctBalHist`);
 }
 
 document.addEventListener('DOMContentLoaded', initialize);
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', initialize);
 //Serves As The Main Function To Go Get The Contents Of curAcctBal Endpoint
 function getCurrentBalanceData() {
     return new Promise((resolve, reject) => {
-        fetch('http://localhost:5501/curAcctBal')
+        fetch(`${apiURLDomainPort}/curAcctBal`)
         .then(response => response.json())
         .then(data => {
             resolve(data);
@@ -27,7 +27,7 @@ function getCurrentBalanceData() {
 //Serves As The Main Function To Go Get The Contents Of curAcctBal Endpoint
 function getAccountBalanceHist() {
     return new Promise((resolve, reject) => {
-        fetch('http://localhost:5501/acctBalHist')
+        fetch(`${apiURLDomainPort}/acctBalHist`)
         .then(response => response.json())
         .then(data => {
             resolve(data);
@@ -41,7 +41,7 @@ function getAccountBalanceHist() {
 //Serves As The Main Function To Go Get The Contents Of recInc Endpoint
 function getRecentIncome() {
     return new Promise((resolve, reject) => {
-        fetch('http://localhost:5501/recInc')
+        fetch(`${apiURLDomainPort}/recInc`)
         .then(response => response.json())
         .then(data => {
             resolve(data);
@@ -55,7 +55,7 @@ function getRecentIncome() {
 //Serves As The Main Function To Go Get The Contents Of curEstInc Endpoint
 function getCurEstIncome() {
     return new Promise((resolve, reject) => {
-        fetch('http://localhost:5501/curEstInc')
+        fetch(`${apiURLDomainPort}/curEstInc`)
         .then(response => response.json())
         .then(data => {
             resolve(data);

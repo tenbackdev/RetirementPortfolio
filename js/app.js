@@ -1,3 +1,5 @@
+const apiURLDomainPort = 'http://192.168.1.33:5501' //localhost:5501
+
 const scaleFunctions = {
     linear: d3.scaleLinear,
     time: d3.scaleTime
@@ -47,7 +49,7 @@ function addChartTitle(svg, marginConfig, titleConfig) {
 
 async function createChart(elementId, dataSourceURL) {
 
-    const apiURL = `http://localhost:5501/getChartConfig/${elementId.replace('#', '')}`
+    const apiURL = `${apiURLDomainPort}/getChartConfig/${elementId.replace('#', '')}`
 
     const chartConfigResponse = await fetch(apiURL);
     const chartConfig = await chartConfigResponse.json();
@@ -181,7 +183,7 @@ async function createChart(elementId, dataSourceURL) {
 //Serves As The Main Function To Go Get The Contents Of curAcctBal Endpoint
 function getAccounts() {
     return new Promise((resolve, reject) => {
-        fetch('http://localhost:5501/acct')
+        fetch(`${apiURLDomainPort}/acct`)
         .then(response => response.json())
         .then(data => {
             resolve(data);
@@ -195,7 +197,7 @@ function getAccounts() {
 //Serves As The Main Function To Go Get The Contents Of curAcctBal Endpoint
 function getTickers() {
     return new Promise((resolve, reject) => {
-        fetch('http://localhost:5501/tickers')
+        fetch(`${apiURLDomainPort}/tickers`)
         .then(response => response.json())
         .then(data => {
             resolve(data);
@@ -209,7 +211,7 @@ function getTickers() {
 //Serves As The Main Function To Go Get The Contents Of curAcctBal Endpoint
 function getTransTypes() {
     return new Promise((resolve, reject) => {
-        fetch('http://localhost:5501/transTypes')
+        fetch(`${apiURLDomainPort}/transTypes`)
         .then(response => response.json())
         .then(data => {
             resolve(data);
@@ -267,7 +269,7 @@ const colorsArray = ["#FF5733", "#33FF6C", "#3366FF", "#FF33A3", "#33FFB3", "#FF
 //Serves As The Main Function To Go Get The Contents Of curAcctBal Endpoint
 function getAccountBalanceHist() {
     return new Promise((resolve, reject) => {
-        fetch('http://localhost:5501/acctBalHist')
+        fetch(`${apiURLDomainPort}/acctBalHist`)
         .then(response => response.json())
         .then(data => {
             resolve(data);
@@ -398,7 +400,7 @@ function createBarChart (divId, chartData, dimKey, plotKey, chartMargin, colorRa
 
 async function createChartLegacy(elementId, dataSourceURL) {
 
-    const apiURL = `http://localhost:5501/getChartConfig/${elementId.replace('#', '')}`
+    const apiURL = `${apiURLDomainPort}/getChartConfig/${elementId.replace('#', '')}`
 
     const chartConfigResponse = await fetch(apiURL);
     const chartConfig = await chartConfigResponse.json();
