@@ -4,6 +4,10 @@ function initialize() {
     //Load Charts
     //Balance Hitory
     createChart('#acctBalHistStackedLine', `${apiURLDomainPort}/acctBalHist`);
+    loadBalanceData();
+    loadBalanceHistData();
+    loadRecentIncomeData();
+    loadCurEstIncomeData();
 }
 
 document.addEventListener('DOMContentLoaded', initialize);

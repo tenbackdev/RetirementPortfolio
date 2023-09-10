@@ -543,6 +543,5 @@ async function createChartLegacy(elementId, dataSourceURL) {
 
 
 
-
 //Example of how to call function:
 //createBarChart("#testCentralChart", exData, "pay_mnth_nm_yr_nbr", "inc_amt", exMargin, "inc_status"); 
