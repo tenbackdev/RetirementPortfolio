@@ -1,4 +1,4 @@
-const apiURLDomainPort = 'http://192.168.1.33:5501' //localhost:5501
+const apiURLDomainPort = 'http://localhost:5501' //'http://192.168.1.33:5501'
 
 const scaleFunctions = {
     linear: d3.scaleLinear,

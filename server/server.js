@@ -51,7 +51,7 @@ app.post('/acctBalSnshInput', async (req, res) => {
     console.error(`Error: ${error.message}`);
     return res.status(500).json({error: 'An error occurred.'})
   } finally {
-    sql.close();
+    //sql.close();
   }
 
 });
@@ -87,7 +87,7 @@ app.post('/transInput', async (req, res) => {
     console.error(`Error: ${error.message}`);
     return res.status(500).json({error: 'An error occurred.'})
   } finally {
-    sql.close();
+    //sql.close();
   }
 
 });
@@ -114,7 +114,7 @@ app.get('/acct', (req, res) => {
       }
 
       // Close the SQL Server connection
-      sql.close();
+      //sql.close();
     });
   });
 });
@@ -141,7 +141,7 @@ app.get('/tickers', (req, res) => {
       }
 
       // Close the SQL Server connection
-      sql.close();
+      //sql.close();
     });
   });
 });
@@ -168,7 +168,7 @@ app.get('/transTypes', (req, res) => {
       }
 
       // Close the SQL Server connection
-      sql.close();
+      //sql.close();
     });
   });
 });
@@ -195,7 +195,7 @@ app.get('/acctBalHist', (req, res) => {
         }
   
         // Close the SQL Server connection
-        sql.close();
+        //sql.close();
       });
     });
   });
@@ -222,7 +222,7 @@ app.get('/curAcctBal', (req, res) => {
         }
   
         // Close the SQL Server connection
-        sql.close();
+        //sql.close();
       });
     });
   });
@@ -249,7 +249,7 @@ app.get('/recInc', (req, res) => {
         }
   
         // Close the SQL Server connection
-        sql.close();
+        //sql.close();
       });
     });
   });
@@ -276,7 +276,7 @@ app.get('/curEstInc', (req, res) => {
         }
   
         // Close the SQL Server connection
-        sql.close();
+        //sql.close();
       });
     });
   });
@@ -303,7 +303,7 @@ app.get('/curEstIncAvg', (req, res) => {
       }
 
       // Close the SQL Server connection
-      sql.close();
+      //sql.close();
     });
   });
 });
@@ -330,7 +330,7 @@ app.get('/histEstIncAvg', (req, res) => {
       }
 
       // Close the SQL Server connection
-      sql.close();
+      //sql.close();
     });
   });
 });
@@ -357,7 +357,7 @@ app.get('/curEstIncTickerPayDt', (req, res) => {
       }
 
       // Close the SQL Server connection
-      sql.close();
+      //sql.close();
     });
   });
 });
@@ -426,7 +426,7 @@ app.get('/getChartConfig/:chartId', (req, res) => {
       }
 
       // Close the SQL Server connection
-      sql.close();
+      //sql.close();
     });
   });
 });
@@ -475,7 +475,7 @@ app.get('/getChartConfigBeta/:chartId', (req, res) => {
       }
 
       // Close the SQL Server connection
-      sql.close();
+      //sql.close();
     });
   });
 });
@@ -502,7 +502,7 @@ app.get('/executeQuery', (req, res) => {
         }
   
         // Close the SQL Server connection
-        sql.close();
+        //sql.close();
       });
     });
   });
