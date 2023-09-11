@@ -10,11 +10,10 @@ function acctBalanceSnshSubmit() {
         , acct_bal: acctBalInputValue
     }
 
-    console.log(acctIdInputValue, snshDtInputValue, acctBalInputValue);
-
     axios.post('http://localhost:5501/acctBalSnshInput', postData)
         .then(response => {
             console.log(response.data.message);
+            alert(`${response.data.message}`)
         })
         .catch(error => {
             console.error(`Error: ${error}`);
@@ -89,7 +88,6 @@ function calcTransAmount() {
     const transAmountCalc = transPriceInputValue * transQtyInputValue;
 
     if (transAmountCalc) {
-        console.log('hello')
         transAmtInput.value = transAmountCalc;
     }
 
