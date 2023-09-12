@@ -140,7 +140,8 @@ main {
 
 .chartTitle {
     font-size: 1.5rem;
-    color: color-mix(ok lab, purple, white);
+    fill: var(--var-header-color);
+    
 }
 /*Main - End*/
 
