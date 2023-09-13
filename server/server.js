@@ -363,6 +363,69 @@ app.get('/curEstIncTickerPayDt', (req, res) => {
 });
 
 // Define the endpoint for executing the SQL query
+app.get('/getChartConfigTest/:chartId', (req, res) => {
+  // Connect to the SQL Server
+  sql.connect(config, err => {
+    if (err) {
+      console.log('Error connecting to SQL Server:', err);
+      res.status(500).json({ error: 'Error connecting to SQL Server' });
+      return;
+    }
+
+    const chartId = req.params.chartId;
+
+    const query = `select * from invest.rpt.v_chart_style_settings_testing as e where e.chart_nm = '${chartId}'`
+    // Execute the SQL query
+    /*const query = `select distinct e.obj_nm
+                  , (
+                    select t.attr_nm
+                    , t.attr_val
+                    from invest.rpt.v_chart_style_settings_testing as t
+                    where 1=1
+                    and t.chart_nm = e.chart_nm
+                    and t.obj_nm = e.obj_nm
+                    for json path
+                    ) as attr
+                  from invest.rpt.v_chart_style_settings_testing as e
+                  where 1=1
+                  and e.chart_nm = '${chartId}'
+                  for json path`;
+                  */
+    new sql.Request().query(query, (err, result) => {
+      if (err) {
+        console.log('Error executing query:', err);
+        res.status(500).json({ error: 'Error executing query' });
+      } else {
+        
+        console.log(result.recordset);
+        console.log(result.recordset.length);
+
+        var chartConfigJSON = {}
+
+        for (var i = 0; i < result.recordset.length; i++) {
+          //console.log(`i: ${i}, record: ${result.recordset[i]}`);
+          //console.log(`DETAIL: ${result.recordset[i]['obj_nm']}`);
+          //console.log(`DETAIL: ${result.recordset[i]['attr_nm']}`);
+          //console.log(`DETAIL: ${result.recordset[i]['attr_val']}`);
+          if (!chartConfigJSON[result.recordset[i]['obj_nm']]) {
+            chartConfigJSON[result.recordset[i]['obj_nm']] = {}
+          }
+          chartConfigJSON[result.recordset[i]['obj_nm']][result.recordset[i]['attr_nm']] = `${result.recordset[i]['attr_val']}` //= result.recordset[i]['attr_val']
+        }
+        
+        // Return the query results as JSON
+        //console.log(chartConfigJSON);
+        //res.json(result.recordset);
+        res.json(chartConfigJSON);
+      }
+
+      // Close the SQL Server connection
+      //sql.close();
+    });
+  });
+});
+
+// Define the endpoint for executing the SQL query
 app.get('/getChartConfig/:chartId', (req, res) => {
   // Connect to the SQL Server
   sql.connect(config, err => {
