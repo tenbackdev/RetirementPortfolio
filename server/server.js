@@ -396,26 +396,29 @@ app.get('/getChartConfigTest/:chartId', (req, res) => {
         console.log('Error executing query:', err);
         res.status(500).json({ error: 'Error executing query' });
       } else {
-        
-        console.log(result.recordset);
-        console.log(result.recordset.length);
-
         var chartConfigJSON = {}
 
         for (var i = 0; i < result.recordset.length; i++) {
           //console.log(`i: ${i}, record: ${result.recordset[i]}`);
           //console.log(`DETAIL: ${result.recordset[i]['obj_nm']}`);
           //console.log(`DETAIL: ${result.recordset[i]['attr_nm']}`);
+          //console.log(`DETAIL: ${result.recordset[i]['attr_dtl']}`);
           //console.log(`DETAIL: ${result.recordset[i]['attr_val']}`);
           if (!chartConfigJSON[result.recordset[i]['obj_nm']]) {
             chartConfigJSON[result.recordset[i]['obj_nm']] = {}
           }
-          chartConfigJSON[result.recordset[i]['obj_nm']][result.recordset[i]['attr_nm']] = `${result.recordset[i]['attr_val']}` //= result.recordset[i]['attr_val']
+          
+          if (result.recordset[i]['attr_dtl']) {
+            if (!chartConfigJSON[result.recordset[i]['obj_nm']][result.recordset[i]['attr_nm']]) {
+              chartConfigJSON[result.recordset[i]['obj_nm']][result.recordset[i]['attr_nm']] = {}
+            }            
+            chartConfigJSON[result.recordset[i]['obj_nm']][result.recordset[i]['attr_nm']][result.recordset[i]['attr_dtl']] = `${result.recordset[i]['attr_val']}`
+          } else {
+            chartConfigJSON[result.recordset[i]['obj_nm']][result.recordset[i]['attr_nm']] = `${result.recordset[i]['attr_val']}`
+          }
         }
         
         // Return the query results as JSON
-        //console.log(chartConfigJSON);
-        //res.json(result.recordset);
         res.json(chartConfigJSON);
       }
 
