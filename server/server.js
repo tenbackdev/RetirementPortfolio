@@ -408,13 +408,25 @@ app.get('/getChartConfigTest/:chartId', (req, res) => {
             chartConfigJSON[result.recordset[i]['obj_nm']] = {}
           }
           
+          var attr_val_nbr = parseInt(result.recordset[i]['attr_val'], 10)
+
           if (result.recordset[i]['attr_dtl']) {
             if (!chartConfigJSON[result.recordset[i]['obj_nm']][result.recordset[i]['attr_nm']]) {
               chartConfigJSON[result.recordset[i]['obj_nm']][result.recordset[i]['attr_nm']] = {}
-            }            
-            chartConfigJSON[result.recordset[i]['obj_nm']][result.recordset[i]['attr_nm']][result.recordset[i]['attr_dtl']] = `${result.recordset[i]['attr_val']}`
+            }        
+            if (attr_val_nbr > 0 || attr_val_nbr <= 0) {
+              chartConfigJSON[result.recordset[i]['obj_nm']][result.recordset[i]['attr_nm']][result.recordset[i]['attr_dtl']] = attr_val_nbr
+            } else {
+              chartConfigJSON[result.recordset[i]['obj_nm']][result.recordset[i]['attr_nm']][result.recordset[i]['attr_dtl']] = `${result.recordset[i]['attr_val']}`
+            }    
+            
           } else {
-            chartConfigJSON[result.recordset[i]['obj_nm']][result.recordset[i]['attr_nm']] = `${result.recordset[i]['attr_val']}`
+            //console.log(`Orig: ${result.recordset[i]['attr_val']}, Attempt: ${parseInt(result.recordset[i]['attr_val'], 10)}, Eval: ${parseInt(result.recordset[i]['attr_val'], 10) > 0}`)
+            if (attr_val_nbr > 0 || attr_val_nbr <= 0) {
+              chartConfigJSON[result.recordset[i]['obj_nm']][result.recordset[i]['attr_nm']] = attr_val_nbr
+            } else {
+              chartConfigJSON[result.recordset[i]['obj_nm']][result.recordset[i]['attr_nm']] = `${result.recordset[i]['attr_val']}`
+            }
           }
         }
         
