@@ -1,4 +1,4 @@
-const apiURLDomainPort = 'http://192.168.1.33:5501' //'http://localhost:5501' //
+const apiURLDomainPort = 'http://localhost:5501' //'http://192.168.1.33:5501' //
 
 const scaleFunctions = {
     linear: d3.scaleLinear,
@@ -49,7 +49,7 @@ function addChartTitle(svg, marginConfig, titleConfig) {
 
 async function createChart(elementId, dataSourceURL) {
 
-    const apiURL = `${apiURLDomainPort}/getChartConfig/${elementId.replace('#', '')}`
+    const apiURL = `${apiURLDomainPort}/getChartConfigTest/${elementId.replace('#', '')}`
 
     const chartConfigResponse = await fetch(apiURL);
     const chartConfig = await chartConfigResponse.json();
@@ -65,8 +65,8 @@ async function createChart(elementId, dataSourceURL) {
     const elementRect = element.getBoundingClientRect();
     const svgWidth = elementRect.width;
     const svgHeight = elementRect.height;
-    const chartWidth = svgWidth - chartConfig.margin.left - chartConfig.margin.right;
-    const chartHeight = svgHeight - chartConfig.margin.top - chartConfig.margin.bottom;
+    const chartWidth = svgWidth - chartConfig.chart.margin.left - chartConfig.chart.margin.right;
+    const chartHeight = svgHeight - chartConfig.chart.margin.top - chartConfig.chart.margin.bottom;
 
     const svg = d3.select(elementId)
         .append('svg')
@@ -74,14 +74,14 @@ async function createChart(elementId, dataSourceURL) {
         .attr('height', svgHeight);
 
     if (chartConfig.title) {
-        addChartTitle(svg, chartConfig.margin, chartConfig.title)
+        addChartTitle(svg, chartConfig.chart.margin, chartConfig.title)
     }
      
     var xMin = domainMethods[chartConfig.x.domainType](d3.min(data, d => d[chartConfig.x.key]));
     var xMax = domainMethods[chartConfig.x.domainType](d3.max(data, d => d[chartConfig.x.key]));
     xScale = scaleFunctions[chartConfig.x.scale]()
         .domain([xMin, xMax])
-        .range([chartConfig.margin.left, chartWidth + chartConfig.margin.left - chartConfig.margin.right]);
+        .range([chartConfig.chart.margin.left, chartWidth + chartConfig.chart.margin.left - chartConfig.chart.margin.right]);
 
     xAxis = d3.axisBottom(xScale)
         .ticks(tickMethods[chartConfig.x.tick])
@@ -90,7 +90,7 @@ async function createChart(elementId, dataSourceURL) {
 
     svg.append('g')
         .attr('class', 'xAxis')
-        .attr('transform', `translate(0, ${chartHeight + chartConfig.margin.top})`)
+        .attr('transform', `translate(0, ${chartHeight + chartConfig.chart.margin.top})`)
         .call(xAxis)
         .selectAll('text')
         //.style('text-anchor', 'end')
@@ -112,7 +112,7 @@ async function createChart(elementId, dataSourceURL) {
     var yMax = d3.max(aggData, d => d[chartConfig.y.key]) * 1.01; /*COME BACK AND MAKE THIS A CONFIG KEY / VALUE*/
     yScale = scaleFunctions[chartConfig.y.scale]()
         .domain([yMin, yMax])
-        .range([chartHeight, chartConfig.margin.top]);
+        .range([chartHeight, chartConfig.chart.margin.top]);
 
     yAxis = d3.axisLeft(yScale)
         .ticks(tickMethods[chartConfig.y.tick])
@@ -121,7 +121,7 @@ async function createChart(elementId, dataSourceURL) {
 
     svg.append('g')
         .attr('class', 'yAxis')
-        .attr('transform', `translate(${chartConfig.margin.left}, ${chartConfig.margin.top})`)
+        .attr('transform', `translate(${chartConfig.chart.margin.left}, ${chartConfig.chart.margin.top})`)
         .call(yAxis);
 
     const line = d3.line()
@@ -139,10 +139,10 @@ async function createChart(elementId, dataSourceURL) {
         .enter()
         .append('line')
         .attr('class', 'horizontalGrid')
-        .attr('x1', chartConfig.margin.left)
-        .attr('y1', d => yScale(d) + chartConfig.margin.top)
-        .attr('x2', chartWidth + chartConfig.margin.left - chartConfig.margin.right)
-        .attr('y2', d => yScale(d) + chartConfig.margin.top)
+        .attr('x1', chartConfig.chart.margin.left)
+        .attr('y1', d => yScale(d) + chartConfig.chart.margin.top)
+        .attr('x2', chartWidth + chartConfig.chart.margin.left - chartConfig.chart.margin.right)
+        .attr('y2', d => yScale(d) + chartConfig.chart.margin.top)
         .style('stroke', 'gray')
         .style('stroke-width', 0.3)
         .style('stroke-dasharray', '6, 8');
@@ -157,7 +157,7 @@ async function createChart(elementId, dataSourceURL) {
     //)
 
     const path = svg.append('path')
-        .attr('transform', `translate(0, ${chartConfig.margin.top})`)
+        .attr('transform', `translate(0, ${chartConfig.chart.margin.top})`)
         .datum(aggData)
         //.attr('fill', chartConfig.line.fill)
         //.attr(chartConfig.line)
@@ -415,8 +415,8 @@ async function createChartLegacy(elementId, dataSourceURL) {
     //console.log(elementRect.width,elementRect.height);
     const svgWidth = elementRect.width;
     const svgHeight = elementRect.height;
-    const chartWidth = svgWidth - chartConfig.margin.left - chartConfig.margin.right;
-    const chartHeight = svgHeight - chartConfig.margin.top - chartConfig.margin.bottom;
+    const chartWidth = svgWidth - chartConfig.chart.margin.left - chartConfig.chart.margin.right;
+    const chartHeight = svgHeight - chartConfig.chart.margin.top - chartConfig.chart.margin.bottom;
 
     const svg = d3.select(elementId)
         .append('svg')
@@ -424,7 +424,7 @@ async function createChartLegacy(elementId, dataSourceURL) {
         .attr('height', svgHeight);
 
     if (chartConfig.title) {
-        addChartTitle(svg, chartConfig.margin, chartConfig.title)
+        addChartTitle(svg, chartConfig.chart.margin, chartConfig.title)
     }
         
     data.sort((a, b) => d3.ascending(a, b.snsh_dt))
@@ -438,7 +438,7 @@ async function createChartLegacy(elementId, dataSourceURL) {
 
     bottomScale = d3.scaleTime()
         .domain(bottomMinMax)
-        .range([chartConfig.margin.left, chartWidth]);
+        .range([chartConfig.chart.margin.left, chartWidth]);
 
     leftScale = d3.scaleLinear()
         //.domain([0, 400000])
@@ -450,7 +450,7 @@ async function createChartLegacy(elementId, dataSourceURL) {
         .y(d => leftScale(d.acct_bal));
 
     const path = svg.append('path')
-        .attr('transform', `translate(0, ${chartConfig.margin.top})`)
+        .attr('transform', `translate(0, ${chartConfig.chart.margin.top})`)
         .datum(aggData)
         .attr('fill', 'none')
         .attr('stroke', 'black')
@@ -464,7 +464,7 @@ async function createChartLegacy(elementId, dataSourceURL) {
 
     svg.append('g')
         .attr('class', 'bottomAxis')
-        .attr('transform', `translate(0, ${chartHeight + chartConfig.margin.top})`)
+        .attr('transform', `translate(0, ${chartHeight + chartConfig.chart.margin.top})`)
         .call(bottomAxis)
         //.attr('stroke', 'black');
 
@@ -475,7 +475,7 @@ async function createChartLegacy(elementId, dataSourceURL) {
 
     svg.append('g')
         .attr('class', 'leftAxis')
-        .attr('transform', `translate(${chartConfig.margin.left}, ${chartConfig.margin.top})`)
+        .attr('transform', `translate(${chartConfig.chart.margin.left}, ${chartConfig.chart.margin.top})`)
         .call(leftAxis);
 
     const tooltip = d3.select('body')
@@ -492,7 +492,7 @@ async function createChartLegacy(elementId, dataSourceURL) {
     const listRect = svg.append('rect')
         .attr('width', svgWidth)
         .attr('height', svgHeight)
-        //.attr('transform', `translate(${chartConfig.margin.left}, ${chartConfig.margin.top})`)
+        //.attr('transform', `translate(${chartConfig.chart.margin.left}, ${chartConfig.chart.margin.top})`)
         .attr('opacity', 0);
 
     listRect.on('pointermove', function (event) {
@@ -504,7 +504,7 @@ async function createChartLegacy(elementId, dataSourceURL) {
         const d1 = aggData[i];
         const d = x0 - new Date(d0.snsh_dt) > new Date(d1.snsh_dt) - x0 ? d1 : d0;
         const xPos = bottomScale(new Date(d.snsh_dt));
-        const yPos = leftScale(d.acct_bal) + chartConfig.margin.top;
+        const yPos = leftScale(d.acct_bal) + chartConfig.chart.margin.top;
 
         circle.attr('cx', xPos)
             .attr('cy', yPos);
