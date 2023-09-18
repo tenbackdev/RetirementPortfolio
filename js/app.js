@@ -49,7 +49,7 @@ function addChartTitle(svg, marginConfig, titleConfig) {
 
 async function createChart(elementId, dataSourceURL) {
 
-    const apiURL = `${apiURLDomainPort}/getChartConfigTest/${elementId.replace('#', '')}`
+    const apiURL = `${apiURLDomainPort}/getChartConfig/${elementId.replace('#', '')}`
 
     const chartConfigResponse = await fetch(apiURL);
     const chartConfig = await chartConfigResponse.json();
