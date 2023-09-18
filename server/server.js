@@ -363,7 +363,7 @@ app.get('/curEstIncTickerPayDt', (req, res) => {
 });
 
 // Define the endpoint for executing the SQL query
-app.get('/getChartConfigTest/:chartId', (req, res) => {
+app.get('/getChartConfig/:chartId', (req, res) => {
   // Connect to the SQL Server
   sql.connect(config, err => {
     if (err) {
@@ -374,23 +374,8 @@ app.get('/getChartConfigTest/:chartId', (req, res) => {
 
     const chartId = req.params.chartId;
 
-    const query = `select * from invest.rpt.v_chart_style_settings_testing as e where e.chart_nm = '${chartId}'`
-    // Execute the SQL query
-    /*const query = `select distinct e.obj_nm
-                  , (
-                    select t.attr_nm
-                    , t.attr_val
-                    from invest.rpt.v_chart_style_settings_testing as t
-                    where 1=1
-                    and t.chart_nm = e.chart_nm
-                    and t.obj_nm = e.obj_nm
-                    for json path
-                    ) as attr
-                  from invest.rpt.v_chart_style_settings_testing as e
-                  where 1=1
-                  and e.chart_nm = '${chartId}'
-                  for json path`;
-                  */
+    const query = `select * from invest.util.v_chart_cfg_tsfm as e where e.chart_nm = '${chartId}'`
+
     new sql.Request().query(query, (err, result) => {
       if (err) {
         console.log('Error executing query:', err);
@@ -399,11 +384,6 @@ app.get('/getChartConfigTest/:chartId', (req, res) => {
         var chartConfigJSON = {}
 
         for (var i = 0; i < result.recordset.length; i++) {
-          //console.log(`i: ${i}, record: ${result.recordset[i]}`);
-          //console.log(`DETAIL: ${result.recordset[i]['obj_nm']}`);
-          //console.log(`DETAIL: ${result.recordset[i]['attr_nm']}`);
-          //console.log(`DETAIL: ${result.recordset[i]['attr_dtl']}`);
-          //console.log(`DETAIL: ${result.recordset[i]['attr_val']}`);
           if (!chartConfigJSON[result.recordset[i]['obj_nm']]) {
             chartConfigJSON[result.recordset[i]['obj_nm']] = {}
           }
@@ -432,124 +412,6 @@ app.get('/getChartConfigTest/:chartId', (req, res) => {
         
         // Return the query results as JSON
         res.json(chartConfigJSON);
-      }
-
-      // Close the SQL Server connection
-      //sql.close();
-    });
-  });
-});
-
-// Define the endpoint for executing the SQL query
-app.get('/getChartConfig/:chartId', (req, res) => {
-  // Connect to the SQL Server
-  sql.connect(config, err => {
-    if (err) {
-      console.log('Error connecting to SQL Server:', err);
-      res.status(500).json({ error: 'Error connecting to SQL Server' });
-      return;
-    }
-
-    const chartId = req.params.chartId;
-    // Execute the SQL query
-    const query = `select * from invest.util.v_chart_style_settings_tsfm as s where s.chart_nm = '${chartId}'`;
-    new sql.Request().query(query, (err, result) => {
-      if (err) {
-        console.log('Error executing query:', err);
-        res.status(500).json({ error: 'Error executing query' });
-      } else {
-        
-        const chartConfig = {
-          title: {
-            text: result.recordset[0].title_text,
-            class: result.recordset[0].title_class,
-            margin: {
-              top: Number(result.recordset[0].title_marginTop),
-              left: Number(result.recordset[0].title_marginLeft)              
-            }
-          },
-          margin: {
-            top: Number(result.recordset[0].margin_top),
-            right: Number(result.recordset[0].margin_right),
-            bottom: Number(result.recordset[0].margin_bottom),
-            left: Number(result.recordset[0].margin_left)
-          },
-          x: {
-            type: result.recordset[0].x_type,
-            key: result.recordset[0].x_key,
-            scale: result.recordset[0].x_scale,
-            domainType: result.recordset[0].x_domainType,
-            tickFormat: result.recordset[0].x_tickFormat,
-            tick: result.recordset[0].x_tick,
-            tickSize: result.recordset[0].x_tickSize
-          },
-          y: {
-            type: result.recordset[0].y_type,
-            key: result.recordset[0].y_key,
-            scale: result.recordset[0].y_scale,
-            domainType: result.recordset[0].y_domainType,
-            tickFormat: result.recordset[0].y_tickFormat,
-            tick: result.recordset[0].y_tick,
-            tickSize: result.recordset[0].y_tickSize
-          },
-          line: {
-            fill: result.recordset[0].line_fill,
-            stroke: result.recordset[0].line_stroke,
-            'stroke-width': result.recordset[0].line_strokeWidth
-          }
-        }
-        
-        // Return the query results as JSON
-        res.json(chartConfig);
-      }
-
-      // Close the SQL Server connection
-      //sql.close();
-    });
-  });
-});
-
-// Define the endpoint for executing the SQL query
-app.get('/getChartConfigBeta/:chartId', (req, res) => {
-  // Connect to the SQL Server
-  sql.connect(config, err => {
-    if (err) {
-      console.log('Error connecting to SQL Server:', err);
-      res.status(500).json({ error: 'Error connecting to SQL Server' });
-      return;
-    }
-
-    const chartId = req.params.chartId;
-    // Execute the SQL query
-    const query = `select * from invest.util.chart_style_settings as s where s.chart_nm = '${chartId}'`;
-    new sql.Request().query(query, (err, result) => {
-      if (err) {
-        console.log('Error executing query:', err);
-        res.status(500).json({ error: 'Error executing query' });
-      } else {
-        
-        const chartConfig = {}
-
-        console.log(result);
-        console.log('hi')
-        console.log(result.recordset)
-        for (const row in result.recordset) {
-
-          const curRow = result.recordset[row]
-          console.log(`1: ${curRow.style_nm}, 2: ${curRow.style_prop}, 3: ${curRow.style_val}`);
-          if (!chartConfig[curRow.style_nm]) {
-            chartConfig[curRow.style_nm] = curRow.style_prop ? {} : curRow.style_val;
-          }
-
-          if (curRow.style_prop) {
-            if (!chartConfig[curRow.style_nm][curRow.style_prop]) {
-              chartConfig[curRow.style_nm][curRow.style_prop] = curRow.style_val;
-            }
-          }
-        }
-        
-        // Return the query results as JSON
-        res.json(chartConfig);
       }
 
       // Close the SQL Server connection
