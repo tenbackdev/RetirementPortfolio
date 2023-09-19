@@ -7,6 +7,14 @@
     align-items: center;
 }
 
+#stockDataContent {
+    height: 100px;
+}
+
+#stockDataContent div {
+    margin: 10px;
+}
+
 input[type=number],input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -89,7 +97,7 @@ input:valid + span::after {
     height: 300px;
 }
 
-#transInputHdrDiv, #transInputBtnDiv {
+#transInputHdrDiv, #transInputBtnDiv, #stockDataInputBtnDiv {
     vertical-align: middle;
     grid-column: 1 / 5;
     justify-content: center;

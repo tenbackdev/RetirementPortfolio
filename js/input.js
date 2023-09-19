@@ -93,6 +93,15 @@ function calcTransAmount() {
 
 };
 
+function getStockData() {
+    console.log('Hi, from Stock Data.')
+}
+
+function initGetStockData() {
+    var stockDataBtn = document.getElementById('stockDataInputBtn');
+    stockDataBtn.addEventListener('click', getStockData);
+}
+
 function initTransactionInput() {
     //Add Event Listeners
     var transBtn = document.getElementById('transInputBtn');
@@ -111,6 +120,7 @@ function initTransactionInput() {
 function initialize() {
     initAccountBalanceSnapshotInput();
     initTransactionInput();
+    initGetStockData();
 }
 
 function addAccountSelectOptions(elemId) {
