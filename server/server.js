@@ -92,6 +92,35 @@ app.post('/transInput', async (req, res) => {
 
 });
 
+app.post('/stockDataInput', async (req, res) => {
+  
+  const {json} = req.body;
+
+  if(!json) {
+    return res.status(400).json({error: 'All parameters are required.'});
+  }
+
+  try {
+    await sql.connect(config);
+    const sqlReq = new sql.Request();
+
+    sqlReq.input('json', sql.NVarChar(sql.MAX), json);
+
+    const result = await sqlReq.execute('invest.dat.usp_update_ticker_price');
+
+    console.log(result);
+
+    return res.json({message: 'Successfully submitted stock data.'})
+
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    return res.status(500).json({error: 'An error occurred.'})
+  } finally {
+    //sql.close();
+  }
+
+});
+
 // Define the endpoint for executing the SQL query
 app.get('/acct', (req, res) => {
   // Connect to the SQL Server
