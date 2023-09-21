@@ -3,3 +3,5 @@ server/package-lock.json
 server/package.json
 server/dbConfig.json
 server/dbConfig1.json
+marketDataAPIKey.txt
+alphaVantageApiKey.txt
