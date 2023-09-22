@@ -15,7 +15,9 @@ const config = {
   database: dbConfig.database,
   options: {
     encrypt: true,
-    trustServerCertificate: true
+    trustServerCertificate: true,
+    connectionTimeout: 120000,
+    requestTimeout: 60000
   }
 }
 
@@ -105,6 +107,7 @@ app.post('/stockDataInput', async (req, res) => {
     const sqlReq = new sql.Request();
 
     console.log(json)
+    console.log(JSON.stringify(json))
 
     sqlReq.input('json', sql.NVarChar(sql.MAX), JSON.stringify(json));
 
@@ -115,7 +118,7 @@ app.post('/stockDataInput', async (req, res) => {
 
     return res.json({message: 'Successfully submitted stock data.'})
 
-    setTimeout(5000);
+    //setTimeout(5000);
 
   } catch (error) {
     console.error(`Error: ${error.message}`);
@@ -480,14 +483,6 @@ app.get('/executeQuery', (req, res) => {
       });
     });
   });
-
-// Define the "executeQuery" endpoint
-app.get('/executeQueryOld', (req, res) => {
-    // Handle the request and execute the SQL query here
-    
-    // Return the response to the client
-    res.send('Query executed successfully');
-});
 
 // Start the server
 app.listen(port, () => {
