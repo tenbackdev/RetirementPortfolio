@@ -1,4 +1,5 @@
 const apiURLDomainPort = 'http://localhost:5501' //'http://192.168.1.33:5501' //
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
 const scaleFunctions = {
     linear: d3.scaleLinear,

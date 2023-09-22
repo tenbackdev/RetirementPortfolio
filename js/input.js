@@ -95,15 +95,74 @@ function calcTransAmount() {
 async function getStockData() {
     console.log('Hi, from Stock Data.')
 
-    getTickers()
-        .then(tickerData => {
-            let tickerArray = tickerData.map(function(ticker){ return ticker.ticker; })
+    var tickerDropDown = document.getElementById('tickerSelectStockData')
+    var tickerIndex = tickerDropDown.selectedIndex;
+    var tickerDropDownLength = tickerDropDown.options.length;
+    var curTicker = tickerDropDown.value;
+
+    if (tickerIndex < (tickerDropDownLength - 1)) {
+        tickerDropDown.selectedIndex = tickerIndex + 1;
+    }
+
+    console.log(`I: ${tickerIndex}, L: ${tickerDropDownLength}, V: ${curTicker}`);
+
+    const marketDataApiEndpoint = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curTicker}&apikey=${alphaVantageApiKey}`
+    console.log(marketDataApiEndpoint)
+    const marketDataResponse = fetch(marketDataApiEndpoint);
+    console.log(marketDataResponse)
+
+    /*const marketData = marketDataResponse.json();
+
+    const postData = {
+        json: marketData
+    }
+
+    axios.post('http://localhost:5501/stockDataInput', postData)
+    .then(response => {
+        console.log(response.data.message);
+        alert('Data Submitted!')
+    })
+    .catch(error => {
+        console.error(`Error: ${error}`);
+    })
+    */
+
+    //getTickers()
+     //   .then(tickerData => {
+       //     let tickerArray = tickerData.map(function(ticker){ return ticker.ticker; });
             //tickerArray.forEach(function(item){
-            ['AAPL', 'O', 'SCHD'].forEach(function(item){
+
+            //tickerArray.forEach(ticker => {
+            
+            /*
+            var cbList = d3.select('#stockDataInputCheckBoxDiv')
+                .selectAll('label')
+                    //.append('text', 'hello')
+                .data(tickerArray)
+                .enter()
+                    .append('label')
+                        .attr('for', (d,i) => {return `cb${d}`; })
+                        .text((d,i) => {return d; })
+                    .append('input')
+                        .attr('type', 'checkbox')
+                        .attr('value', d => {tickerArray[d]})
+                        .attr('id', (d,i) => {return `cb${d}`; })
+                  
+                //console.log(ticker)
+            //}
+
+            //)
+            */
+            /*
+            for (item in ['HD', 'LOW']) {
+            //['HD', 'LOW'].forEach(async function(item){
                 
-                console.log(item)
+                console.log()
+
+                delay(15000);
 
                 const marketDataApiEndpoint = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${item}&apikey=${alphaVantageApiKey}`
+                console.log(marketDataApiEndpoint)
                 const marketDataResponse = fetch(marketDataApiEndpoint);
                 const marketData = marketDataResponse.json();
             
@@ -122,8 +181,11 @@ async function getStockData() {
                     console.error(`Error: ${error}`);
                 })
 
-            });
-        });
+                
+            }    
+            //});
+            */
+       // });
     
         /*
     const marketDataApiEndpoint = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=SCHD&apikey=${alphaVantageApiKey}`
@@ -150,6 +212,8 @@ async function getStockData() {
 function initGetStockData() {
     var stockDataBtn = document.getElementById('stockDataInputBtn');
     stockDataBtn.addEventListener('click', getStockData);
+
+    addTickerSelectOptions('#tickerSelectStockData');
 }
 
 function initTransactionInput() {
