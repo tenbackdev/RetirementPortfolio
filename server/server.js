@@ -96,9 +96,11 @@ app.post('/transInput', async (req, res) => {
 
 app.post('/stockDataInput', async (req, res) => {
   
-  const {json} = req.body;
+  const {myJson} = req.body;
 
-  if(!json) {
+  console.log(myJson)
+
+  if(!myJson) {
     return res.status(400).json({error: 'All parameters are required.'});
   }
 
@@ -106,10 +108,10 @@ app.post('/stockDataInput', async (req, res) => {
     await sql.connect(config);
     const sqlReq = new sql.Request();
 
-    console.log(json)
-    console.log(JSON.stringify(json))
+    console.log(myJson)
+    console.log(JSON.stringify(myJson))
 
-    sqlReq.input('json', sql.NVarChar(sql.MAX), JSON.stringify(json));
+    sqlReq.input('json', sql.NVarChar(sql.MAX), `${JSON.stringify(myJson)}`);
 
     const result = await sqlReq.execute('invest.dat.usp_update_ticker_price');
 

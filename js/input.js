@@ -107,25 +107,43 @@ async function getStockData() {
     console.log(`I: ${tickerIndex}, L: ${tickerDropDownLength}, V: ${curTicker}`);
 
     const marketDataApiEndpoint = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curTicker}&apikey=${alphaVantageApiKey}`
+    var postData = {}
     console.log(marketDataApiEndpoint)
-    const marketDataResponse = fetch(marketDataApiEndpoint);
-    console.log(marketDataResponse)
+    fetch(marketDataApiEndpoint)
+        .then(response => response.json())
+        .then(json => {console.log(typeof(json))
+            //postData['myJson'] = json
+            postData['myJson'] = JSON.stringify(json).replace("\\", '');
+            console.log(postData)
 
-    /*const marketData = marketDataResponse.json();
+            axios.post('http://localhost:5501/stockDataInput', postData)
+            .then(response => {
+                console.log(response.data.message);
+                alert('Data Submitted!')
+            })
+            .catch(error => {
+                console.error(`Error: ${error}`);
+            })
+        } 
+            )
+        .then(postData => {
+            
+        }
+        )
 
-    const postData = {
-        json: marketData
-    }
+    
 
-    axios.post('http://localhost:5501/stockDataInput', postData)
-    .then(response => {
-        console.log(response.data.message);
-        alert('Data Submitted!')
-    })
-    .catch(error => {
-        console.error(`Error: ${error}`);
-    })
-    */
+    //const marketData = marketDataResponse.json();
+
+    
+    //const postData = {
+    //    json: marketData
+    //}
+
+    //console.log(postData)
+    //console.log(marketData)
+
+
 
     //getTickers()
      //   .then(tickerData => {
