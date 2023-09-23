@@ -108,15 +108,9 @@ app.post('/stockDataInput', async (req, res) => {
     await sql.connect(config);
     const sqlReq = new sql.Request();
 
-    console.log(myJson)
-    console.log(JSON.stringify(myJson))
-
-    sqlReq.input('json', sql.NVarChar(sql.MAX), `${JSON.stringify(myJson)}`);
+    sqlReq.input('json', sql.NVarChar(sql.MAX), `${myJson}`);
 
     const result = await sqlReq.execute('invest.dat.usp_update_ticker_price');
-
-    console.log(sqlReq.input)
-    console.log(result);
 
     return res.json({message: 'Successfully submitted stock data.'})
 

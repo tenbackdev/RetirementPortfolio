@@ -8,11 +8,15 @@
 }
 
 #stockDataContent {
-    height: 100px;
+    display: flex;
+    height: 150px;
 }
 
 #stockDataContent div {
+    display: flex;
     margin: 10px;
+    align-items: center;
+    justify-content: center;
 }
 
 input[type=number],input::-webkit-outer-spin-button,
