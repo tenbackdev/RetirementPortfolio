@@ -93,7 +93,6 @@ function calcTransAmount() {
 };
 
 async function getStockData() {
-    console.log('Hi, from Stock Data.')
 
     var tickerDropDown = document.getElementById('tickerSelectStockData')
     var tickerIndex = tickerDropDown.selectedIndex;
@@ -112,13 +111,10 @@ async function getStockData() {
     fetch(marketDataApiEndpoint)
         .then(response => response.json())
         .then(json => {console.log(typeof(json))
-            //postData['myJson'] = json
             postData['myJson'] = JSON.stringify(json).replace("\\", '');
-            console.log(postData)
 
             axios.post('http://localhost:5501/stockDataInput', postData)
             .then(response => {
-                console.log(response.data.message);
                 alert('Data Submitted!')
             })
             .catch(error => {
@@ -126,105 +122,6 @@ async function getStockData() {
             })
         } 
             )
-        .then(postData => {
-            
-        }
-        )
-
-    
-
-    //const marketData = marketDataResponse.json();
-
-    
-    //const postData = {
-    //    json: marketData
-    //}
-
-    //console.log(postData)
-    //console.log(marketData)
-
-
-
-    //getTickers()
-     //   .then(tickerData => {
-       //     let tickerArray = tickerData.map(function(ticker){ return ticker.ticker; });
-            //tickerArray.forEach(function(item){
-
-            //tickerArray.forEach(ticker => {
-            
-            /*
-            var cbList = d3.select('#stockDataInputCheckBoxDiv')
-                .selectAll('label')
-                    //.append('text', 'hello')
-                .data(tickerArray)
-                .enter()
-                    .append('label')
-                        .attr('for', (d,i) => {return `cb${d}`; })
-                        .text((d,i) => {return d; })
-                    .append('input')
-                        .attr('type', 'checkbox')
-                        .attr('value', d => {tickerArray[d]})
-                        .attr('id', (d,i) => {return `cb${d}`; })
-                  
-                //console.log(ticker)
-            //}
-
-            //)
-            */
-            /*
-            for (item in ['HD', 'LOW']) {
-            //['HD', 'LOW'].forEach(async function(item){
-                
-                console.log()
-
-                delay(15000);
-
-                const marketDataApiEndpoint = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${item}&apikey=${alphaVantageApiKey}`
-                console.log(marketDataApiEndpoint)
-                const marketDataResponse = fetch(marketDataApiEndpoint);
-                const marketData = marketDataResponse.json();
-            
-                console.log(marketData);
-            
-                const postData = {
-                    json: marketData
-                }
-            
-                axios.post('http://localhost:5501/stockDataInput', postData)
-                .then(response => {
-                    console.log(response.data.message);
-                    alert('Data Submitted!')
-                })
-                .catch(error => {
-                    console.error(`Error: ${error}`);
-                })
-
-                
-            }    
-            //});
-            */
-       // });
-    
-        /*
-    const marketDataApiEndpoint = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=SCHD&apikey=${alphaVantageApiKey}`
-    const marketDataResponse = await fetch(marketDataApiEndpoint);
-    const marketData = await marketDataResponse.json();
-
-    console.log(marketData);
-
-    const postData = {
-        json: marketData
-    }
-
-    axios.post('http://localhost:5501/stockDataInput', postData)
-    .then(response => {
-        console.log(response.data.message);
-        alert('Data Submitted!')
-    })
-    .catch(error => {
-        console.error(`Error: ${error}`);
-    })
-    */
 }
 
 function initGetStockData() {
