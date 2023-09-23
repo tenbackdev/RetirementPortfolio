@@ -111,7 +111,6 @@ async function getStockData() {
     fetch(marketDataApiEndpoint)
         .then(response => response.json())
         .then(json => {console.log(typeof(json))
-            //postData['myJson'] = json
             postData['myJson'] = JSON.stringify(json).replace("\\", '');
 
             axios.post('http://localhost:5501/stockDataInput', postData)
