@@ -22,6 +22,21 @@ function errorHandler(error) {
     console.error('Error: ', error);
 }
 
+
+//Serves As The Main Function To Go Get The Contents Of curAcctBal Endpoint
+function getCurrentBalanceData() {
+    return new Promise((resolve, reject) => {
+        fetch(`${apiURLDomainPort}/curAcctBal`)
+        .then(response => response.json())
+        .then(data => {
+            resolve(data);
+        })
+        .catch(error => {
+            reject(error);
+        });
+    })
+}
+
 //Function to sum any JSON data given, while grouping by a specified column name
 //Function will return JSON data with 2 keys, the column names will match the argument values for groupKey & sumKey
 function sumByGroup(sumData, groupKey, sumKey) {

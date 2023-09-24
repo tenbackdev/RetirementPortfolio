@@ -14,19 +14,7 @@ document.addEventListener('DOMContentLoaded', initialize);
 
 
 
-//Serves As The Main Function To Go Get The Contents Of curAcctBal Endpoint
-function getCurrentBalanceData() {
-    return new Promise((resolve, reject) => {
-        fetch(`${apiURLDomainPort}/curAcctBal`)
-        .then(response => response.json())
-        .then(data => {
-            resolve(data);
-        })
-        .catch(error => {
-            reject(error);
-        });
-    })
-}
+
 
 //Serves As The Main Function To Go Get The Contents Of curAcctBal Endpoint
 function getAccountBalanceHist() {
