@@ -114,13 +114,13 @@ async function createChart(elementId, dataSourceURL) {
         //.attr('dy', '0.4em')
         //.attr('transform', 'rotate(-45)');
 
-    tickConfig = {'transform': 'rotate(-45)', 'dx': '-.6em', 'dy': '0.4em', 'text-anchor': 'end'}
+    //tickConfig = {'transform': 'rotate(-45)', 'dx': '-.6em', 'dy': '0.4em', 'text-anchor': 'end'}
 
     //Need to add a way to get down to the selectors desired.
-    Object.keys(tickConfig).forEach(
+    Object.keys(chartConfig.x.tickStyling).forEach(
         key => {
-            console.log(`Key:${key}, Value: ${tickConfig[key]}`);
-            svg.select('g').selectAll('text').attr(key, tickConfig[key]);
+            console.log(`Key:${key}, Value: ${chartConfig.x.tickStyling[key]}`);
+            svg.select('g').selectAll('text').attr(key, chartConfig.x.tickStyling[key]);
         }
     )
 
