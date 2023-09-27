@@ -105,7 +105,7 @@ async function getStockData() {
 
     console.log(`I: ${tickerIndex}, L: ${tickerDropDownLength}, V: ${curTicker}`);
 
-    const marketDataApiEndpoint = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curTicker}&apikey=${alphaVantageApiKey}`
+    const marketDataApiEndpoint = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${curTicker}&apikey=${stockDataApiKey}`
     var postData = {}
     console.log(marketDataApiEndpoint)
     fetch(marketDataApiEndpoint)
@@ -122,6 +122,47 @@ async function getStockData() {
             })
         } 
             )
+}
+
+async function getDivData() {
+
+    var tickerDivDropDown = document.getElementById('tickerSelectdivData')
+    var tickerIndex = tickerDivDropDown.selectedIndex;
+    var tickerDivDropDownLength = tickerDivDropDown.options.length;
+    var curTicker = tickerDivDropDown.value;
+
+    if (tickerIndex < (tickerDivDropDownLength - 1)) {
+        tickerDivDropDown.selectedIndex = tickerIndex + 1;
+    }
+
+    console.log(`I: ${tickerIndex}, L: ${tickerDivDropDownLength}, V: ${curTicker}`);
+
+    const divDataApiEndpoint = `https://eodhd.com/api/div/${curTicker}.US?fmt=json&from=2000-01-01&&api_token=${dividendDataApiKey}`
+    var postData = {}
+    console.log(divDataApiEndpoint)
+    fetch(divDataApiEndpoint)
+        .then(response => response.json())
+        .then(json => {console.log(typeof(json))
+            postData['myJson'] = JSON.stringify(json).replace("\\", '');
+            postData['ticker'] = curTicker;
+
+            axios.post('http://localhost:5501/divDataInput', postData)
+            .then(response => {
+                alert('Data Submitted!')
+            })
+            .catch(error => {
+                console.error(`Error: ${error}`);
+            })
+        } 
+            )
+}
+
+
+function initGetDividendData() {
+    var stockDataBtn = document.getElementById('divDataInputBtn');
+    stockDataBtn.addEventListener('click', getDivData);
+
+    addTickerSelectOptions('#tickerSelectdivData');
 }
 
 function initGetStockData() {
@@ -150,6 +191,7 @@ function initialize() {
     initAccountBalanceSnapshotInput();
     initTransactionInput();
     initGetStockData();
+    initGetDividendData();
 }
 
 function addAccountSelectOptions(elemId) {

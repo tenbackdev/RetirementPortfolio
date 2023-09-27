@@ -7,12 +7,12 @@
     align-items: center;
 }
 
-#stockDataContent {
+#stockDataContent, #divDataContent {
     display: flex;
     height: 150px;
 }
 
-#stockDataContent div {
+#stockDataContent div, #divDataContent div {
     display: flex;
     margin: 10px;
     align-items: center;
