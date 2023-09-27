@@ -125,6 +125,39 @@ app.post('/stockDataInput', async (req, res) => {
 
 });
 
+app.post('/divDataInput', async (req, res) => {
+  
+  const {myJson, ticker} = req.body;
+
+  console.log(myJson)
+
+  if(!myJson || !ticker) {
+    return res.status(400).json({error: 'All parameters are required.'});
+  }
+
+  try {
+    await sql.connect(config);
+    const sqlReq = new sql.Request();
+
+    sqlReq.input('json', sql.NVarChar(sql.MAX), `${myJson}`);
+    sqlReq.input('ticker', sql.NVarChar(5), `${ticker}`);
+
+    const result = await sqlReq.execute('invest.dat.usp_update_div_pay');
+
+    return res.json({message: 'Successfully submitted stock data.'})
+
+    //setTimeout(5000);
+
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    return res.status(500).json({error: 'An error occurred.'})
+  } finally {
+    //sql.close();
+  }
+
+});
+
+
 // Define the endpoint for executing the SQL query
 app.get('/acct', (req, res) => {
   // Connect to the SQL Server
