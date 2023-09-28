@@ -4,6 +4,7 @@ function initialize() {
     //Load Charts
     //Balance Hitory
     createChart('#acctBalHistStackedLine', `${apiURLDomainPort}/acctBalHist`);
+    createChart('#incomeStackedBarChart', `${apiURLDomainPort}/acctBalHist`); //NEED TO UPDATE TO FINAL ENDPOINT
     loadBalanceData();
     loadBalanceHistData();
     loadRecentIncomeData();
