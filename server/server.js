@@ -98,7 +98,7 @@ app.post('/stockDataInput', async (req, res) => {
   
   const {myJson} = req.body;
 
-  console.log(myJson)
+  //console.log(myJson)
 
   if(!myJson) {
     return res.status(400).json({error: 'All parameters are required.'});
@@ -129,7 +129,7 @@ app.post('/divDataInput', async (req, res) => {
   
   const {myJson, ticker} = req.body;
 
-  console.log(myJson)
+  //console.log(myJson)
 
   if(!myJson || !ticker) {
     return res.status(400).json({error: 'All parameters are required.'});
