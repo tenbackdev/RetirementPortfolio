@@ -125,6 +125,7 @@ app.post('/stockDataInput', async (req, res) => {
 
 });
 
+/*
 app.post('/divDataInput', async (req, res) => {
   
   const {myJson, ticker} = req.body;
@@ -156,7 +157,7 @@ app.post('/divDataInput', async (req, res) => {
   }
 
 });
-
+*/
 
 // Define the endpoint for executing the SQL query
 app.get('/acct', (req, res) => {
