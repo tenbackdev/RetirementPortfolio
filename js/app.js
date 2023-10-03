@@ -14,8 +14,11 @@ const domainMethods = {
 const tickMethods = {
     date_yyyy_mm_dd: d3.timeFormat('%Y-%m-%d'),
     date_mm_dd: d3.timeFormat('%m/%d'),
+    date_yy_mm: d3.timeFormat('%y-%m'),
+    date_yyyy_mm: d3.timeFormat('%Y-%m'),
     saturday: d3.timeSaturday,
-    dollar_thousand: d => `$${d / 1000}K`
+    dollar_thousand: d => `$${d / 1000}K`,
+    dollar_hundred: d => `$${100 * (d / 100)}`
 }
 
 function errorHandler(error) {
@@ -116,13 +119,16 @@ async function createChart(elementId, dataSourceURL) {
 
     //tickConfig = {'transform': 'rotate(-45)', 'dx': '-.6em', 'dy': '0.4em', 'text-anchor': 'end'}
 
-    //Need to add a way to get down to the selectors desired.
-    Object.keys(chartConfig.x.tickStyling).forEach(
-        key => {
-            console.log(`Key:${key}, Value: ${chartConfig.x.tickStyling[key]}`);
-            svg.select('g').selectAll('text').attr(key, chartConfig.x.tickStyling[key]);
-        }
-    )
+    if (chartConfig.x.tickStyling) {
+        //Need to add a way to get down to the selectors desired.
+        Object.keys(chartConfig.x.tickStyling).forEach(
+            key => {
+                console.log(`Key:${key}, Value: ${chartConfig.x.tickStyling[key]}`);
+                svg.select('g').selectAll('text').attr(key, chartConfig.x.tickStyling[key]);
+            }
+        )
+    };
+
 
     var yMin = d3.min(aggData, d => d[chartConfig.y.key]);
     var yMax = d3.max(aggData, d => d[chartConfig.y.key]) * 1.01; /*COME BACK AND MAKE THIS A CONFIG KEY / VALUE*/
@@ -140,9 +146,24 @@ async function createChart(elementId, dataSourceURL) {
         .attr('transform', `translate(${chartConfig.chart.margin.left}, ${chartConfig.chart.margin.top})`)
         .call(yAxis);
 
-    const line = d3.line()
-        .x(d => xScale(domainMethods[chartConfig.x.domainType](d[chartConfig.x.key])))
-        .y(d => yScale(d[chartConfig.y.key]))
+    if (chartConfig.y.tickStyling) {
+        //Need to add a way to get down to the selectors desired.
+        Object.keys(chartConfig.y.tickStyling).forEach(
+            key => {
+                console.log(`Key:${key}, Value: ${chartConfig.y.tickStyling[key]}`);
+                svg.select('g').selectAll('text').attr(key, chartConfig.y.tickStyling[key]);
+            }
+        )
+    };
+
+    var line 
+    if (chartConfig.line) {
+        //console.log(`Chart: ${char}`)
+        line = d3.line()
+            .x(d => xScale(domainMethods[chartConfig.x.domainType](d[chartConfig.x.key])))
+            .y(d => yScale(d[chartConfig.y.key]))
+    }
+
 
     console.log(aggData)
 
@@ -163,8 +184,8 @@ async function createChart(elementId, dataSourceURL) {
         .style('stroke-width', 0.3)
         .style('stroke-dasharray', '6, 8');
 
-    console.log(chartConfig.line);
-    console.log(Object.keys(chartConfig.line));
+    //console.log(chartConfig.line);
+    //console.log(Object.keys(chartConfig.line));
     //console.log(d3.keys(chartConfig.line));
     //Object.keys(chartConfig.line).forEach(
     //    key => {
@@ -172,26 +193,20 @@ async function createChart(elementId, dataSourceURL) {
     //    }
     //)
 
-    const path = svg.append('path')
-        .attr('transform', `translate(0, ${chartConfig.chart.margin.top})`)
-        .datum(aggData)
-        //.attr('fill', chartConfig.line.fill)
-        //.attr(chartConfig.line)
-        //.attr(['stroke', 'strokeWidth'].reduce((result, attr) => {
-        //    result[attr] = d => {return attr in d ? d[attr] : null;}
-        //    return result;
-        //}))
-        //.attr('stroke', chartConfig.line.stroke)
-        //.attr('stroke-width', chartConfig.line.strokeWidth)
-        .attr('d', line);
-
-    //Wonder if there is way to add this in line with the const path def above.
-    Object.keys(chartConfig.line).forEach(
-            key => {
-                console.log(`Key:${key}, Value: ${chartConfig.line[key]}`);
-                path.attr(key, chartConfig.line[key]);
-            }
-        )
+    if (chartConfig.line) {
+        const path = svg.append('path')
+            .attr('transform', `translate(0, ${chartConfig.chart.margin.top})`)
+            .datum(aggData)
+            .attr('d', line);
+        
+        //Wonder if there is way to add this in line with the const path def above.
+        Object.keys(chartConfig.line).forEach(
+                key => {
+                    console.log(`Key:${key}, Value: ${chartConfig.line[key]}`);
+                    path.attr(key, chartConfig.line[key]);
+                }
+            )
+    }
 
 };
 
