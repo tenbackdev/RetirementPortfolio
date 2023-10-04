@@ -123,18 +123,25 @@ async function createChart(elementId, dataSourceURL) {
         //Need to add a way to get down to the selectors desired.
         Object.keys(chartConfig.x.tickStyling).forEach(
             key => {
-                console.log(`Key:${key}, Value: ${chartConfig.x.tickStyling[key]}`);
+                //console.log(`Key:${key}, Value: ${chartConfig.x.tickStyling[key]}`);
                 svg.select('g').selectAll('text').attr(key, chartConfig.x.tickStyling[key]);
             }
         )
     };
 
 
-    var yMin = d3.min(aggData, d => d[chartConfig.y.key]);
+    var yMin = 0;
     var yMax = d3.max(aggData, d => d[chartConfig.y.key]) * 1.01; /*COME BACK AND MAKE THIS A CONFIG KEY / VALUE*/
+    if(chartConfig.y.scales.min) {
+        yMin = chartConfig.y.scales.min
+    } else {
+        yMin = d3.min(aggData, d => d[chartConfig.y.key]);
+    } 
+
+    console.log(`chart: ${elementId}, yMin: ${yMin}`)
     yScale = scaleFunctions[chartConfig.y.scale]()
         .domain([yMin, yMax])
-        .range([chartHeight, chartConfig.chart.margin.top]);
+        .range([chartHeight - chartConfig.chart.margin.top, chartConfig.chart.margin.bottom]);
 
     yAxis = d3.axisLeft(yScale)
         .ticks(tickMethods[chartConfig.y.tick])
@@ -202,7 +209,7 @@ async function createChart(elementId, dataSourceURL) {
         //Wonder if there is way to add this in line with the const path def above.
         Object.keys(chartConfig.line).forEach(
                 key => {
-                    console.log(`Key:${key}, Value: ${chartConfig.line[key]}`);
+                    //console.log(`Key:${key}, Value: ${chartConfig.line[key]}`);
                     path.attr(key, chartConfig.line[key]);
                 }
             )
@@ -221,8 +228,8 @@ async function createChart(elementId, dataSourceURL) {
             .keys(stackVals)
             (transformedData)
 
-        console.log(xScale())
-
+        //console.log(xScale())
+        //console.log(`d: ${d},  d1val: ${d[1]}, d0val: ${d[0]}, yScale: ${yScale(d[1])}`); 
         svg.append("g")
             .selectAll("g")
             //Enter in Stack Data = Loop Per key
@@ -230,10 +237,10 @@ async function createChart(elementId, dataSourceURL) {
             .enter().append("g")
                 .attr("fill", function(d) {return color(d.key); })
                 .selectAll("rect")
-                .data(function(d) {return d; })
+                .data(function(d) {console.log(d); return d; })
                 .enter().append("rect")
                     .attr("x", function(d) {return xScale(domainMethods[chartConfig.x.domainType](d.data[chartConfig.x.key])); })
-                    .attr("y", function(d) {console.log(`d1val: ${d[1]}, d0val: ${d[0]}, yScale: ${yScale(d[1])}`); return yScale(d[1]); })
+                    .attr("y", function(d) {return yScale(d[1]) + chartConfig.chart.margin.top - chartConfig.chart.margin.bottom; })
                     .attr("height", function(d) {return yScale(d[0]) - (yScale(d[1]) || yScale(d[0])); }) //Revisit this line to better calculate
                     .attr("width", '10') //xScale.bandwidth())
     }
