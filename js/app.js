@@ -208,6 +208,50 @@ async function createChart(elementId, dataSourceURL) {
             )
     }
 
+
+    if (chartConfig.stackedBar) {
+        var stackVals = Array.from(new Set(data.map(obj => obj[chartConfig.stackedBar.stackKey])));
+        var color = d3.scaleOrdinal()
+            .domain(stackVals)
+            .range(['orange', 'green', 'blue']);
+
+        var transformedData = transformData(data, chartConfig.x.key, chartConfig.stackedBar.stackKey, chartConfig.stackedBar.plotKey);
+        transformedData.sort((a, b) => a[chartConfig.x.key] - b[chartConfig.x.key]);
+        var stackedData = d3.stack()
+            .keys(stackVals)
+            (transformedData)
+
+        console.log(xScale())
+
+        svg.append("g")
+            .selectAll("g")
+            //Enter in Stack Data = Loop Per key
+            .data (stackedData)
+            .enter().append("g")
+                .attr("fill", function(d) {return color(d.key); })
+                .selectAll("rect")
+                .data(function(d) {return d; })
+                .enter().append("rect")
+                    .attr("x", function(d) {return xScale(domainMethods[chartConfig.x.domainType](d.data[chartConfig.x.key])); })
+                    .attr("y", function(d) {console.log(`d1val: ${d[1]}, d0val: ${d[0]}, yScale: ${yScale(d[1])}`); return yScale(d[1]); })
+                    .attr("height", function(d) {return yScale(d[0]) - (yScale(d[1]) || yScale(d[0])); }) //Revisit this line to better calculate
+                    .attr("width", '10') //xScale.bandwidth())
+    }
+    
+    if (chartConfig.bar) {
+        svg.append("g")
+            .selectAll("g")
+            .data(chartData)
+            .enter()
+            .append("rect")
+            .attr("x", data => x(data[dimKey]))
+            .attr("y", data => y(data[plotKey]))
+            .attr("height", data => chartHeight - y(data[plotKey])) //Revisit this line to better calculate
+            .attr("width", x.bandwidth())
+            .attr("fill", colorRange[0])
+
+    }
+
 };
 
 
