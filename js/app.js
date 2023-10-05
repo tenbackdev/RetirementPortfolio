@@ -240,7 +240,7 @@ async function createChart(elementId, dataSourceURL) {
                 .data(function(d) {console.log(d); return d; })
                 .enter().append("rect")
                     .attr("x", function(d) {return xScale(domainMethods[chartConfig.x.domainType](d.data[chartConfig.x.key])); })
-                    .attr("y", function(d) {return yScale(d[1]) + chartConfig.chart.margin.top - chartConfig.chart.margin.bottom; })
+                    .attr("y", function(d) {console.log(`d1: ${d[1] || 0}, yScale: ${yScale(d[1] || 0)}`); return yScale(d[1] || 0); })
                     .attr("height", function(d) {return yScale(d[0]) - (yScale(d[1]) || yScale(d[0])); }) //Revisit this line to better calculate
                     .attr("width", '10') //xScale.bandwidth())
     }
