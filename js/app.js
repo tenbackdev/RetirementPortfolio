@@ -98,6 +98,13 @@ async function createChart(elementId, dataSourceURL) {
      
     var xMin = domainMethods[chartConfig.x.domainType](d3.min(data, d => d[chartConfig.x.key]));
     var xMax = domainMethods[chartConfig.x.domainType](d3.max(data, d => d[chartConfig.x.key]));
+
+    //Need to figure out how to make this dynamic for all charts
+    if (elementId == '#incomeStackedBarChart') {
+        xMin = xMin.setDate(xMin.getDate() - 29)
+        xMax = xMax.setDate(xMax.getDate() + 30)
+    }
+
     xScale = scaleFunctions[chartConfig.x.scale]()
         .domain([xMin, xMax])
         .range([chartConfig.chart.margin.left, chartWidth + chartConfig.chart.margin.left - chartConfig.chart.margin.right]);
@@ -132,16 +139,19 @@ async function createChart(elementId, dataSourceURL) {
 
     var yMin = 0;
     var yMax = d3.max(aggData, d => d[chartConfig.y.key]) * 1.01; /*COME BACK AND MAKE THIS A CONFIG KEY / VALUE*/
-    if(chartConfig.y.scales.min) {
+    if(chartConfig.y.scales) {
         yMin = chartConfig.y.scales.min
+        
     } else {
         yMin = d3.min(aggData, d => d[chartConfig.y.key]);
+        console.log(`chart: ${elementId}, yMin: ${yMin}, config: ${chartConfig.y.scales.min}`)
     } 
 
-    console.log(`chart: ${elementId}, yMin: ${yMin}`)
+
+    console.log(`chart: ${elementId}, yMin: ${yMin}, config: ${chartConfig.y.scales.min}`)
     yScale = scaleFunctions[chartConfig.y.scale]()
         .domain([yMin, yMax])
-        .range([chartHeight - chartConfig.chart.margin.top, chartConfig.chart.margin.bottom]);
+        .range([chartHeight, chartConfig.chart.margin.bottom - chartConfig.chart.margin.top]);
 
     yAxis = d3.axisLeft(yScale)
         .ticks(tickMethods[chartConfig.y.tick])
@@ -239,8 +249,8 @@ async function createChart(elementId, dataSourceURL) {
                 .selectAll("rect")
                 .data(function(d) {console.log(d); return d; })
                 .enter().append("rect")
-                    .attr("x", function(d) {return xScale(domainMethods[chartConfig.x.domainType](d.data[chartConfig.x.key])); })
-                    .attr("y", function(d) {console.log(`d1: ${d[1] || 0}, yScale: ${yScale(d[1] || 0)}`); return yScale(d[1] || 0); })
+                    .attr("x", function(d) {return xScale(domainMethods[chartConfig.x.domainType](d.data[chartConfig.x.key])) - 5; }) //CHANGE THIS TO REMOVE HALF WIDTH
+                    .attr("y", function(d) {console.log(`d1: ${d[1] || 0}, yScale: ${yScale(d[1] || 0)}`); return yScale(d[1] || 0) + chartConfig.chart.margin.top; })
                     .attr("height", function(d) {return yScale(d[0]) - (yScale(d[1]) || yScale(d[0])); }) //Revisit this line to better calculate
                     .attr("width", '10') //xScale.bandwidth())
     }
