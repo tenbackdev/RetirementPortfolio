@@ -230,7 +230,7 @@ async function createChart(elementId, dataSourceURL) {
         var stackVals = Array.from(new Set(data.map(obj => obj[chartConfig.stackedBar.stackKey])));
         var color = d3.scaleOrdinal()
             .domain(stackVals)
-            .range(['orange', 'green', 'blue']);
+            .range(JSON.parse(chartConfig.stackedBar.colorRange));
 
         var transformedData = transformData(data, chartConfig.x.key, chartConfig.stackedBar.stackKey, chartConfig.stackedBar.plotKey);
         transformedData.sort((a, b) => a[chartConfig.x.key] - b[chartConfig.x.key]);
@@ -240,6 +240,7 @@ async function createChart(elementId, dataSourceURL) {
 
         //console.log(xScale())
         //console.log(`d: ${d},  d1val: ${d[1]}, d0val: ${d[0]}, yScale: ${yScale(d[1])}`); 
+        //console.log(`d1: ${d[1] || 0}, yScale: ${yScale(d[1] || 0)}`); 
         svg.append("g")
             .selectAll("g")
             //Enter in Stack Data = Loop Per key
@@ -250,7 +251,7 @@ async function createChart(elementId, dataSourceURL) {
                 .data(function(d) {console.log(d); return d; })
                 .enter().append("rect")
                     .attr("x", function(d) {return xScale(domainMethods[chartConfig.x.domainType](d.data[chartConfig.x.key])) - 5; }) //CHANGE THIS TO REMOVE HALF WIDTH
-                    .attr("y", function(d) {console.log(`d1: ${d[1] || 0}, yScale: ${yScale(d[1] || 0)}`); return yScale(d[1] || 0) + chartConfig.chart.margin.top; })
+                    .attr("y", function(d) {return yScale(d[1] || 0) + chartConfig.chart.margin.top; })
                     .attr("height", function(d) {return yScale(d[0]) - (yScale(d[1]) || yScale(d[0])); }) //Revisit this line to better calculate
                     .attr("width", '10') //xScale.bandwidth())
     }
