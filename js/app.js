@@ -144,11 +144,11 @@ async function createChart(elementId, dataSourceURL) {
         
     } else {
         yMin = d3.min(aggData, d => d[chartConfig.y.key]);
-        console.log(`chart: ${elementId}, yMin: ${yMin}, config: ${chartConfig.y.scales.min}`)
+        //console.log(`chart: ${elementId}, yMin: ${yMin}, config: ${chartConfig.y.scales.min}`)
     } 
 
 
-    console.log(`chart: ${elementId}, yMin: ${yMin}, config: ${chartConfig.y.scales.min}`)
+    //console.log(`chart: ${elementId}, yMin: ${yMin}, config: ${chartConfig.y.scales.min}`)
     yScale = scaleFunctions[chartConfig.y.scale]()
         .domain([yMin, yMax])
         .range([chartHeight, chartConfig.chart.margin.bottom - chartConfig.chart.margin.top]);
@@ -248,7 +248,7 @@ async function createChart(elementId, dataSourceURL) {
             .enter().append("g")
                 .attr("fill", function(d) {return color(d.key); })
                 .selectAll("rect")
-                .data(function(d) {console.log(d); return d; })
+                .data(function(d) {return d; })
                 .enter().append("rect")
                     .attr("x", function(d) {return xScale(domainMethods[chartConfig.x.domainType](d.data[chartConfig.x.key])) - 5; }) //CHANGE THIS TO REMOVE HALF WIDTH
                     .attr("y", function(d) {return yScale(d[1] || 0) + chartConfig.chart.margin.top; })
