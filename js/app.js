@@ -247,7 +247,7 @@ async function createChart(elementId, dataSourceURL) {
             //Enter in Stack Data = Loop Per key
             .data (stackedData)
             .enter().append("g")
-                .attr("fill", function(d) {return color(d.key); })
+                .attr("fill", function(d) {console.log(`d: ${d}, color: ${color(d.key)}, key: ${d.key}`); return color(d.key); })
                 .selectAll("rect")
                 .data(function(d) {return d; })
                 .enter().append("rect")
@@ -255,6 +255,28 @@ async function createChart(elementId, dataSourceURL) {
                     .attr("y", function(d) {return yScale(d[1] || 0) + chartConfig.chart.margin.top; })
                     .attr("height", function(d) {return yScale(d[0]) - (yScale(d[1]) || yScale(d[0])); }) //Revisit this line to better calculate
                     .attr("width", '10') //xScale.bandwidth())
+
+        //var stackBarLegend = Swatches(d3.scaleOrdinal(["a", "b", "c"]), color())
+        /*
+        svg.append('text')
+        .attr('x', marginConfig.left + titleConfig.margin.left)
+        .attr('y', marginConfig.top + titleConfig.margin.top)
+        .attr('class', `${titleConfig.class}`)
+        .text(titleConfig.text);
+        */
+
+        console.log(stackVals);
+        i = 150
+        svg.append("g")
+            .selectAll(".Legend")
+            .data(stackVals)
+            .enter()
+                .append("text")
+                .text(d => d)
+                .attr("fill", d => color(d))
+                .attr('x', (d,i) => chartWidth - 300 + (100 * i))
+                .attr('y', `25`)
+                .attr('font-weight', 700)
     }
     
     if (chartConfig.bar) {
