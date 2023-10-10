@@ -99,13 +99,14 @@ async function createChart(elementId, dataSourceURL) {
     var xMin = domainMethods[chartConfig.x.domainType](d3.min(data, d => d[chartConfig.x.key]));
     var xMax = domainMethods[chartConfig.x.domainType](d3.max(data, d => d[chartConfig.x.key]));
 
-    //Need to figure out how to make this dynamic for all charts
-    if (elementId == '#incomeStackedBarChart') {
-        xMin = xMin.setDate(xMin.getDate() - 29)
-        xMax = xMax.setDate(xMax.getDate() + 30)
+    //Now referencing config, but will only work for time / date xScales
+    //Will still need to get to a point where this can handle any xScale needed
+    if (chartConfig.x.scale.minAdd) {
+        xMin = xMin.setDate(xMin.getDate() + chartConfig.x.scale.minAdd)
+        xMax = xMax.setDate(xMax.getDate() + chartConfig.x.scale.maxAdd)
     }
 
-    xScale = scaleFunctions[chartConfig.x.scale]()
+    xScale = scaleFunctions[chartConfig.x.scale.type]()
         .domain([xMin, xMax])
         .range([chartConfig.chart.margin.left, chartWidth + chartConfig.chart.margin.left - chartConfig.chart.margin.right]);
 
@@ -149,7 +150,7 @@ async function createChart(elementId, dataSourceURL) {
 
 
     //console.log(`chart: ${elementId}, yMin: ${yMin}, config: ${chartConfig.y.scales.min}`)
-    yScale = scaleFunctions[chartConfig.y.scale]()
+    yScale = scaleFunctions[chartConfig.y.scale.type]()
         .domain([yMin, yMax])
         .range([chartHeight, chartConfig.chart.margin.bottom - chartConfig.chart.margin.top]);
 
