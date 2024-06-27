@@ -4,64 +4,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css\variables.css">
-    <link rel="stylesheet" href="css\global.css">
-    <link rel="stylesheet" href="css\index.css">
-    <link rel="stylesheet" href="css\header.css">
+    <link rel="stylesheet" href="style.css">
     <title>Retirement Portfolio</title>
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="menuBtn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            <ul class="navLinks">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="performance.html">Performance</a></li>
-                <li><a href="income.html">Income</a></li>
-                <li><a href="input.html">Input</a></li>
-            </ul>
-        </nav>            
-    </header>
-    <main>
-        <section id="summary" class="summarySection">
-            <div id="balanceTotalCard" class="summaryCard">
-                <h2 id="balanceTitle" class="cardTitle">Balance</h2>
-                <p id="balanceTotalText" class="cardText">No Data</p>
-                <span id="balanceAsOf" class="cardInfo">as of YYYY-MM-DD</span>
-            </div>
-            <div id="incomeEstimateCard" class="summaryCard">
-                <h2 id="incomeEstimateTitle" class="cardTitle">Estimated Income</h2>
-                <p id="incomeEstimateText" class="cardText">No Data</p>
-                <span id="incomeEstimateAsOf" class="cardInfo">as of YYYY-MM-DD</span>
-            </div>
-            <div id="incomeRecentCard" class="summaryCard">
-                <h2 id="incomeRecentTitle" class="cardTitle">Recent Income</h2>
-                <p id="incomeRecentText" class="cardText">No Data</p>
-                <span id="incomeRecentAsOf" class="cardInfo">as of YYYY-MM-DD</span>
-            </div>
-            <div id="nextIncomeCard" class="summaryCard">
-                <h2 id="nextIncomeTitle" class="cardTitle">Next Income</h2>
-                <p id="nextIncomeText" class="cardText">No Data</p>
-                <span id="nextIncomeAsOf" class="cardInfo">as of YYYY-MM-DD</span>
-            </div>
-        </section>  
-        <section id="balance" class="sectionContainer">
-            <div id="acctBalHistStackedLine" class="contentContainer">
-            </div>
-        </section>
-        <section id="income" class="sectionContainer">
-            <div id="incomeStackedBarChart" class="contentContainer">
-                
-            </div>
-        </section>
-    </main>
+    <h1>Hello World!</h1>
+    <!--Restarting From Scratch on Retirement Portfolio Website-->
+    <!--
+        Will be improving on the site with the following:
+            1) Will be using the notika respository as inspiration, and making use of code where appropriate
+                https://github.com/puikinsh/notika/tree/master
+            2) Will be making better use of a true API that I'm also working on the in a different repo
+                https://github.com/tenbackdev/invest_REST_API
+            3) Will look to transition graphics out of D3.js into something else like Vue / Angular
+    -->
 </body>
-<script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="js/app.js"></script>
-<script src="js/index.js"></script>
-<script src="js/header.js"></script>
+<script src="app.js"></script>
 </html>
