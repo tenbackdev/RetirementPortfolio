@@ -189,6 +189,10 @@ body {}
 .logo-area{
 	padding:14px 0px;
 }
+.logo-area-right{
+	padding:14px 0px;
+  float: right;
+}
 .nav.navbar-nav.notika-top-nav{
 	float: right;
 }
@@ -432,6 +436,10 @@ body {}
 /*----------------------------------------*/
 /*  3.  Main Menu CSS
 /*----------------------------------------*/
+.notika-main-menu{
+  display: flex;
+  justify-content: center;
+}
 .nav-tabs.notika-menu-wrap{
 	border-bottom: 0px solid #ddd;
 }
@@ -505,6 +513,9 @@ ul.notika-menu-wrap li a{
 /*----------------------------------------*/
 /*  4.  status CSS
 /*----------------------------------------*/
+.notika-status-area {
+  margin-top: 40px;
+}
 .wb-traffic-inner{
 	padding:20px;
 	background:#fff;
