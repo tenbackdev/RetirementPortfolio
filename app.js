@@ -91,6 +91,8 @@ function updateChartPortVal() {
         .then(response => response.json())
         .then(data => {
  
+            const balanceHistory = groupAndSumBy(data, 'snapshot_date', 'account_balances', 'group', 'ascending');
+            console.log(balanceHistory);
             //Will need to DRY this up by centralizing array of one data point
             let valX = data.map(item => new Date(item.snapshot_date))
             let minX = new Date(Math.min(...valX));
@@ -104,19 +106,29 @@ function updateChartPortVal() {
             //h2Tag.textContent = `${currencyFormat.format(totVal)}
 
             new Chart(pvc, {
-                type: 'bar',
+                type: 'line',
                 data: {
-                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                    labels: Object.keys(balanceHistory),
                     datasets : [{
-                        label: '# of Votes',
-                        data: [12, 19, 3, 5, 2, 3],
-                        borderWidth: 1
+                        data: Object.values(balanceHistory),
+                        borderWidth: 1,
+                        pointRadius: 1
                     }]
                 },
                 options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return currencyFormat.format(value);
+                                }
+                            }
                         }
                     }
                 }
@@ -138,7 +150,7 @@ function updateChartEstIncDoughnut() {
         .then(response => response.json())
         .then(data => {
             
-            const tickIncome = groupAndSumBy(data, 'ticker', 'income_dollars');
+            const tickIncome = groupAndSumBy(data, 'ticker', 'income_dollars', 'sum', 'ascending');
 
             new Chart(pvc, {
                 type: 'doughnut',
@@ -167,7 +179,8 @@ function updateChartEstIncDoughnut() {
     
 };
 
-function groupAndSumBy(data, keyToGroupBy, keyToSum) {
+// Function to group by keyB and sum keyA, then sort by the specified parameter and direction
+function groupAndSumBy(data, keyToGroupBy, keyToSum, sortBy = 'none', sortDirection = 'ascending') {
     // Group by keyB and sum keyA
     const groupedData = data.reduce((acc, item) => {
         const group = item[keyToGroupBy];
@@ -184,14 +197,21 @@ function groupAndSumBy(data, keyToGroupBy, keyToSum) {
     // Convert the grouped data to an array of [key, value] pairs
     const groupedArray = Object.entries(groupedData);
 
-    // Sort the array by the summed values in descending order
-    groupedArray.sort((a, b) => b[1] - a[1]);
+    // Determine the sort order multiplier
+    const sortOrder = sortDirection === 'ascending' ? 1 : -1;
+
+    // Sort the array based on the sortBy parameter and sortDirection
+    if (sortBy === 'sum') {
+        groupedArray.sort((a, b) => (b[1] - a[1]) * sortOrder); // Sort by sum
+    } else if (sortBy === 'group') {
+        groupedArray.sort((a, b) => a[0].localeCompare(b[0]) * sortOrder); // Sort by group name
+    }
 
     // Convert the sorted array back to an object
     const sortedGroupedData = Object.fromEntries(groupedArray);
 
     return sortedGroupedData;
-};
+}
 
 
 
@@ -214,6 +234,22 @@ function generateDateArray(startDate, length, intervalDays) {
     }
 
     return datesArray;
+}
+
+function formatDateToMMDDYYYY(date) {
+    console.log(date);
+    console.log(typeof(date));
+    const year = date.getUTCFullYear();
+    const month = date.getUTCMonth() + 1; // getMonth() returns month from 0-11
+    const day = date.getUTCDate();
+
+    // Pad single-digit months and days with leading zero if necessary
+    const formattedMonth = month < 10 ? `0${month}` : month;
+    const formattedDay = day < 10 ? `0${day}` : day;
+
+
+    console.log(`${formattedMonth}/${formattedDay}/${year}`)
+    return `${formattedMonth}/${formattedDay}/${year}`;
 }
 
 function formatDateToMMDD(date) {
