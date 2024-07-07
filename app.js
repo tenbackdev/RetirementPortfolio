@@ -11,6 +11,8 @@ function initialize() {
     updateEstimatedIncomeVal();
     updateRecentIncomeVal();
     updateNextIncomeVal();
+    updateChartPortVal();
+    updateChartEstIncDoughnut();
 }
 
 
@@ -80,6 +82,138 @@ function updateNextIncomeVal() {
             console.error('Error fetching data:', error);
             h2Tag.textContent = 'Failed to load data'
         });
+}
+
+function updateChartPortVal() {
+    const pvc = document.getElementById("port-val-chart");
+
+    fetch(`${apiURLDomainPort}/balance/historical/365`)
+        .then(response => response.json())
+        .then(data => {
+ 
+            //Will need to DRY this up by centralizing array of one data point
+            let valX = data.map(item => new Date(item.snapshot_date))
+            let minX = new Date(Math.min(...valX));
+            let maxX = new Date(Math.max(...valX));
+            let nbrOfDays = (maxX - minX) / (1000 * 60 * 60 * 24);
+            console.log(nbrOfDays/ (1000 * 60 * 60 * 24));
+
+            console.log(generateDateArray(minX, 12, 31));
+
+            //let totVal = data.reduce((total, item) => total + item.account_balance, 0);
+            //h2Tag.textContent = `${currencyFormat.format(totVal)}
+
+            new Chart(pvc, {
+                type: 'bar',
+                data: {
+                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                    datasets : [{
+                        label: '# of Votes',
+                        data: [12, 19, 3, 5, 2, 3],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            })
+
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            h2Tag.textContent = 'Failed to load data'
+        });
+
+    
+};
+
+function updateChartEstIncDoughnut() {
+    const pvc = document.getElementById("est-inc-tick-doughnut-chart");
+
+    fetch(`${apiURLDomainPort}/income/estimated`)
+        .then(response => response.json())
+        .then(data => {
+            
+            const tickIncome = groupAndSumBy(data, 'ticker', 'income_dollars');
+
+            new Chart(pvc, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(tickIncome),
+                    datasets : [{
+                        data: Object.values(tickIncome),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            })
+
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            h2Tag.textContent = 'Failed to load data'
+        });
+
+    
+};
+
+function groupAndSumBy(data, keyToGroupBy, keyToSum) {
+    // Group by keyB and sum keyA
+    const groupedData = data.reduce((acc, item) => {
+        const group = item[keyToGroupBy];
+        const value = item[keyToSum];
+
+        if (!acc[group]) {
+            acc[group] = 0;
+        }
+
+        acc[group] += value;
+        return acc;
+    }, {});
+
+    // Convert the grouped data to an array of [key, value] pairs
+    const groupedArray = Object.entries(groupedData);
+
+    // Sort the array by the summed values in descending order
+    groupedArray.sort((a, b) => b[1] - a[1]);
+
+    // Convert the sorted array back to an object
+    const sortedGroupedData = Object.fromEntries(groupedArray);
+
+    return sortedGroupedData;
+};
+
+
+
+
+function generateDateArray(startDate, length, intervalDays) {
+    // Convert the start date string to a Date object
+    const start = new Date(startDate);
+
+    // Initialize an array to hold the dates
+    const datesArray = [];
+
+    // Generate dates
+    for (let i = 0; i < length; i++) {
+        // Create a new date object for each date in the sequence
+        const nextDate = new Date(start);
+        nextDate.setDate(start.getDate() + i * intervalDays);
+
+        // Convert the date back to a string (optional)
+        datesArray.push(nextDate.toISOString().split('T')[0]);
+    }
+
+    return datesArray;
 }
 
 function formatDateToMMDD(date) {

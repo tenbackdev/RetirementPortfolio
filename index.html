@@ -112,7 +112,9 @@
                             </div>
                         </div>
                         <!--Add In Portfolio Value Line Chart Here-->
-                        <div id="curved-line-chart" class="flot-chart-sts flot-chart"></div>
+                        <div id="curved-line-chart" class="flot-chart-sts flot-chart">
+                            <canvas id="port-val-chart"></canvas>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
@@ -120,34 +122,9 @@
                         <div class="past-day-statis">
                             <h2>Estimated Income</h2>
                         </div>
-						<div class="dash-widget-visits"></div>
                         <div class="past-statistic-an">
-                            <div class="past-statistic-ctn">
-                                <h3><span class="counter">3,20,000</span></h3>
-                                <p>Page Views</p>
-                            </div>
-                            <div class="past-statistic-graph">
-                                <div class="stats-bar"></div>
-                            </div>
-                        </div>
-                        <div class="past-statistic-an">
-                            <div class="past-statistic-ctn">
-                                <h3><span class="counter">1,03,000</span></h3>
-                                <p>Total Clicks</p>
-                            </div>
-                            <div class="past-statistic-graph">
-                                <div class="stats-line"></div>
-                            </div>
-                        </div>
-                        <div class="past-statistic-an">
-                            <div class="past-statistic-ctn">
-                                <h3><span class="counter">24,00,000</span></h3>
-                                <p>Site Visitors</p>
-                            </div>
-                            <div class="past-statistic-graph">
-                                <div class="stats-bar-2"></div>
-                            </div>
-                        </div>
+                            <canvas id="est-inc-tick-doughnut-chart"></canvas>
+                        </div>                    
                     </div>
                 </div>
             </div>
@@ -199,5 +176,6 @@
     </div>
     <!-- End Footer area-->
 </body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="app.js"></script>
 </html>
