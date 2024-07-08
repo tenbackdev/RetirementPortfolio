@@ -1,7 +1,8 @@
 server/node_modules/
-server/package-lock.json
-server/package.json
+package-lock.json
+package.json
 server/dbConfig.json
 server/dbConfig1.json
 marketDataAPIKey.txt
 APIKeys.txt
+node_modules
