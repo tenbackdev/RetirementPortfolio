@@ -1,3 +1,9 @@
+//import { Chart, registerables } from 'https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.esm.js';
+//import 'https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0';
+//import { enUS } from 'date-fns/locale';
+
+//const moment = require("moment");
+
 const apiURLDomainPort = 'http://localhost:5000'
 const currencyFormat = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -92,31 +98,38 @@ function updateChartPortVal() {
         .then(data => {
  
             const balanceHistory = groupAndSumBy(data, 'snapshot_date', 'account_balances', 'group', 'ascending');
-            console.log(balanceHistory);
-            //Will need to DRY this up by centralizing array of one data point
-            let valX = data.map(item => new Date(item.snapshot_date))
-            let minX = new Date(Math.min(...valX));
-            let maxX = new Date(Math.max(...valX));
-            let nbrOfDays = (maxX - minX) / (1000 * 60 * 60 * 24);
-            console.log(nbrOfDays/ (1000 * 60 * 60 * 24));
-
-            console.log(generateDateArray(minX, 12, 31));
-
-            //let totVal = data.reduce((total, item) => total + item.account_balance, 0);
-            //h2Tag.textContent = `${currencyFormat.format(totVal)}
+            const balanceHistoryDates = Object.keys(balanceHistory)
 
             new Chart(pvc, {
                 type: 'line',
                 data: {
-                    labels: Object.keys(balanceHistory),
+                    labels: balanceHistoryDates,
                     datasets : [{
                         data: Object.values(balanceHistory),
                         borderWidth: 1,
-                        pointRadius: 1
+                        pointRadius: 1,
+                        tension: 0.1,
+                        pointHitRadius: 20,
+
                     }]
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const index = tooltipItems[0].dataIndex;
+                                    const origLabel = tooltipItems[0].chart.data.labels[index];
+                                    return formatDateToMMDDYYYY(origLabel);
+                                },
+                                label: function(tooltipItem) {
+                                    const value = tooltipItem.raw;
+                                    return `${currencyFormat.format(value)}`;
+                                }
+                            }
+                        },
                         legend: {
                             display: false
                         }
@@ -129,6 +142,12 @@ function updateChartPortVal() {
                                     return currencyFormat.format(value);
                                 }
                             }
+                        },
+                        x: {
+                            type: 'time',
+                            time: {
+                                dispalyFormat: 'MM/DD/YYY'
+                            }
                         }
                     }
                 }
@@ -137,7 +156,7 @@ function updateChartPortVal() {
         })
         .catch(error => {
             console.error('Error fetching data:', error);
-            h2Tag.textContent = 'Failed to load data'
+            //h2Tag.textContent = 'Failed to load data'
         });
 
     
@@ -163,6 +182,15 @@ function updateChartEstIncDoughnut() {
                 },
                 options: {
                     plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    const value = tooltipItem.raw;
+                                    console.log(tooltipItem);
+                                    return `${currencyFormat.format(value)}`;
+                                }
+                            }
+                        },
                         legend: {
                             display: false
                         }
@@ -237,11 +265,12 @@ function generateDateArray(startDate, length, intervalDays) {
 }
 
 function formatDateToMMDDYYYY(date) {
-    console.log(date);
-    console.log(typeof(date));
-    const year = date.getUTCFullYear();
-    const month = date.getUTCMonth() + 1; // getMonth() returns month from 0-11
-    const day = date.getUTCDate();
+    const myDate = new Date(date);
+    console.log(myDate);
+    console.log(typeof(myDate));
+    const year = myDate.getUTCFullYear();
+    const month = myDate.getUTCMonth() + 1; // getMonth() returns month from 0-11
+    const day = myDate.getUTCDate();
 
     // Pad single-digit months and days with leading zero if necessary
     const formattedMonth = month < 10 ? `0${month}` : month;
