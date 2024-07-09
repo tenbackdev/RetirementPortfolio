@@ -622,6 +622,9 @@ ul.notika-menu-wrap li a{
 .past-day-statis, .curved-inner-pro{
 	margin-bottom:20px;
 }
+#estIncPieChartDiv {
+    height: 100% !important;
+}
 /*----------------------------------------*/
 /*  6.  Email statistics CSS
 /*----------------------------------------*/

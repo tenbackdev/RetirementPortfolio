@@ -19,6 +19,7 @@ function initialize() {
     updateNextIncomeVal();
     updateChartPortVal();
     updateChartEstIncDoughnut();
+    updateChartIncTimeSrsStackBar();
 }
 
 
@@ -206,6 +207,97 @@ function updateChartEstIncDoughnut() {
 
     
 };
+
+async function updateChartIncTimeSrsStackBar() {
+    
+    try {
+        const pvc = document.getElementById("inc-time-srs-stack-bar-chart");
+
+        //force the logic to wait for all data to be made available before proceeding
+        const responses = await Promise.all([fetch(`${apiURLDomainPort}/income/historical`), fetch(`${apiURLDomainPort}/income/estimated`)]);
+        const histData = await responses[0].json();
+        const estData = await responses[1].json();
+
+        const histMonthData = groupAndSumByMonthYear(histData, 'income_date', 'income_dollars', 3)
+
+        const labels = histMonthData.map(item => item.month_year);
+        const dataSet = histMonthData.map(item => item.total_income_dollars);
+
+        //WIP Have Just The "Received" Income showing in a "stack" bar chart, need to go get the Announced / Estimated
+        //This will need to coordinate the needed null values for each of the months that don't have that category of income.
+
+        new Chart(pvc, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets : [{
+                    data: dataSet,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: top
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'month',
+                            parser: 'yyyy-MM',
+                            displayFormats: {
+                                month: 'yyyy-MM'
+                            }
+                        },
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true
+                    }
+                }
+            }
+        })
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+    
+
+}
+
+
+function groupAndSumByMonthYear(data, dateKey, sumKey, recentMonths = null) {
+    const groupedData = {};
+
+    data.forEach(item => {
+        const date = new Date(item[dateKey]);
+        const year = date.getUTCFullYear();
+        const month = date.getUTCMonth() + 1; // Months are 0-based in JavaScript
+        const key = `${year}-${month.toString().padStart(2, '0')}`;
+
+        if (!groupedData[key]) {
+            groupedData[key] = 0;
+        }
+        groupedData[key] += item[sumKey];
+    });
+
+    let result = Object.keys(groupedData).map(key => ({
+        month_year: key,
+        total_income_dollars: groupedData[key]
+    }));
+
+    // Sort results in chronological order
+    result.sort((a, b) => new Date(a.month_year) - new Date(b.month_year));
+
+    // If recentMonths is specified, slice the array to return only the most recent months
+    if (recentMonths !== null) {
+        result = result.slice(-recentMonths);
+    }
+
+    return result;
+}
 
 // Function to group by keyB and sum keyA, then sort by the specified parameter and direction
 function groupAndSumBy(data, keyToGroupBy, keyToSum, sortBy = 'none', sortDirection = 'ascending') {
