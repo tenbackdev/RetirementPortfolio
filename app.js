@@ -225,7 +225,7 @@ async function updateChartIncTimeSrsStackBar() {
         const histData = await responses[0].json();
         const estData = await responses[1].json();
 
-        const histMonthData = groupAndSumByMonthYear(histData, 'income_date', 'income_dollars', 3)
+        const histMonthData = groupAndSumByMonthYear(histData, 'income_date', 'income_dollars', 12)
         const annIncData = groupAndSumByMonthYear(estData.filter(item => item.income_announced === true), 'pay_date', 'income_dollars');
         const estIncData = groupAndSumByMonthYear(estData.filter(item => item.income_announced === false), 'pay_date', 'income_dollars');
         
