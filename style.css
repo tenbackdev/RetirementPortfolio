@@ -510,6 +510,14 @@ ul.notika-menu-wrap li a{
 .box-layout .header-top-area {
 		width: 1200px;
 }
+/*taking bootstrap and over riding the 4/4/0/0 default*/
+.nav-tabs>li>a {
+    border-radius: 4px;
+}
+.header-top-area .row {
+    display: flex;
+    align-items: center;
+}
 /*----------------------------------------*/
 /*  4.  status CSS
 /*----------------------------------------*/
