@@ -519,6 +519,27 @@ ul.notika-menu-wrap li a{
     align-items: center;
 }
 /*----------------------------------------*/
+/*  3.1  Desktop vs Mobile Header / Menu
+/*----------------------------------------*/
+
+@media (min-width: 992px) {
+    .header-top-area {
+        display: block;
+    }
+    .mobile-menu-area {
+        display: none;
+    }
+}
+
+@media (max-width: 991px) {
+    .header-top-area {
+        display: none;
+    }
+    .mobile-menu-area {
+        display: block;
+    }
+}
+/*----------------------------------------*/
 /*  4.  status CSS
 /*----------------------------------------*/
 .notika-status-area {
