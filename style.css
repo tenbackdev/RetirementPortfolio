@@ -518,6 +518,29 @@ ul.notika-menu-wrap li a{
     display: flex;
     align-items: center;
 }
+.navbar-toggler-icon {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    content: "";
+    background: no-repeat center center;
+    background-size: 100% 100%;
+  }
+  .navbar-toggler.collapsed .navbar-toggler-icon {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><path stroke="rgba%280%2C%200%2C%200%2C%200.5%29" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M4 7h22M4 15h22M4 23h22"/></svg>');
+  }
+  .navbar-toggler:not(.collapsed) .navbar-toggler-icon {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><path stroke="rgba%280%2C%200%2C%200%2C%200.5%29" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M7 7L23 23M23 7L7 23"/></svg>');
+  }
+
+  .navbar-collapse.not-visible {
+    display: none !important;
+  }
+  .navbar-collapse.visible {
+    display: block !important;
+  }
+
 /*----------------------------------------*/
 /*  3.1  Desktop vs Mobile Header / Menu
 /*----------------------------------------*/

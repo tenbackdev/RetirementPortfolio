@@ -58,7 +58,29 @@
                     </div>
                 </div>
                 <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                    <div class="mobile-menu">
+                    <nav class="navbar navbar-expand-md navbar-light bg-light">
+                        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                          <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                          <ul class="navbar-nav ml-auto nav nav-tabs notika-menu-wrap menu-it-icon-pro">
+                            <li class="nav-item">
+                              <a data-toggle="collapse" class="nav-link notika-icon notika-house" href="#">Home</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link notika-icon notika-house" href="#">About</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link notika-icon notika-house" href="#">Services</a>
+                            </li>
+                            <li class="nav-item">
+                              <a class="nav-link notika-icon notika-house" href="#">Contact</a>
+                            </li>
+                          </ul>
+                        </div>
+                      </nav>
+                      <!--
+                      <div class="mobile-menu">
                         <nav id="dropdown">
                             <ul class="mobile-menu-nav">
                                 <li><a data-toggle="tab" href="#Home"><i class="notika-icon notika-house">Home</a></li>
@@ -70,6 +92,7 @@
                             </ul>
                         </nav>
                     </div>
+                -->
                 </div>
             </div>
         </div>
@@ -194,8 +217,10 @@
     <!-- End Footer area-->
 </body>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <script type="module" src="app.js"></script>
+<script type="module" src="js/navbar.js"></script>
 </html>
