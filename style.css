@@ -183,7 +183,7 @@ body {}
 /*----------------------------------------*/
 /*  2.  Header Top CSS
 /*----------------------------------------*/
-.header-top-area, .footer-copyright-area{
+.header-top-area, .footer-copyright-area, .mobile-menu-area{
 	background:#00c292;
 }
 .logo-area{
@@ -438,7 +438,8 @@ body {}
 /*----------------------------------------*/
 .notika-main-menu{
   display: flex;
-  justify-content: center;
+  justify-content: right;
+  align-items: center;
 }
 .nav-tabs.notika-menu-wrap{
 	border-bottom: 0px solid #ddd;
@@ -516,7 +517,13 @@ ul.notika-menu-wrap li a{
 }
 .header-top-area .row {
     display: flex;
+    align-items: right;
+}
+.navbar-toggler {
+    display: flex;
     align-items: center;
+    justify-content: center;
+    
 }
 .navbar-toggler-icon {
     display: inline-block;
@@ -532,7 +539,8 @@ ul.notika-menu-wrap li a{
   }
   .navbar-toggler:not(.collapsed) .navbar-toggler-icon {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><path stroke="rgba%280%2C%200%2C%200%2C%200.5%29" stroke-width="2" stroke-linecap="round" stroke-miterlimit="10" d="M7 7L23 23M23 7L7 23"/></svg>');
-  }
+    margin: auto;
+}
 
   .navbar-collapse.not-visible {
     display: none !important;
