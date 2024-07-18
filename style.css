@@ -438,7 +438,7 @@ body {}
 /*----------------------------------------*/
 .notika-main-menu{
   display: flex;
-  justify-content: right;
+  justify-content: center;
   align-items: center;
 }
 .nav-tabs.notika-menu-wrap{
@@ -523,7 +523,7 @@ ul.notika-menu-wrap li a{
     display: flex;
     align-items: center;
     justify-content: center;
-    
+
 }
 .navbar-toggler-icon {
     display: inline-block;

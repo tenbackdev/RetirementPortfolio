@@ -27,6 +27,7 @@ function initialize() {
     updateChartPortVal();
     updateChartEstIncDoughnut();
     updateChartIncTimeSrsStackBar();
+    updateChartPortStackedVal();
 }
 
 
@@ -160,6 +161,94 @@ function updateChartPortVal() {
                     }
                 }
             })
+
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            //h2Tag.textContent = 'Failed to load data'
+        });
+
+    
+};
+
+function updateChartPortStackedVal() {
+    const pvc = document.getElementById("port-val-stacked-chart");
+
+    fetch(`${apiURLDomainPort}/balance/historical/365`)
+        .then(response => response.json())
+        .then(data => {
+ 
+            console.log('hello');
+            const accounts = [...new Set(data.map(item => item['account_name']))]
+
+            accounts.forEach(account => {
+                let accountData = data.filter(item => item['account_name'] === account);
+                console.log(accountData);
+            }); 
+
+            //need to figure out how to stack them in the right order
+                //how to process data sets in the order of current balance
+            //need to create list of labels (aka snapshot_dates)
+            //need to figure out how to have tooltip show every account balance
+            //after getting MVP, figure out how to DRY this up
+
+            console.log(accounts);
+
+            /*const balanceHistory = groupAndSumBy(data, 'snapshot_date', 'account_balances', 'group', 'ascending');
+            const balanceHistoryDates = Object.keys(balanceHistory)
+
+            new Chart(pvc, {
+                type: 'line',
+                data: {
+                    labels: balanceHistoryDates,
+                    datasets : [{
+                        data: Object.values(balanceHistory),
+                        borderWidth: 1,
+                        pointRadius: 1,
+                        tension: 0.1,
+                        pointHitRadius: 20,
+
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const index = tooltipItems[0].dataIndex;
+                                    const origLabel = tooltipItems[0].chart.data.labels[index];
+                                    return formatDateToMMDDYYYY(origLabel);
+                                },
+                                label: function(tooltipItem) {
+                                    const value = tooltipItem.raw;
+                                    return `${currencyFormatCents.format(value)}`;
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return currencyFormatDollars.format(value);
+                                }
+                            }
+                        },
+                        x: {
+                            type: 'time',
+                            time: {
+                                dispalyFormat: 'MM/DD/YYY'
+                            }
+                        }
+                    }
+                }
+            })*/
 
         })
         .catch(error => {
