@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Retirement Portfolio</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+    <!-- Google Fonts ============================================ -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet">
+    <!-- style CSS ============================================ -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+     <!-- Start Header Top Area -->
+     <div class="header-top-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                    <div class="logo-area">
+                        <a href="#"><img src="img/logo/logo.png" alt="" /></a>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 notika-main-menu">
+                    <!--Keep Simplified Menu Up Here, But Revisit When It Comes to Mobile Support-->
+                    <ul class="nav nav-tabs notika-menu-wrap menu-it-icon-pro">
+                        <li><a data-toggle="tab" href="index.html"><i class="notika-icon notika-house"></i>   Main   </a>
+                        </li>
+                        <li><a data-toggle="tab" href="historical.html"><i class="notika-icon notika-mail"></i>Historical</a>
+                        </li>
+                        <li class="active"><a data-toggle="tab" href="income.html"><i class="notika-icon notika-edit"></i>  Income  </a>
+                        </li>
+                        <li><a data-toggle="tab" href="input.html"><i class="notika-icon notika-bar-chart"></i>  Input   </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                    <div class="logo-area-right">
+                        <a href="#"><img src="img/logo/logo.png" alt="" /></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+    <!-- End Header Top Area -->
+    <!-- Start Mobile Header Area -->
+    <div class="mobile-menu-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <div class="logo-area">
+                        <a href="#"><img src="img/logo/logo.png" alt="" /></a>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                    <nav class="navbar navbar-expand-md navbar-light bg-light notika-main-menu">
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav ml-auto nav nav-tabs notika-menu-wrap menu-it-icon-pro">
+                              <li class="nav-item">
+                                <a data-toggle="collapse" class="nav-link notika-icon notika-house" href="index.html">Main</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link notika-icon notika-house" href="historical.html">Historical</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link notika-icon notika-house" href="income.html">Income</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link notika-icon notika-house" href="input.html">Input</a>
+                              </li>
+                            </ul>
+                          </div>
+
+                        
+                      </nav>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                      </button>
+                </div>
+
+            </div>
+        </div>
+    </div>    
+    <!-- End Mobile Header Area -->
+    <!-- Start Status area -->
+    <div class="notika-status-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                    <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30">
+                        <div class="website-traffic-ctn">
+                            <h2><span class="counter" id="portValText">50,000</span></h2>
+                            <p>Portfolio Value</p>
+                        </div>
+                        <!-- Could add sparklines later, starting with simple text / value
+                        <div class="sparkline-bar-stats1">9,4,8,6,5,6,4,8,3,5,9,5</div>
+                        -->
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                    <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30">
+                        <div class="website-traffic-ctn">
+                            <h2 id="estIncText"><span class="counter">$5,001.23</span>k</h2>
+                            <p>Estimated Income</p>
+                        </div>
+                        <!-- Could add sparklines later, starting with simple text / value
+                        <div class="sparkline-bar-stats2">1,4,8,3,5,6,4,8,3,3,9,5</div>
+                        -->
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                    <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 dk-res-mg-t-30">
+                        <div class="website-traffic-ctn">
+                            <h2><span class="counter" id="recIncText">$40,000</span></h2>
+                            <p>Recent Income</p>
+                        </div>
+                        <!-- Could add sparklines later, starting with simple text / value
+                        <div class="sparkline-bar-stats3">4,2,8,2,5,6,3,8,3,5,9,5</div>
+                        -->
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                    <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 dk-res-mg-t-30">
+                        <div class="website-traffic-ctn">
+                            <h2><span class="counter" id="nextIncText"></span></h2>
+                            <p id="nextIncLabel">Next Income</p>
+                        </div>
+                        <!-- Could add sparklines later, starting with simple text / value
+                        <div class="sparkline-bar-stats4">2,4,8,4,5,7,4,7,3,5,7,5</div>
+                        -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Status area-->
+    <!-- Start Sale Statistic area-->
+    <div class="sale-statistic-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12">
+                    <div class="sale-statistic-inner notika-shadow mg-tb-30">
+                        <div class="curved-inner-pro">
+                            <div class="curved-ctn">
+                                <h2>Portfolio Value</h2>
+                            </div>
+                        </div>
+                        <!--Add In Portfolio Value Line Chart Here-->
+                        <div id="curved-line-chart" class="flot-chart-sts flot-chart">
+                            <canvas id="port-val-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12 full-height" id="estIncPieChartDiv">
+                    <div class="statistic-right-area notika-shadow mg-tb-30 sm-res-mg-t-0">
+                        <div class="past-day-statis">
+                            <h2>Estimated Income</h2>
+                        </div>
+                        <div class="past-statistic-an">
+                            <canvas id="est-inc-tick-doughnut-chart"></canvas>
+                        </div>                    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Sale Statistic area-->
+    <!-- Start Realtime sts area-->
+    <div class="realtime-statistic-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="realtime-wrap notika-shadow">
+                        <div class="realtime-ctn">
+                            <div class="realtime-title">
+                                <h2>Income Time Series</h2>
+                            </div>
+                        </div>
+                        <div class="realtime-ctn">
+                            <canvas id="inc-time-srs-stack-bar-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Realtime sts area-->
+    <!-- Start Footer area-->
+    <div class="footer-copyright-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="footer-copy-right">
+                        <p>Copyright © 2018
+                            . All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Footer area-->
+</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script type="module" src="app.js"></script>
+<script type="module" src="js/navbar.js"></script>
+</html>
