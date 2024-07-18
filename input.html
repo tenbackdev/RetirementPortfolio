@@ -25,13 +25,13 @@
                 <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 notika-main-menu">
                     <!--Keep Simplified Menu Up Here, But Revisit When It Comes to Mobile Support-->
                     <ul class="nav nav-tabs notika-menu-wrap menu-it-icon-pro">
-                        <li class="active"><a data-toggle="tab" href="index.html"><i class="notika-icon notika-house"></i>   Main   </a>
+                        <li><a data-toggle="tab" href="index.html"><i class="notika-icon notika-house"></i>   Main   </a>
                         </li>
                         <li><a data-toggle="tab" href="historical.html"><i class="notika-icon notika-mail"></i>Historical</a>
                         </li>
                         <li><a data-toggle="tab" href="income.html"><i class="notika-icon notika-edit"></i>  Income  </a>
                         </li>
-                        <li><a data-toggle="tab" href="input.html"><i class="notika-icon notika-bar-chart"></i>  Input   </a>
+                        <li class="active"><a data-toggle="tab" href="input.html"><i class="notika-icon notika-bar-chart"></i>  Input   </a>
                         </li>
                     </ul>
                 </div>
@@ -150,7 +150,7 @@
                         </div>
                         <!--Add In Portfolio Value Line Chart Here-->
                         <div id="curved-line-chart" class="flot-chart-sts flot-chart">
-                            <canvas id="port-val-chart"></canvas>
+                            <canvas id="port-val-stacked-chart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -159,9 +159,9 @@
                         <div class="past-day-statis">
                             <h2>Estimated Income</h2>
                         </div>
-                        <div class="past-statistic-an">
+                        <!--<div class="past-statistic-an">
                             <canvas id="est-inc-tick-doughnut-chart"></canvas>
-                        </div>                    
+                        </div>-->                    
                     </div>
                 </div>
             </div>
@@ -179,9 +179,9 @@
                                 <h2>Income Time Series</h2>
                             </div>
                         </div>
-                        <div class="realtime-ctn">
+                        <!--<div class="realtime-ctn">
                             <canvas id="inc-time-srs-stack-bar-chart"></canvas>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
             </div>
