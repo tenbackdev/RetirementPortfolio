@@ -1,8 +1,17 @@
-import {fetchAccountData} from './js/main.js';
+import {accountMap, fetchAccountData, loadAccountData, retrieveAccountData} from './js/main.js';
 
 async function main() {
-    const myData = await fetchAccountData();
-    console.log(myData);
+    retrieveAccountData();
+    //avoid an api call / loading data if data already exists
+    
+    if (Object.keys(accountMap.accounts).length === 0) {
+        const accountData = await fetchAccountData();
+        loadAccountData(accountData);
+    }
+    
+    console.log(accountMap);
+
+    //console.log(loadAccountData());
 }
 
 main();
