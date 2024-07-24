@@ -1,8 +1,12 @@
 import Account from './account.js';
 import AccountSnapshot from './accountSnapshot.js';
+import Ticker from './ticker.js';
+import Income from './income.js';
+import IncomeMap from './incomeMap.js';
 
 export let accountMap = Account.createAccountMap();
 export let currentAccountMap = Account.createAccountMap();
+export let incomeMap = new IncomeMap();
 const apiURLDomainPort = 'http://localhost:5000'
 
 export async function fetchAccountData() {
@@ -13,10 +17,48 @@ export async function fetchAccountData() {
 }
 
 export async function fetchCurrentAccountData() {
-    /*Make this a parameter, instead of the hardcoded 365*/
     const response = await fetch(`${apiURLDomainPort}/balance/current`);
     const data = await response.json();
     return data;
+}
+
+export async function fetchIncomeData() {
+    const [historicalResponse, estimatedReponse] = await Promise.all([
+        fetch(`${apiURLDomainPort}/income/historical`),
+        fetch(`${apiURLDomainPort}/income/estimated`)
+    ]);
+
+    const [historical, estimated] = await Promise.all([
+        historicalResponse.json(),
+        estimatedReponse.json()
+    ]);
+    
+    const historicalTransformed = historical.map(income => ({
+        account_name: income.account_name,
+        institution_name: income.institution_name,
+        income_status: 'Received',
+        income_dollars: income.income_dollars,
+        income_recent: income.income_recent,
+        income_reinvested: income.income_reinvested,
+        pay_date: income.income_date,
+        ticker: income.ticker,
+        ticker_name: income.ticker_name
+    }));
+
+    const estimatedTransformed = estimated.map(income => ({
+        account_name: income.account_name,
+        //institution_name: income.institution_name, //need to update API to include this
+        income_status: income.income_announced === true ? 'Announced' : 'Estimated',
+        income_dollars: income.income_dollars,
+        pay_date: income.pay_date,
+        ticker: income.ticker,
+        ticker_name: income.ticker_name
+    }));
+
+    const mergedData = [...historicalTransformed, ...estimatedTransformed];
+    return mergedData;
+    //const data = await response.json();
+    //return data;
 }
 
 export async function loadAccountData(jsonData) {

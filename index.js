@@ -1,4 +1,4 @@
-import {accountMap, currentAccountMap, clearAccountMap, clearCurrentAccountMap, fetchAccountData, fetchCurrentAccountData, loadAccountData, loadCurrentAccountData, retrieveAccountData, retrieveCurrentAccountData} from './js/main.js';
+import {accountMap, currentAccountMap, incomeMap, clearAccountMap, clearCurrentAccountMap, fetchAccountData, fetchCurrentAccountData, fetchIncomeData, loadAccountData, loadCurrentAccountData, retrieveAccountData, retrieveCurrentAccountData} from './js/main.js';
 
 /*Will be replacing these with a class.*/
 const currencyFormatCents = new Intl.NumberFormat('en-US', {
@@ -35,7 +35,8 @@ function formatDateToMMDDYYYY(date) {
 
 async function main() {
     localStorage.removeItem('accountData');
-    localStorage.removeItem('currentAccountData')
+    localStorage.removeItem('currentAccountData');
+    localStorage.removeItem('incomeData');
     clearAccountMap();
     clearCurrentAccountMap();
     retrieveAccountData();
@@ -55,6 +56,13 @@ async function main() {
     }
     //console.log(currentAccountMap);
 
+    //avoid an api call / loading data if data already exists
+    if (Object.keys(incomeMap.getAllByTicker()).length === 0) {
+        const incomeData = await fetchIncomeData();
+        // Have the data coming back in a single output
+        // Next step is to load the data just like Accounts were
+        console.log(incomeData);
+    }
 
     updateStarterPortVal()
     updateChartPortVal()
