@@ -4,7 +4,7 @@ import Account from './account.js';
 class Income {
     static validStatuses = ['Received', 'Announced', 'Estimated']
 
-    constructor(ticker, account, payDate, institutionName, incomeAmount, incomeStatus, incomeRecent) {
+    constructor(ticker, account, payDate, incomeAmount, incomeStatus, incomeRecent, incomeReinvested) {
         if(!(ticker instanceof Ticker)) {
             throw new TypeError('ticker must be an instance of Ticker');
         }
@@ -15,7 +15,7 @@ class Income {
         this.ticker = ticker;
         this.account = account;
         this.payDate = new Date(payDate);
-        this.institutionName = institutionName;
+        //this.institutionName = institutionName;
         this.incomeAmount = incomeAmount;
 
         // Validation for incomeStatus attribute
@@ -26,9 +26,17 @@ class Income {
 
         // Validation for boolean attribute
         if (typeof incomeRecent !== 'boolean') {
-            throw new TypeError('incomeRecent must be a boolean');
+            this.incomeRecent = incomeRecent != null ? Boolean(incomeRecent) : false;
+        } else {
+            this.incomeRecent = incomeRecent;
         }
-        this.incomeRecent = incomeRecent;
+
+        if (typeof incomeReinvested !== 'boolean') {
+            this.incomeReinvested = incomeReinvested != null ? Boolean(incomeReinvested) : false;
+        } else {
+            this.incomeReinvested = incomeReinvested;
+        }
+        
     }
 }
 

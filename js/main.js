@@ -57,8 +57,6 @@ export async function fetchIncomeData() {
 
     const mergedData = [...historicalTransformed, ...estimatedTransformed];
     return mergedData;
-    //const data = await response.json();
-    //return data;
 }
 
 export async function loadAccountData(jsonData) {
@@ -97,6 +95,21 @@ export async function loadCurrentAccountData(jsonData) {
         //console.log(account.toString());
     });
     localStorage.setItem('currentAccountData', JSON.stringify(currentAccountMap));
+}
+
+export async function loadIncomeData(jsonData) {
+
+    jsonData.forEach(entry => {
+        const {account_name, income_dollars, income_recent, income_reinvested ,income_status, institution_name, pay_date, ticker, ticker_name} = entry;
+        // Every entry in the json input is considered to be its own income.
+        let tickerObj = new Ticker(ticker, ticker_name);
+        let account = new Account(institution_name, account_name);
+        //console.log(entry);
+        let income = new Income(tickerObj, account, pay_date, income_dollars, income_status, income_recent, income_reinvested)
+        incomeMap.addIncome(income);
+    });
+    console.log(JSON.stringify(incomeMap));
+    localStorage.setItem('incomeData', JSON.stringify(incomeMap));
 }
 
 /*Re-evaluate to see if there is a way to avoid duplicating every function*/
@@ -154,6 +167,29 @@ export function retrieveCurrentAccountData() {
 
             accountMap.add(account);
         });
+    }    
+}
+
+export function retrieveIncomeData() {
+    const storedData = JSON.parse(localStorage.getItem('incomeData'));
+    //find some way to parse the "accounts" part of what is being stored in Local Storage
+    //console.log(storedData.accounts);
+    
+    if (!storedData) {
+        //avoid errors if there is no data to retrieve
+        return
+    }
+
+    if (storedData.accounts) {
+        /*Object.entries(storedData.accounts).forEach(([accountName, accountData]) => {
+            const account = new Account(accountData.institution, accountName, accountData.accountNumber);
+
+            accountData.snapshots.forEach(snapshotData => {
+                account.addBalance(new Date(snapshotData.snapshotDate), snapshotData.balance);
+            });
+
+            accountMap.add(account);
+        });*/
     }    
 }
 
