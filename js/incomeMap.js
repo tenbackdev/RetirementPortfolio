@@ -7,6 +7,7 @@ class IncomeMap {
         this.byTicker = new Map();
         this.byDate = new Map();
         this.byAccount = new Map();
+        this.byStatus = new Map();
     }
 
     addIncome(income) {
@@ -14,24 +15,30 @@ class IncomeMap {
             throw new TypeError('income must be an instance of Income');
         }
 
-        // Add by Ticker
-        if (!this.byTicker.has(income.ticker.tickerSymbol)) {
-            this.byTicker.set(income.ticker.tickerSymbol, []);
-        }
-        this.byTicker.get(income.ticker.tickerSymbol).push(income);
-
-        // Add by Date
         const dateKey = income.payDate.toISOString().split('T')[0];
-        if (!this.byDate.has(dateKey)) {
-            this.byDate.set(dateKey, []);
-        }
-        this.byDate.get(dateKey).push(income);
+        this._addToMap(this.byTicker, income.ticker.tickerSymbol, income);
+        this._addToMap(this.byDate, dateKey, income);
+        this._addToMap(this.byAccount, income.account.accountName, income);
+        this._addToMap(this.byStatus, income.incomeStatus, income);
+    }
 
-        const accountKey = income.account.accountName;
-        if (!this.byAccount.has(accountKey)) {
-            this.byAccount.set(accountKey, [])
+    _addToMap(map, key, value) {
+        if (!map.has(key)) {
+            map.set(key, []);
         }
-        this.byAccount.get(accountKey).push(income);
+        const arr = map.get(key);
+        arr.push(value);
+        arr.sort((a, b) => a - b);
+        map.set(key, arr);
+    }
+
+    _convertMapToObject(map) {
+        const obj = {};
+        map.forEach((value, key) => {
+            obj[key] = value;
+        });
+        map.sort
+        return obj;
     }
 
     getByTicker(tickerSymbol) {
@@ -58,6 +65,21 @@ class IncomeMap {
             acc[account] = incomes;
             return acc;
         }, {});
+    }
+
+    getAllGroupedBy(key) {
+        switch (key) {
+            case 'ticker':
+                return this._convertMapToObject(this.byTicker);
+            case 'date':
+                return this._convertMapToObject(this.byDate);
+            case 'account':
+                return this._convertMapToObject(this.byAccount);
+            case 'status':
+                return this._convertMapToObject(this.byStatus);
+            default:
+                throw new Error('Invalid key specified');
+        }
     }
 
 }

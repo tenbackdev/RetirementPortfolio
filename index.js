@@ -63,12 +63,15 @@ async function main() {
 
         // Have the data coming back in a single output
         // Next step is to load the data just like Accounts were
-        console.log(incomeData);
+        //console.log(incomeData);
         loadIncomeData(incomeData);
     }
 
-    updateStarterPortVal()
-    updateChartPortVal()
+    updateStarterPortVal();
+    updateStarterEstIncVal();
+    updateStarterRecIncVal();
+    updateStarterNextIncVal();
+    updateChartPortVal();
     
 
 }
@@ -81,6 +84,59 @@ function updateStarterPortVal() {
         .reduce((totalBalance, snapshot) => totalBalance += snapshot.balance, 0);
 
     h2Tag.textContent = `${currencyFormatCents.format(portVal)}`
+}
+
+function updateStarterEstIncVal() {
+    const h2Tag = document.getElementById('estIncText');
+    const estIncTot = Array.from(incomeMap.byStatus).reduce((estIncVal, [key, array]) => {
+        if (['Announced', 'Estimated'].includes(key)) {
+            const arraySum = array.reduce((sum, obj) => sum + (obj.incomeAmount || 0), 0)
+            return estIncVal + arraySum
+        }
+        return estIncVal
+    }, 0);
+    h2Tag.textContent = `${currencyFormatCents.format(estIncTot)}`
+}
+
+function updateStarterRecIncVal() {
+    const h2Tag = document.getElementById('recIncText');
+    const recIncTot = Array.from(incomeMap.byStatus).reduce((recIncVal, [key, array]) => {
+        if (['Received'].includes(key)) {
+            const arraySum = array.reduce((sum, obj) => sum + (obj.incomeRecent === true ? obj.incomeAmount : 0 || 0), 0)
+            return recIncVal + arraySum
+        }
+        return recIncVal
+    }, 0);
+    h2Tag.textContent = `${currencyFormatCents.format(recIncTot)}`
+}
+
+function updateStarterNextIncVal() {
+    const h2Tag = document.getElementById('nextIncText');
+    const pTag = document.getElementById('nextIncLabel');
+
+
+    // WIP WIP WIP WIP WIP
+    const today = new Date();
+    const dates = Array.from(incomeMap.byDate.keys()).map(dateStr => new Date(dateStr));
+
+    //console.log(dates);
+    dates.sort((a, b) => a - b);
+
+    console.log(dates.find(date => date => today));
+
+    const nextDate = dates.find(date => date => today);
+    console.log(nextDate);
+
+    /*
+    const recIncTot = Array.from(incomeMap.byStatus).reduce((recIncVal, [key, array]) => {
+        if (['Received'].includes(key)) {
+            const arraySum = array.reduce((sum, obj) => sum + (obj.incomeRecent === true ? obj.incomeAmount : 0 || 0), 0)
+            return recIncVal + arraySum
+        }
+        return recIncVal
+    }, 0);
+    h2Tag.textContent = `${currencyFormatCents.format(recIncTot)}`
+    */
 }
 
 function updateChartPortVal() {
