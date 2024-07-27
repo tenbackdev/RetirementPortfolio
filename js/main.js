@@ -108,8 +108,8 @@ export async function loadIncomeData(jsonData) {
         let income = new Income(tickerObj, account, pay_date, income_dollars, income_status, income_recent, income_reinvested)
         incomeMap.addIncome(income);
     });
-    console.log(JSON.stringify(incomeMap));
-    localStorage.setItem('incomeData', JSON.stringify(incomeMap));
+    //console.log(JSON.stringify(incomeMap));
+    localStorage.setItem('incomeData', `{"income": ${JSON.stringify(incomeMap.getAllGroupedBy('date'))}}`);
 }
 
 /*Re-evaluate to see if there is a way to avoid duplicating every function*/
@@ -175,21 +175,23 @@ export function retrieveIncomeData() {
     //find some way to parse the "accounts" part of what is being stored in Local Storage
     //console.log(storedData.accounts);
     
-    if (!storedData) {
+    if (!storedData?.income) {
         //avoid errors if there is no data to retrieve
-        return
+        return;
     }
 
-    if (storedData.accounts) {
-        /*Object.entries(storedData.accounts).forEach(([accountName, accountData]) => {
-            const account = new Account(accountData.institution, accountName, accountData.accountNumber);
-
-            accountData.snapshots.forEach(snapshotData => {
-                account.addBalance(new Date(snapshotData.snapshotDate), snapshotData.balance);
-            });
-
-            accountMap.add(account);
-        });*/
+    if (storedData.income) {
+        Object.entries(storedData.income).forEach(([incomeDate, incomeEntry]) => {
+            incomeEntry.forEach(entryDetail => {
+                const {incomeAmount, incomeRecent, incomeReinvested, incomeStatus, payDate} = entryDetail;
+                // Every entry in the json input is considered to be its own income.
+                let tickerObj = new Ticker(entryDetail.ticker.tickerSymbol, entryDetail.ticker.tickerName);
+                let account = new Account(entryDetail.account.institution, entryDetail.account.accountName);
+                //console.log(entry);
+                let income = new Income(tickerObj, account, payDate, incomeAmount, incomeStatus, incomeRecent, incomeReinvested)
+                incomeMap.addIncome(income);
+            })
+        });
     }    
 }
 
