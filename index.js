@@ -33,6 +33,34 @@ function formatDateToMMDDYYYY(date) {
     return `${formattedMonth}/${formattedDay}/${year}`;
 }
 
+function formatDateToYYYYMMDD(date) {
+    const myDate = new Date(date);
+    //console.log(myDate);
+    //console.log(typeof(myDate));
+    const year = myDate.getUTCFullYear();
+    const month = myDate.getUTCMonth() + 1; // getMonth() returns month from 0-11
+    const day = myDate.getUTCDate();
+
+    // Pad single-digit months and days with leading zero if necessary
+    const formattedMonth = month < 10 ? `0${month}` : month;
+    const formattedDay = day < 10 ? `0${day}` : day;
+
+
+    //console.log(`${year}-${formattedMonth}-${formattedDay}`)
+    return `${year}-${formattedMonth}-${formattedDay}`;
+}
+
+function formatDateToMMDD(date) {
+    const month = date.getUTCMonth() + 1; // getMonth() returns month from 0-11
+    const day = date.getUTCDate();
+
+    // Pad single-digit months and days with leading zero if necessary
+    const formattedMonth = month < 10 ? `0${month}` : month;
+    const formattedDay = day < 10 ? `0${day}` : day;
+
+    return `${formattedMonth}/${formattedDay}`;
+}
+
 async function main() {
     localStorage.removeItem('accountData');
     localStorage.removeItem('currentAccountData');
@@ -118,15 +146,16 @@ function updateStarterNextIncVal() {
     // WIP WIP WIP WIP WIP
     const today = new Date();
     const dates = Array.from(incomeMap.byDate.keys()).map(dateStr => new Date(dateStr));
-
-    //console.log(dates);
     dates.sort((a, b) => a - b);
+    const nextDate = dates.find(date => date >= today);
+    //console.log(nextDate);
 
-    console.log(dates.find(date => date => today));
-
-    const nextDate = dates.find(date => date => today);
-    console.log(nextDate);
-
+    const incomesForDate = incomeMap.byDate.get(formatDateToYYYYMMDD(nextDate));
+    const totalIncomeAmount = incomesForDate.reduce((sum, income) => sum + income.incomeAmount, 0);
+    const uniqueTickers = [...new Set(incomesForDate.map(income => income.ticker.tickerSymbol))].join(', ')
+    //console.log(totalIncomeAmount);
+    h2Tag.textContent = `${currencyFormatCents.format(totalIncomeAmount)}`
+    pTag.textContent = `Next Income - ${formatDateToMMDD(nextDate)} (${uniqueTickers})`
     /*
     const recIncTot = Array.from(incomeMap.byStatus).reduce((recIncVal, [key, array]) => {
         if (['Received'].includes(key)) {
