@@ -128,7 +128,7 @@ async function main() {
     updateStarterNextIncVal();
     updateChartPortVal();
     updateChartIncTimeSrsStackBar();
-    
+    updateChartEstIncDoughnut();
 
 }
 
@@ -263,8 +263,54 @@ function updateChartPortVal() {
     })
 };
 
-function updateChartEstIncDoughnut() {
-    //Do Stuff
+async function updateChartEstIncDoughnut() {
+    const pvc = document.getElementById("est-inc-tick-doughnut-chart");
+
+    const tickerIncome = new Map();
+    incomeMap.byTicker.forEach((item, keyTicker) => {
+        //console.log(keyTicker);
+        //console.log(item);
+        if(!tickerIncome.get(keyTicker)) {
+            tickerIncome.set(keyTicker, 0)
+        }
+        item.forEach(income => {
+            if(income.incomeStatus !== 'Received') {
+                console.log(keyTicker);
+                tickerIncome.set(keyTicker, tickerIncome.get(keyTicker) + income.incomeAmount);
+            }
+        });
+    });
+
+    const sortedFilteredMap = new Map(Array.from(tickerIncome.entries())
+        .filter(([key, value]) => value > 0)
+        .sort((a, b) => b[1] - a[1]));
+
+    new Chart(pvc, {
+        type: 'doughnut',
+        data: {
+            labels: Array.from(sortedFilteredMap.keys()),
+            datasets : [{
+                data: Array.from(sortedFilteredMap.values()),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            const value = tooltipItem.raw;
+                            console.log(tooltipItem);
+                            return `${currencyFormatCents.format(value)}`;
+                        }
+                    }
+                },
+                legend: {
+                    display: false
+                }
+            }
+        }
+    })
 }
 
 async function updateChartIncTimeSrsStackBar() {
