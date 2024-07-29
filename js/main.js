@@ -59,6 +59,10 @@ export async function fetchIncomeData() {
     return mergedData;
 }
 
+export function getIncomeStatuses() {
+    return Income.validStatuses;
+}
+
 export async function loadAccountData(jsonData) {
 
     jsonData.forEach(entry => {
