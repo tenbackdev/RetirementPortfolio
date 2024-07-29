@@ -1,4 +1,5 @@
-import {accountMap, currentAccountMap, incomeMap, clearAccountMap, clearCurrentAccountMap, fetchAccountData, fetchCurrentAccountData, fetchIncomeData, loadAccountData, loadCurrentAccountData, loadIncomeData, retrieveAccountData, retrieveCurrentAccountData, retrieveIncomeData} from './js/main.js';
+//import { Chart } from 'chart.js';
+import {accountMap, currentAccountMap, incomeMap, clearAccountMap, clearCurrentAccountMap, fetchAccountData, fetchCurrentAccountData, fetchIncomeData, getIncomeStatuses, loadAccountData, loadCurrentAccountData, loadIncomeData, retrieveAccountData, retrieveCurrentAccountData, retrieveIncomeData} from './js/main.js';
 
 /*Will be replacing these with a class.*/
 const currencyFormatCents = new Intl.NumberFormat('en-US', {
@@ -50,6 +51,20 @@ function formatDateToYYYYMMDD(date) {
     return `${year}-${formattedMonth}-${formattedDay}`;
 }
 
+function formatDateToYYYYMM(date) {
+    const myDate = new Date(date);
+    //console.log(myDate);
+    //console.log(typeof(myDate));
+    const year = myDate.getUTCFullYear();
+    const month = myDate.getUTCMonth() + 1; // getMonth() returns month from 0-11
+
+    // Pad single-digit months and days with leading zero if necessary
+    const formattedMonth = month < 10 ? `0${month}` : month;
+
+    //console.log(`${year}-${formattedMonth}-${formattedDay}`)
+    return `${year}-${formattedMonth}`;
+}
+
 function formatDateToMMDD(date) {
     const month = date.getUTCMonth() + 1; // getMonth() returns month from 0-11
     const day = date.getUTCDate();
@@ -59,6 +74,18 @@ function formatDateToMMDD(date) {
     const formattedDay = day < 10 ? `0${day}` : day;
 
     return `${formattedMonth}/${formattedDay}`;
+}
+
+function formatDateToMMYYYY(date) {
+    const myDate = new Date(date);
+    const month = myDate.getUTCMonth() + 1; // getMonth() returns month from 0-11
+    const year = myDate.getUTCFullYear();
+
+    // Pad single-digit months and days with leading zero if necessary
+    const formattedMonth = month < 10 ? `0${month}` : month;
+    //const formattedDay = day < 10 ? `0${day}` : day;
+
+    return `${formattedMonth}/${year}`;
 }
 
 async function main() {
@@ -100,6 +127,7 @@ async function main() {
     updateStarterRecIncVal();
     updateStarterNextIncVal();
     updateChartPortVal();
+    updateChartIncTimeSrsStackBar();
     
 
 }
@@ -142,30 +170,16 @@ function updateStarterNextIncVal() {
     const h2Tag = document.getElementById('nextIncText');
     const pTag = document.getElementById('nextIncLabel');
 
-
-    // WIP WIP WIP WIP WIP
     const today = new Date();
     const dates = Array.from(incomeMap.byDate.keys()).map(dateStr => new Date(dateStr));
     dates.sort((a, b) => a - b);
     const nextDate = dates.find(date => date >= today);
-    //console.log(nextDate);
 
     const incomesForDate = incomeMap.byDate.get(formatDateToYYYYMMDD(nextDate));
     const totalIncomeAmount = incomesForDate.reduce((sum, income) => sum + income.incomeAmount, 0);
     const uniqueTickers = [...new Set(incomesForDate.map(income => income.ticker.tickerSymbol))].join(', ')
-    //console.log(totalIncomeAmount);
     h2Tag.textContent = `${currencyFormatCents.format(totalIncomeAmount)}`
     pTag.textContent = `Next Income - ${formatDateToMMDD(nextDate)} (${uniqueTickers})`
-    /*
-    const recIncTot = Array.from(incomeMap.byStatus).reduce((recIncVal, [key, array]) => {
-        if (['Received'].includes(key)) {
-            const arraySum = array.reduce((sum, obj) => sum + (obj.incomeRecent === true ? obj.incomeAmount : 0 || 0), 0)
-            return recIncVal + arraySum
-        }
-        return recIncVal
-    }, 0);
-    h2Tag.textContent = `${currencyFormatCents.format(recIncTot)}`
-    */
 }
 
 function updateChartPortVal() {
@@ -247,77 +261,142 @@ function updateChartPortVal() {
             }
         }
     })
+};
 
-    /*
-    fetch(`${apiURLDomainPort}/balance/historical/365`)
-        .then(response => response.json())
-        .then(data => {
- 
-            const balanceHistory = groupAndSumBy(data, 'snapshot_date', 'account_balances', 'group', 'ascending');
-            const balanceHistoryDates = Object.keys(balanceHistory)
+function updateChartEstIncDoughnut() {
+    //Do Stuff
+}
 
-            new Chart(pvc, {
-                type: 'line',
-                data: {
-                    labels: balanceHistoryDates,
-                    datasets : [{
-                        data: Object.values(balanceHistory),
-                        borderWidth: 1,
-                        pointRadius: 1,
-                        tension: 0.1,
-                        pointHitRadius: 20,
+async function updateChartIncTimeSrsStackBar() {
+    
+    try {
+        //Get List Of All Possible Statuses  
+        const statusArr = getIncomeStatuses(); //Array.from(incomeMap.byStatus.keys());
 
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                title: function(tooltipItems) {
-                                    const index = tooltipItems[0].dataIndex;
-                                    const origLabel = tooltipItems[0].chart.data.labels[index];
-                                    return formatDateToMMDDYYYY(origLabel);
-                                },
-                                label: function(tooltipItem) {
-                                    const value = tooltipItem.raw;
-                                    return `${currencyFormatCents.format(value)}`;
+        //Forcing Data To Be In Chronological Order
+        const incomeDateOrderMap = new Map([...incomeMap.byDate].sort());
+
+        // Create wireframe map for all datasets and data points to be added into
+        let incomeStatusTimeSeriesMap = new Map();
+        statusArr.forEach(item => incomeStatusTimeSeriesMap.set(item, new Map()));
+
+        //Travese All Dates In Income
+        incomeDateOrderMap.forEach((incomeArray, date) => {
+            
+            // Create a map just to keep all the income values for all statuses on a given date
+            const dateYearMonth = formatDateToYYYYMM(date);
+
+            // Add the YYYYMM key to each of the sub maps as needed
+            statusArr.forEach(item => {
+                if(!incomeStatusTimeSeriesMap.get(item).get(dateYearMonth)) {
+                    incomeStatusTimeSeriesMap.get(item).set(dateYearMonth, 0);
+                }
+            });
+
+            // Traverse All Incomes For Date, And Add To Final Map Appropriately
+            incomeArray.forEach(income => {
+                const {incomeStatus, incomeAmount} = income;
+                incomeStatusTimeSeriesMap.get(incomeStatus).set(dateYearMonth, incomeStatusTimeSeriesMap.get(incomeStatus).get(dateYearMonth) + incomeAmount);
+            });
+        })
+        console.log(incomeStatusTimeSeriesMap);
+
+        const pvc = document.getElementById("inc-time-srs-stack-bar-chart");
+
+        console.log(incomeStatusTimeSeriesMap.keys().next().value);
+        console.log(Array.from(incomeStatusTimeSeriesMap.get(incomeStatusTimeSeriesMap.keys().next().value).keys()));
+
+        console.log(Array.from(incomeStatusTimeSeriesMap.get('Received').values()));
+
+        let datasetsConfig = [];
+        statusArr.forEach(datasetLabel => {
+            //console.log({label: datasetLabel, borderWidth: 1, stack: 'Stack 0', data: Array.from(incomeStatusTimeSeriesMap.get(datasetLabel).values())});
+            datasetsConfig.push({label: datasetLabel, borderWidth: 1, stack: 'Stack 0', data: Array.from(incomeStatusTimeSeriesMap.get(datasetLabel).values())} )
+        })
+
+        new Chart(pvc, {
+            type: 'bar',
+            data: {
+                labels: Array.from(incomeStatusTimeSeriesMap.get(incomeStatusTimeSeriesMap.keys().next().value).keys()),
+                //figure out how to generate all datasets from incomeStatusTimeSeriesMap
+                datasets: datasetsConfig
+            },
+            options: {
+                //WORK ON THE CONTENT & TITLE OF THE TOOLTIP
+                responsive: true,
+                plugins: {
+                    legend: {
+                        //WHY IS THIS NOT SHOWING UP?
+                        position: 'top'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const index = tooltipItems[0].dataIndex;
+                                const origLabel = tooltipItems[0].chart.data.labels[index];
+                                console.log(origLabel);
+                                return formatDateToMMYYYY(origLabel);
+                            },
+                            label: function(context) {
+                                let label = context.dataset.labels || '';
+                                let totalRaw = 0;
+                                if (label) {
+                                    label += ': ';
                                 }
+                                label += context.raw !== null ? `${context.dataset.label}: ${currencyFormatCents.format(context.raw)}` : `${context.dataset.label}: $0.00`;
+                                return label;
+                            },
+                            afterBody: function(tooltipItems) {
+                                let total = 0
+                                tooltipItems.forEach(function(tooltipItem) {
+                                    total += tooltipItem.raw ? tooltipItem.raw : 0;
+                                });
+                                return `    Total: ${currencyFormatCents.format(total) }`;
                             }
+                        }
+                    },
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            dispalyFormat: 'MM/DD/YYY'
                         },
-                        legend: {
+                        grid: {
                             display: false
                         }
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            ticks: {
-                                callback: function(value, index, values) {
-                                    return currencyFormatDollars.format(value);
-                                }
+                    /*x: {
+                        type: 'time',
+                        time: {
+                            unit: 'month',
+                            parser: 'yyyy-MM',
+                            displayFormats: {
+                                month: 'yyyy-MM'
                             }
                         },
-                        x: {
-                            type: 'time',
-                            time: {
-                                dispalyFormat: 'MM/DD/YYY'
+                        stacked: true,
+                    },*/
+                    //GET THESE TO SHOW IN DOLLARS
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return currencyFormatDollars.format(value);
                             }
                         }
                     }
                 }
-            })
-
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-            //h2Tag.textContent = 'Failed to load data'
+            }
         });
 
-    */
-};
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
 
+}
 
 main();
 
