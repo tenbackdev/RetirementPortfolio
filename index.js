@@ -1,20 +1,5 @@
 //import { Chart } from 'chart.js';
-import {accountMap, currentAccountMap, incomeMap, clearAccountMap, clearCurrentAccountMap, fetchAccountData, fetchCurrentAccountData, fetchIncomeData, getIncomeStatuses, loadAccountData, loadCurrentAccountData, loadIncomeData, retrieveAccountData, retrieveCurrentAccountData, retrieveIncomeData} from './js/main.js';
-
-/*Will be replacing these with a class.*/
-const currencyFormatCents = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-});
-
-const currencyFormatDollars = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-});
+import {accountMap, currentAccountMap, incomeMap, clearAccountMap, clearCurrentAccountMap, fetchAccountData, fetchCurrentAccountData, fetchIncomeData, getIncomeStatuses, loadAccountData, loadCurrentAccountData, loadIncomeData, retrieveAccountData, retrieveCurrentAccountData, retrieveIncomeData, formatterCents, formatterDollars} from './js/main.js';
 
 /*Rethink placement of this function as well*/
 function formatDateToMMDDYYYY(date) {
@@ -139,7 +124,7 @@ function updateStarterPortVal() {
         .flatMap(account => account.snapshots)
         .reduce((totalBalance, snapshot) => totalBalance += snapshot.balance, 0);
 
-    h2Tag.textContent = `${currencyFormatCents.format(portVal)}`
+    h2Tag.textContent = `${formatterCents.format(portVal)}`
 }
 
 function updateStarterEstIncVal() {
@@ -151,7 +136,7 @@ function updateStarterEstIncVal() {
         }
         return estIncVal
     }, 0);
-    h2Tag.textContent = `${currencyFormatCents.format(estIncTot)}`
+    h2Tag.textContent = `${formatterCents.format(estIncTot)}`
 }
 
 function updateStarterRecIncVal() {
@@ -163,7 +148,7 @@ function updateStarterRecIncVal() {
         }
         return recIncVal
     }, 0);
-    h2Tag.textContent = `${currencyFormatCents.format(recIncTot)}`
+    h2Tag.textContent = `${formatterCents.format(recIncTot)}`
 }
 
 function updateStarterNextIncVal() {
@@ -178,7 +163,7 @@ function updateStarterNextIncVal() {
     const incomesForDate = incomeMap.byDate.get(formatDateToYYYYMMDD(nextDate));
     const totalIncomeAmount = incomesForDate.reduce((sum, income) => sum + income.incomeAmount, 0);
     const uniqueTickers = [...new Set(incomesForDate.map(income => income.ticker.tickerSymbol))].join(', ')
-    h2Tag.textContent = `${currencyFormatCents.format(totalIncomeAmount)}`
+    h2Tag.textContent = `${formatterCents.format(totalIncomeAmount)}`
     pTag.textContent = `Next Income - ${formatDateToMMDD(nextDate)} (${uniqueTickers})`
 }
 
@@ -234,7 +219,7 @@ function updateChartPortVal() {
                         },
                         label: function(tooltipItem) {
                             const value = tooltipItem.raw;
-                            return `${currencyFormatCents.format(value)}`;
+                            return `${formatterCents.format(value)}`;
                         }
                     }
                 },
@@ -248,7 +233,7 @@ function updateChartPortVal() {
                     beginAtZero: false,
                     ticks: {
                         callback: function(value, index, values) {
-                            return currencyFormatDollars.format(value);
+                            return formatterDollars.format(value);
                         }
                     }
                 },
@@ -275,7 +260,7 @@ async function updateChartEstIncDoughnut() {
         }
         item.forEach(income => {
             if(income.incomeStatus !== 'Received') {
-                console.log(keyTicker);
+                //console.log(keyTicker);
                 tickerIncome.set(keyTicker, tickerIncome.get(keyTicker) + income.incomeAmount);
             }
         });
@@ -301,7 +286,7 @@ async function updateChartEstIncDoughnut() {
                         label: function(tooltipItem) {
                             const value = tooltipItem.raw;
                             console.log(tooltipItem);
-                            return `${currencyFormatCents.format(value)}`;
+                            return `${formatterCents.format(value)}`;
                         }
                     }
                 },
@@ -345,14 +330,8 @@ async function updateChartIncTimeSrsStackBar() {
                 incomeStatusTimeSeriesMap.get(incomeStatus).set(dateYearMonth, incomeStatusTimeSeriesMap.get(incomeStatus).get(dateYearMonth) + incomeAmount);
             });
         })
-        console.log(incomeStatusTimeSeriesMap);
 
         const pvc = document.getElementById("inc-time-srs-stack-bar-chart");
-
-        console.log(incomeStatusTimeSeriesMap.keys().next().value);
-        console.log(Array.from(incomeStatusTimeSeriesMap.get(incomeStatusTimeSeriesMap.keys().next().value).keys()));
-
-        console.log(Array.from(incomeStatusTimeSeriesMap.get('Received').values()));
 
         let datasetsConfig = [];
         statusArr.forEach(datasetLabel => {
@@ -391,7 +370,7 @@ async function updateChartIncTimeSrsStackBar() {
                                 if (label) {
                                     label += ': ';
                                 }
-                                label += context.raw !== null ? `${context.dataset.label}: ${currencyFormatCents.format(context.raw)}` : `${context.dataset.label}: $0.00`;
+                                label += context.raw !== null ? `${context.dataset.label}: ${formatterCents.format(context.raw)}` : `${context.dataset.label}: $0.00`;
                                 return label;
                             },
                             afterBody: function(tooltipItems) {
@@ -399,7 +378,7 @@ async function updateChartIncTimeSrsStackBar() {
                                 tooltipItems.forEach(function(tooltipItem) {
                                     total += tooltipItem.raw ? tooltipItem.raw : 0;
                                 });
-                                return `    Total: ${currencyFormatCents.format(total) }`;
+                                return `    Total: ${formatterCents.format(total) }`;
                             }
                         }
                     },
@@ -430,7 +409,7 @@ async function updateChartIncTimeSrsStackBar() {
                         beginAtZero: true,
                         ticks: {
                             callback: function(value, index, values) {
-                                return currencyFormatDollars.format(value);
+                                return formatterDollars.format(value);
                             }
                         }
                     }

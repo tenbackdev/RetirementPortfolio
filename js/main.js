@@ -3,10 +3,17 @@ import AccountSnapshot from './accountSnapshot.js';
 import Ticker from './ticker.js';
 import Income from './income.js';
 import IncomeMap from './incomeMap.js';
+import CurrencyFormatter from './currencyFormatter.js'
 
 export let accountMap = Account.createAccountMap();
 export let currentAccountMap = Account.createAccountMap();
 export let incomeMap = new IncomeMap();
+export let formatterCents = new CurrencyFormatter('en-US', 'USD', 2);
+export let formatterDollars = new CurrencyFormatter('en-US', 'USD', 0);
+//// These are necessary if the variable is a const
+//exports.formatterCents = formatterCents;
+//exports.formatterDollars = formatterDollars;
+
 const apiURLDomainPort = 'http://localhost:5000'
 
 export async function fetchAccountData() {
