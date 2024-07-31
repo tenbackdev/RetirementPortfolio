@@ -4,12 +4,15 @@ import Ticker from './ticker.js';
 import Income from './income.js';
 import IncomeMap from './incomeMap.js';
 import CurrencyFormatter from './currencyFormatter.js'
+import DateFormatter from './dateFormatter.js';
 
 export let accountMap = Account.createAccountMap();
 export let currentAccountMap = Account.createAccountMap();
 export let incomeMap = new IncomeMap();
 export let formatterCents = new CurrencyFormatter('en-US', 'USD', 2);
 export let formatterDollars = new CurrencyFormatter('en-US', 'USD', 0);
+export let formatterDateMMYYYY = new DateFormatter('MMYYYY', '/');
+export let formatterDateMMDDYYYY = new DateFormatter('MMDDYYYY', '/');
 //// These are necessary if the variable is a const
 //exports.formatterCents = formatterCents;
 //exports.formatterDollars = formatterDollars;
@@ -40,17 +43,22 @@ export async function fetchIncomeData() {
         estimatedReponse.json()
     ]);
     
-    const historicalTransformed = historical.map(income => ({
-        account_name: income.account_name,
-        institution_name: income.institution_name,
-        income_status: 'Received',
-        income_dollars: income.income_dollars,
-        income_recent: income.income_recent,
-        income_reinvested: income.income_reinvested,
-        pay_date: income.income_date,
-        ticker: income.ticker,
-        ticker_name: income.ticker_name
+    // Filtering down to just the data after tracking started
+    const historicalTransformed = historical
+        .filter(entry => new Date(entry.income_date) >= new Date('2023-07-01'))    
+        .map(income => ({
+            account_name: income.account_name,
+            institution_name: income.institution_name,
+            income_status: 'Received',
+            income_dollars: income.income_dollars,
+            income_recent: income.income_recent,
+            income_reinvested: income.income_reinvested,
+            pay_date: income.income_date,
+            ticker: income.ticker,
+            ticker_name: income.ticker_name
     }));
+
+    console.log(historicalTransformed);
 
     const estimatedTransformed = estimated.map(income => ({
         account_name: income.account_name,
