@@ -1,77 +1,4 @@
-//import { Chart } from 'chart.js';
-import {accountMap, currentAccountMap, incomeMap, clearAccountMap, clearCurrentAccountMap, fetchAccountData, fetchCurrentAccountData, fetchIncomeData, getIncomeStatuses, loadAccountData, loadCurrentAccountData, loadIncomeData, retrieveAccountData, retrieveCurrentAccountData, retrieveIncomeData, formatterCents, formatterDollars} from './js/main.js';
-
-/*Rethink placement of this function as well*/
-function formatDateToMMDDYYYY(date) {
-    const myDate = new Date(date);
-    //console.log(myDate);
-    //console.log(typeof(myDate));
-    const year = myDate.getUTCFullYear();
-    const month = myDate.getUTCMonth() + 1; // getMonth() returns month from 0-11
-    const day = myDate.getUTCDate();
-
-    // Pad single-digit months and days with leading zero if necessary
-    const formattedMonth = month < 10 ? `0${month}` : month;
-    const formattedDay = day < 10 ? `0${day}` : day;
-
-
-    //console.log(`${formattedMonth}/${formattedDay}/${year}`)
-    return `${formattedMonth}/${formattedDay}/${year}`;
-}
-
-function formatDateToYYYYMMDD(date) {
-    const myDate = new Date(date);
-    //console.log(myDate);
-    //console.log(typeof(myDate));
-    const year = myDate.getUTCFullYear();
-    const month = myDate.getUTCMonth() + 1; // getMonth() returns month from 0-11
-    const day = myDate.getUTCDate();
-
-    // Pad single-digit months and days with leading zero if necessary
-    const formattedMonth = month < 10 ? `0${month}` : month;
-    const formattedDay = day < 10 ? `0${day}` : day;
-
-
-    //console.log(`${year}-${formattedMonth}-${formattedDay}`)
-    return `${year}-${formattedMonth}-${formattedDay}`;
-}
-
-function formatDateToYYYYMM(date) {
-    const myDate = new Date(date);
-    //console.log(myDate);
-    //console.log(typeof(myDate));
-    const year = myDate.getUTCFullYear();
-    const month = myDate.getUTCMonth() + 1; // getMonth() returns month from 0-11
-
-    // Pad single-digit months and days with leading zero if necessary
-    const formattedMonth = month < 10 ? `0${month}` : month;
-
-    //console.log(`${year}-${formattedMonth}-${formattedDay}`)
-    return `${year}-${formattedMonth}`;
-}
-
-function formatDateToMMDD(date) {
-    const month = date.getUTCMonth() + 1; // getMonth() returns month from 0-11
-    const day = date.getUTCDate();
-
-    // Pad single-digit months and days with leading zero if necessary
-    const formattedMonth = month < 10 ? `0${month}` : month;
-    const formattedDay = day < 10 ? `0${day}` : day;
-
-    return `${formattedMonth}/${formattedDay}`;
-}
-
-function formatDateToMMYYYY(date) {
-    const myDate = new Date(date);
-    const month = myDate.getUTCMonth() + 1; // getMonth() returns month from 0-11
-    const year = myDate.getUTCFullYear();
-
-    // Pad single-digit months and days with leading zero if necessary
-    const formattedMonth = month < 10 ? `0${month}` : month;
-    //const formattedDay = day < 10 ? `0${day}` : day;
-
-    return `${formattedMonth}/${year}`;
-}
+import {accountMap, currentAccountMap, incomeMap, clearAccountMap, clearCurrentAccountMap, fetchAccountData, fetchCurrentAccountData, fetchIncomeData, getIncomeStatuses, loadAccountData, loadCurrentAccountData, loadIncomeData, retrieveAccountData, retrieveCurrentAccountData, retrieveIncomeData, formatterCents, formatterDollars, formatterDateMMYYYY, formatterDateMMDDYYYY} from './js/main.js';
 
 async function main() {
     localStorage.removeItem('accountData');
@@ -114,7 +41,6 @@ async function main() {
     updateChartPortVal();
     updateChartIncTimeSrsStackBar();
     updateChartEstIncDoughnut();
-
 }
 
 function updateStarterPortVal() {
@@ -160,11 +86,11 @@ function updateStarterNextIncVal() {
     dates.sort((a, b) => a - b);
     const nextDate = dates.find(date => date >= today);
 
-    const incomesForDate = incomeMap.byDate.get(formatDateToYYYYMMDD(nextDate));
+    const incomesForDate = incomeMap.byDate.get(formatterDateMMDDYYYY.formatDate(nextDate, 'YYYYMMDD', '-'));
     const totalIncomeAmount = incomesForDate.reduce((sum, income) => sum + income.incomeAmount, 0);
     const uniqueTickers = [...new Set(incomesForDate.map(income => income.ticker.tickerSymbol))].join(', ')
     h2Tag.textContent = `${formatterCents.format(totalIncomeAmount)}`
-    pTag.textContent = `Next Income - ${formatDateToMMDD(nextDate)} (${uniqueTickers})`
+    pTag.textContent = `Next Income - ${formatterDateMMDDYYYY.formatDate(nextDate, 'MMDD', '/')} (${uniqueTickers})`
 }
 
 function updateChartPortVal() {
@@ -190,10 +116,6 @@ function updateChartPortVal() {
                 return acc;
             }, {});
 
-    
-
-    //console.log(balancesBySnapshotDate);
-
     new Chart(pvc, {
         type: 'line',
         data : {
@@ -215,7 +137,7 @@ function updateChartPortVal() {
                         title: function(tooltipItems) {
                             const index = tooltipItems[0].dataIndex;
                             const origLabel = tooltipItems[0].chart.data.labels[index];
-                            return formatDateToMMDDYYYY(origLabel);
+                            return formatterDateMMDDYYYY.formatDate(origLabel);
                         },
                         label: function(tooltipItem) {
                             const value = tooltipItem.raw;
@@ -313,9 +235,8 @@ async function updateChartIncTimeSrsStackBar() {
 
         //Travese All Dates In Income
         incomeDateOrderMap.forEach((incomeArray, date) => {
-            
             // Create a map just to keep all the income values for all statuses on a given date
-            const dateYearMonth = formatDateToYYYYMM(date);
+            const dateYearMonth = formatterDateMMYYYY.formatDate(new Date(`${date}`), 'YYYYMM', '-'); //formatDateToYYYYMM(date);
 
             // Add the YYYYMM key to each of the sub maps as needed
             statusArr.forEach(item => {
@@ -361,8 +282,8 @@ async function updateChartIncTimeSrsStackBar() {
                             title: function(tooltipItems) {
                                 const index = tooltipItems[0].dataIndex;
                                 const origLabel = tooltipItems[0].chart.data.labels[index];
-                                console.log(origLabel);
-                                return formatDateToMMYYYY(origLabel);
+                                //console.log(origLabel);
+                                return formatterDateMMYYYY.formatDate(new Date(`${origLabel}-01`));
                             },
                             label: function(context) {
                                 let label = context.dataset.labels || '';
