@@ -58,8 +58,6 @@ export async function fetchIncomeData() {
             ticker_name: income.ticker_name
     }));
 
-    console.log(historicalTransformed);
-
     const estimatedTransformed = estimated.map(income => ({
         account_name: income.account_name,
         //institution_name: income.institution_name, //need to update API to include this
