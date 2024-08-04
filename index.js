@@ -254,6 +254,8 @@ async function updateChartIncTimeSrsStackBar() {
 
         const pvc = document.getElementById("inc-time-srs-stack-bar-chart");
 
+        console.log(incomeStatusTimeSeriesMap);
+
         let datasetsConfig = [];
         statusArr.forEach(datasetLabel => {
             //console.log({label: datasetLabel, borderWidth: 1, stack: 'Stack 0', data: Array.from(incomeStatusTimeSeriesMap.get(datasetLabel).values())});

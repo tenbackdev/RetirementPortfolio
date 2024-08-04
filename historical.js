@@ -40,6 +40,7 @@ async function main() {
 
     updateStarterPortVal();
     updateStarterPortValDelta();
+    updateChartPortStackVal();
 
 }
 
@@ -98,6 +99,41 @@ function updateStarterPortValDelta() {
 
     h2Tag.textContent = `${formatterCents.format(deltaFinal)}`
 }
+
+async function updateChartPortStackVal() {
+    const pvc = document.getElementById("port-val-stacked-chart");
+
+
+    let portValStackedMap = new Map();
+
+    //Looping through each account
+    Object.keys(accountMap.accounts).forEach(account => {
+        let indAccountBalanceMap = new Map();
+        accountMap.get(account).snapshots.forEach(snapshot => {
+            indAccountBalanceMap.set(
+                    snapshot.snapshotDate.toISOString().split('T')[0],
+                    snapshot.balance
+                    )
+            
+        })
+        portValStackedMap.set(account, indAccountBalanceMap);
+    });
+
+    let datasetsConfig = [];
+        Object.keys(accountMap.accounts).forEach(datasetLabel => {
+            //console.log({label: datasetLabel, borderWidth: 1, stack: 'Stack 0', data: Array.from(incomeStatusTimeSeriesMap.get(datasetLabel).values())});
+            datasetsConfig.push({label: datasetLabel, borderWidth: 1, stack: 'Stack 0', data: Array.from(portValStackedMap.get(datasetLabel).values())} )
+        })
+
+    new Chart(pvc, {
+        type: 'line',
+        data : {
+            labels: Array.from(portValStackedMap.get(portValStackedMap.keys().next().value).keys()),
+            datasets: datasetsConfig
+        },
+
+    })
+};
 
 main();
 
