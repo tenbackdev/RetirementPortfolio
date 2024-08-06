@@ -105,10 +105,39 @@ async function updateChartPortStackVal() {
 
 
     let portValStackedMap = new Map();
+    let portValStackedDates = [...new Set(Object.values(accountMap.accounts)
+                                    .flatMap(account => account.snapshots)
+                                    .map(snapshot => snapshot.snapshotDate.toISOString().split('T')[0]) 
+                                    )]
 
     //Looping through each account
     Object.keys(accountMap.accounts).forEach(account => {
         let indAccountBalanceMap = new Map();
+        portValStackedDates.forEach(xDate => {
+            const snapshotArray = accountMap.get(account).snapshots;
+            const curDate = new Date(xDate);
+            const foundSnapshotIndex = snapshotArray.findIndex(item => {
+                const snapDate = new Date(item.snapshotDate)
+                return curDate.getTime() === snapDate.getTime();
+                })
+            //console.log(snapshotArray[foundSnapshotIndex].snapshotDate);
+
+            const snapAcctDate = foundSnapshotIndex !== -1 && snapshotArray[foundSnapshotIndex] 
+                ? new Date(snapshotArray[foundSnapshotIndex].snapshotDate).toISOString().split('T')[0]
+                : curDate.toISOString().split('T')[0];
+            const snapAcctBal = foundSnapshotIndex !== -1 && snapshotArray[foundSnapshotIndex] 
+                ? snapshotArray[foundSnapshotIndex].balance
+                : null;
+
+            indAccountBalanceMap.set(
+                snapAcctDate,
+                snapAcctBal
+            
+                )
+            });
+
+            portValStackedMap.set(account, indAccountBalanceMap); 
+        /*
         accountMap.get(account).snapshots.forEach(snapshot => {
             indAccountBalanceMap.set(
                     snapshot.snapshotDate.toISOString().split('T')[0],
@@ -117,12 +146,20 @@ async function updateChartPortStackVal() {
             
         })
         portValStackedMap.set(account, indAccountBalanceMap);
+        */
     });
 
     let datasetsConfig = [];
         Object.keys(accountMap.accounts).forEach(datasetLabel => {
             //console.log({label: datasetLabel, borderWidth: 1, stack: 'Stack 0', data: Array.from(incomeStatusTimeSeriesMap.get(datasetLabel).values())});
-            datasetsConfig.push({label: datasetLabel, borderWidth: 1, stack: 'Stack 0', data: Array.from(portValStackedMap.get(datasetLabel).values())} )
+            datasetsConfig.push({
+                label: datasetLabel,
+                borderWidth: 1,
+                pointRadius: 1,
+                tension: 0.1,
+                pointHitRadius: 20, 
+                stack: 'Stack 0', 
+                data: Array.from(portValStackedMap.get(datasetLabel).values())} )
         })
 
     new Chart(pvc, {
@@ -131,8 +168,34 @@ async function updateChartPortStackVal() {
             labels: Array.from(portValStackedMap.get(portValStackedMap.keys().next().value).keys()),
             datasets: datasetsConfig
         },
+        options: {
+            plugins:{
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        callback: function(value, index, values) {
+                            return formatterDollars.format(value);
+                        }
+                    }
+                },
+                x: {
+                    type: 'time',
+                    time: {
+                        dispalyFormat: 'MM/DD/YYY'
+                    }
+                }
+            }
+        }
+
 
     })
+
+    console.log(portValStackedMap);
 };
 
 main();
