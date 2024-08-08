@@ -172,6 +172,39 @@ async function updateChartPortStackVal() {
             plugins:{
                 legend: {
                     display: false
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const index = tooltipItems[0].dataIndex;
+                            const origLabel = tooltipItems[0].chart.data.labels[index];
+                            //console.log(origLabel);
+                            return formatterDateMMYYYY.formatDate(new Date(`${origLabel}-01`));
+                        },
+
+                        label: function(context) {
+                            let label = context.dataset.labels || '';
+                            let totalRaw = 0;
+                            if (label) {
+                                label += ': ';
+                            }
+                            const acctLabel = context.dataset.label
+                            const balLabel =  formatterCents.format(context.raw)
+                            const charCount = acctLabel.length + balLabel.length
+                            
+                            label += context.raw !== null ? `${acctLabel}:${' '.repeat(50-charCount)}${balLabel}` : `${acctLabel}:${' '.repeat(45-charCount)}$0.00`;
+                            return label;
+                        },
+                        afterBody: function(tooltipItems) {
+                            let total = 0
+                            tooltipItems.forEach(function(tooltipItem) {
+                                total += tooltipItem.raw ? tooltipItem.raw : 0;
+                            });
+                            return `    Total: ${formatterCents.format(total) }`;
+                        }
+                    }
                 }
             },
             scales: {
