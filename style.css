@@ -600,9 +600,14 @@ ul.notika-menu-wrap li a{
 .flot-chart {
     height: 319px;
 }
-.flot-chart.flot-chart-sts{
-	height: 308px;
+.flot-chart.flot-chart-sts, .past-statistic-an{
+	height: 400px;
 }
+
+.past-statistic-an {
+    align-items: center;
+}
+
 #flotTip, .flot-tooltip {
     position: absolute;
     color: #333;
