@@ -1,7 +1,6 @@
 import {accountMap, currentAccountMap, incomeMap, clearAccountMap, clearCurrentAccountMap, fetchAccountData, fetchCurrentAccountData, fetchIncomeData, getIncomeStatuses, loadAccountData, loadCurrentAccountData, loadIncomeData, retrieveAccountData, retrieveCurrentAccountData, retrieveIncomeData, formatterCents, formatterDollars, formatterDateMMYYYY, formatterDateMMDDYYYY} from './js/main.js';
 
 async function main() {
-    console.log('Im Running!')
 
     // Revisit to see how the remove / retrieve / load logic can be DRYd up
     // Logic is currently sitting in two different places, and will expand to more locations.
@@ -40,6 +39,8 @@ async function main() {
 
     updateStarterPortVal();
     updateStarterPortValDelta();
+    updateStarterRetirementVal();
+    updateStarterHsaTaxableVal();
     updateChartPortStackVal();
 
 }
@@ -100,6 +101,33 @@ function updateStarterPortValDelta() {
     h2Tag.textContent = `${formatterCents.format(deltaFinal)}`
 }
 
+function updateStarterRetirementVal() {
+    const h2Tag = document.getElementById('retValText');
+
+    const retVal = Object.values(currentAccountMap.accounts)
+        .filter(account => account.accountName.includes('401K') ||  account.accountName.includes('IRA'))    
+        .flatMap(account => account.snapshots)
+        .reduce((totalBalance, snapshot) => totalBalance += snapshot.balance, 0);
+
+    h2Tag.textContent = `${formatterCents.format(retVal)}`
+}
+
+function updateStarterHsaTaxableVal() {
+    const h2Tag = document.getElementById('hsaTaxableValText');
+
+    const taxVal = Object.values(currentAccountMap.accounts)
+        .filter(account => !(account.accountName.includes('401K') || account.accountName.includes('HSA') ||  account.accountName.includes('IRA')))    
+        .flatMap(account => account.snapshots)
+        .reduce((totalBalance, snapshot) => totalBalance += snapshot.balance, 0);
+
+    const hsaVal = Object.values(currentAccountMap.accounts)
+        .filter(account => account.accountName.includes('HSA'))    
+        .flatMap(account => account.snapshots)
+        .reduce((totalBalance, snapshot) => totalBalance += snapshot.balance, 0);
+
+    h2Tag.textContent = `${formatterCents.format(taxVal)} / ${formatterCents.format(hsaVal)}`
+}
+
 async function updateChartPortStackVal() {
     const pvc = document.getElementById("port-val-stacked-chart");
 
@@ -155,10 +183,13 @@ async function updateChartPortStackVal() {
             datasetsConfig.push({
                 label: datasetLabel,
                 borderWidth: 1,
-                pointRadius: 1,
+                pointStyle: false,
+                pointRadius: 0,
+                hoverPointRadius: 0,
                 tension: 0.1,
                 pointHitRadius: 20, 
                 stack: 'Stack 0', 
+                fill: 'origin',
                 data: Array.from(portValStackedMap.get(datasetLabel).values())} )
         })
 
@@ -169,6 +200,9 @@ async function updateChartPortStackVal() {
             datasets: datasetsConfig
         },
         options: {
+            maintainAspectRation: false,
+            autoPadding: true,
+            responsive: true,
             plugins:{
                 legend: {
                     display: false
@@ -180,8 +214,8 @@ async function updateChartPortStackVal() {
                         title: function(tooltipItems) {
                             const index = tooltipItems[0].dataIndex;
                             const origLabel = tooltipItems[0].chart.data.labels[index];
-                            //console.log(origLabel);
-                            return formatterDateMMYYYY.formatDate(new Date(`${origLabel}-01`));
+                            console.log(origLabel);
+                            return formatterDateMMDDYYYY.formatDate(new Date(`${origLabel}`));
                         },
 
                         label: function(context) {
@@ -228,7 +262,7 @@ async function updateChartPortStackVal() {
 
     })
 
-    console.log(portValStackedMap);
+    //console.log(portValStackedMap);
 };
 
 main();
