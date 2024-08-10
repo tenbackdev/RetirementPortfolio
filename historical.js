@@ -130,7 +130,7 @@ function updateStarterHsaTaxableVal() {
 
 async function updateChartPortStackVal() {
     const pvc = document.getElementById("port-val-stacked-chart");
-
+    const legendPvc = document.getElementById("port-val-stacked-legend").getContext('2d');
 
     let portValStackedMap = new Map();
     let portValStackedDates = [...new Set(Object.values(accountMap.accounts)
@@ -193,7 +193,7 @@ async function updateChartPortStackVal() {
                 data: Array.from(portValStackedMap.get(datasetLabel).values())} )
         })
 
-    new Chart(pvc, {
+    let myChart = new Chart(pvc, {
         type: 'line',
         data : {
             labels: Array.from(portValStackedMap.get(portValStackedMap.keys().next().value).keys()),
@@ -256,11 +256,45 @@ async function updateChartPortStackVal() {
                         dispalyFormat: 'MM/DD/YYY'
                     }
                 }
-            }
+            },
+            legendCallback: function(chart) {
+                console.log(`Testing what this is, ${chart}`);
+            },
         }
 
 
     })
+
+    function drawCustomLegend(chart, legend) {
+        console.log(`I'm Running! ${chart}`);
+        const datasets = chart.data.datasets;
+        //const labels = chart.data.labels;
+
+        legend.font = '18px Arial'
+        const lineHeight = 15;
+
+        console.log(datasets);
+        //console.log(labels);
+
+        datasets.forEach((dataset, index) => {
+            const color = dataset.backgroundColor;
+            const label = dataset.label;
+            console.log(color);
+            console.log(dataset);
+            
+            console.log(index);
+            console.log(label);
+            // Color Box
+            legend.fillStyle = color;
+            legend.fillRect(10, index * lineHeight, 250, lineHeight);
+
+            // Label Text
+            legend.fillStyle = "#000";
+            legend.fillText(label, 50, 10 + index * lineHeight);
+        });
+    }
+
+    drawCustomLegend(myChart, legendPvc);
 
     //console.log(portValStackedMap);
 };
