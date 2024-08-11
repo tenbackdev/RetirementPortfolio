@@ -257,13 +257,19 @@ async function updateChartPortStackVal() {
                     }
                 }
             },
-            legendCallback: function(chart) {
-                console.log(`Testing what this is, ${chart}`);
-            },
         }
 
 
     })
+
+    function setAlphaForDatasets(datasets, alpha) {
+        datasets.forEach(function(dataset) {
+            dataset.backgroundColor = dataset.backgroundColor.replace(/rgba\((\d+), (\d+), (\d+), [^)]+\)/, `rgba($1, $2, $3, ${alpha})`);
+            dataset.borderColor = dataset.borderColor.replace(/rgba\((\d+), (\d+), (\d+), [^)]+\)/, `rgba($1, $2, $3, ${alpha})`);
+        })
+    }
+
+    setAlphaForDatasets(myChart.data.datasets, 1);
 
     function drawCustomLegend(chart, legend) {
         console.log(`I'm Running! ${chart}`);
