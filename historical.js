@@ -1,4 +1,5 @@
 import {accountMap, currentAccountMap, incomeMap, clearAccountMap, clearCurrentAccountMap, fetchAccountData, fetchCurrentAccountData, fetchIncomeData, getIncomeStatuses, loadAccountData, loadCurrentAccountData, loadIncomeData, retrieveAccountData, retrieveCurrentAccountData, retrieveIncomeData, formatterCents, formatterDollars, formatterDateMMYYYY, formatterDateMMDDYYYY} from './js/main.js';
+import Account from './js/account.js';
 
 async function main() {
 
@@ -138,6 +139,14 @@ async function updateChartPortStackVal() {
                                     .map(snapshot => snapshot.snapshotDate.toISOString().split('T')[0]) 
                                     )]
 
+    
+    //const allAccountCurrentValueArray = 
+    
+    const accountOrderArray = Object.keys(accountMap.accounts).map(account => {
+        return {accountName: account, accountBalance: accountMap.get(account).getCurrentBalance()}
+        })
+        .sort((a, b) => b.accountBalance - a.accountBalance);
+    
     //Looping through each account
     Object.keys(accountMap.accounts).forEach(account => {
         let indAccountBalanceMap = new Map();
@@ -178,7 +187,8 @@ async function updateChartPortStackVal() {
     });
 
     let datasetsConfig = [];
-        Object.keys(accountMap.accounts).forEach(datasetLabel => {
+        accountOrderArray.forEach(account => { 
+            const datasetLabel = account.accountName;
             //console.log({label: datasetLabel, borderWidth: 1, stack: 'Stack 0', data: Array.from(incomeStatusTimeSeriesMap.get(datasetLabel).values())});
             datasetsConfig.push({
                 label: datasetLabel,
@@ -214,7 +224,6 @@ async function updateChartPortStackVal() {
                         title: function(tooltipItems) {
                             const index = tooltipItems[0].dataIndex;
                             const origLabel = tooltipItems[0].chart.data.labels[index];
-                            console.log(origLabel);
                             return formatterDateMMDDYYYY.formatDate(new Date(`${origLabel}`));
                         },
 
@@ -243,18 +252,24 @@ async function updateChartPortStackVal() {
             },
             scales: {
                 y: {
-                    beginAtZero: false,
+                    beginAtZero: true,
                     ticks: {
                         callback: function(value, index, values) {
                             return formatterDollars.format(value);
                         }
-                    }
+                    },
+                    grid: {
+                        z: 12
+                    } 
                 },
                 x: {
                     type: 'time',
                     time: {
                         dispalyFormat: 'MM/DD/YYY'
-                    }
+                    },
+                    grid: {
+                        z: 12
+                    } 
                 }
             },
         }
@@ -272,24 +287,16 @@ async function updateChartPortStackVal() {
     setAlphaForDatasets(myChart.data.datasets, 1);
 
     function drawCustomLegend(chart, legend) {
-        console.log(`I'm Running! ${chart}`);
         const datasets = chart.data.datasets;
         //const labels = chart.data.labels;
 
         legend.font = '18px Arial'
         const lineHeight = 15;
 
-        console.log(datasets);
-        //console.log(labels);
-
         datasets.forEach((dataset, index) => {
             const color = dataset.backgroundColor;
             const label = dataset.label;
-            console.log(color);
-            console.log(dataset);
-            
-            console.log(index);
-            console.log(label);
+
             // Color Box
             legend.fillStyle = color;
             legend.fillRect(10, index * lineHeight, 250, lineHeight);

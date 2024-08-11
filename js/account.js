@@ -16,7 +16,7 @@ class Account {
     }
 
     getCurrentBalance() {
-        return this.history,at(-1)?.balance || null;
+        return this.snapshots.at(-1)?.balance || null;
     }
 
     getBalanceByDate(date) {
