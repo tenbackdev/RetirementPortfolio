@@ -131,7 +131,8 @@ function updateStarterHsaTaxableVal() {
 
 async function updateChartPortStackVal() {
     const pvc = document.getElementById("port-val-stacked-chart");
-    const legendPvc = document.getElementById("port-val-stacked-legend").getContext('2d');
+    const legendPvc = document.getElementById("port-val-stacked-legend");
+    const legendPvc2D = legendPvc.getContext('2d');
 
     let portValStackedMap = new Map();
     let portValStackedDates = [...new Set(Object.values(accountMap.accounts)
@@ -287,11 +288,32 @@ async function updateChartPortStackVal() {
     setAlphaForDatasets(myChart.data.datasets, 1);
 
     function drawCustomLegend(chart, legend) {
+        legend.clearRect(0, 0, legend.canvas.width, legend.canvas.height);
+
+        chart.legend.legendItems.forEach(function(legendItem, index) {
+            const x = 5;
+            const y = 0 + (index * 15);
+
+            // Draw Legend Box
+            legend.fillStyle = legendItem.fillStyle;
+            legend.fillRect(x, y, 200, 12);
+
+            // Draw Legend Text
+            legend.fillStyle = 'black'
+            legend.textAlignt = 'center';
+            legend.textBaseline = 'middle';
+            legend.fillText(legendItem.text, x + 20, y + 6);
+
+            console.log(legendItem.text);
+        })
+        /*
+          ///ATTEMP 1
         const datasets = chart.data.datasets;
         //const labels = chart.data.labels;
 
-        legend.font = '18px Arial'
-        const lineHeight = 15;
+        legend.font = '14px'
+        const lineHeight = 10;
+        const lineGap = 4;
 
         datasets.forEach((dataset, index) => {
             const color = dataset.backgroundColor;
@@ -299,15 +321,37 @@ async function updateChartPortStackVal() {
 
             // Color Box
             legend.fillStyle = color;
-            legend.fillRect(10, index * lineHeight, 250, lineHeight);
+            legend.fillRect(10, index * (lineHeight + lineGap), 250, lineHeight);
 
             // Label Text
             legend.fillStyle = "#000";
-            legend.fillText(label, 50, 10 + index * lineHeight);
+            legend.fillText(label, 50, 10 + index * (lineHeight + lineGap));
         });
+        */
     }
 
-    drawCustomLegend(myChart, legendPvc);
+    drawCustomLegend(myChart, legendPvc2D);
+
+    legendPvc.addEventListener('click', function(event) {
+        
+        const rect = legendPvc2D.canvas.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+
+        myChart.legend.legendItems.forEach(function(legendItem, index) {
+            const x = 5;
+            const y = 0 + (index * 15);
+            if (mouseX >= x && mouseX <= x + 200 && mouseY >= y && mouseY <= y + 12) {
+                const meta = myChart.getDatasetMeta(index);
+                console.log(meta);
+                meta.hidden = meta.hidden === null ? !myChart.data.datasets[index].hidden : null;
+                myChart.update();
+                drawCustomLegend(myChart, legendPvc2D);
+            }
+        })
+    });
+
+    
 
     //console.log(portValStackedMap);
 };
