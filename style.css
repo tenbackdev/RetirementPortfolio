@@ -690,6 +690,10 @@ ul.notika-menu-wrap li a{
 #estIncPieChartDiv {
     height: 100% !important;
 }
+#port-val-stacked-legend {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+}
 /*----------------------------------------*/
 /*  6.  Email statistics CSS
 /*----------------------------------------*/
