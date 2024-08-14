@@ -19,9 +19,12 @@ export let formatterDateMMDDYYYY = new DateFormatter('MMDDYYYY', '/');
 
 const apiURLDomainPort = 'http://localhost:5000'
 
-export async function fetchAccountData() {
+export async function fetchAccountData(days = 365) {
+    if (typeof days !== 'number') {
+        throw new TypeError(`Days must be a number`);
+    }
     /*Make this a parameter, instead of the hardcoded 365*/
-    const response = await fetch(`${apiURLDomainPort}/balance/historical/365`);
+    const response = await fetch(`${apiURLDomainPort}/balance/historical/${days}`);
     const data = await response.json();
     return data;
 }

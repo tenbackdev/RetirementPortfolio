@@ -16,7 +16,7 @@ async function main() {
 
     //avoid an api call / loading data if data already exists
     if (Object.keys(accountMap.accounts).length === 0) {
-        const accountData = await fetchAccountData();
+        const accountData = await fetchAccountData(10000);
         loadAccountData(accountData);
     }
     //console.log(accountMap);
