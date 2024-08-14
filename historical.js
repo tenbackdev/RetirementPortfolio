@@ -131,8 +131,9 @@ function updateStarterHsaTaxableVal() {
 
 async function updateChartPortStackVal() {
     const pvc = document.getElementById("port-val-stacked-chart");
-    const legendPvc = document.getElementById("port-val-stacked-legend");
-    const legendPvc2D = legendPvc.getContext('2d');
+    //const legendPvc = document.getElementById("port-val-stacked-legend");
+    //const legendPvc2D = legendPvc.getContext('2d');
+    const legendDiv = document.getElementById("port-val-stacked-legend");
 
     let portValStackedMap = new Map();
     let portValStackedDates = [...new Set(Object.values(accountMap.accounts)
@@ -229,17 +230,26 @@ async function updateChartPortStackVal() {
                         },
 
                         label: function(context) {
-                            let label = context.dataset.labels || '';
-                            let totalRaw = 0;
-                            if (label) {
-                                label += ': ';
+                            // Get Chart Dataset Meta (Don't Display Hidden Values)
+                            const chart = context.chart;
+                            const datasetIndex = context.datasetIndex;
+                            const meta = chart.getDatasetMeta(datasetIndex);
+
+                            if (!meta.hidden) {
+                                let label = context.dataset.labels || '';
+                                let totalRaw = 0;
+                                if (label) {
+                                    label += ': ';
+                                }
+                                const acctLabel = context.dataset.label
+                                const balLabel =  formatterCents.format(context.raw)
+                                const charCount = acctLabel.length + balLabel.length
+                                
+                                label += context.raw !== null ? `${acctLabel}:${' '.repeat(50-charCount)}${balLabel}` : `${acctLabel}:${' '.repeat(45-charCount)}$0.00`;
+                                return label;
                             }
-                            const acctLabel = context.dataset.label
-                            const balLabel =  formatterCents.format(context.raw)
-                            const charCount = acctLabel.length + balLabel.length
-                            
-                            label += context.raw !== null ? `${acctLabel}:${' '.repeat(50-charCount)}${balLabel}` : `${acctLabel}:${' '.repeat(45-charCount)}$0.00`;
-                            return label;
+
+
                         },
                         afterBody: function(tooltipItems) {
                             let total = 0
@@ -287,6 +297,49 @@ async function updateChartPortStackVal() {
 
     setAlphaForDatasets(myChart.data.datasets, 1);
 
+    function createLegend(chart, legend) {
+        chart.legend.legendItems.forEach((legendItem, index) => {
+            let button = document.createElement('button');
+            button.textContent = legendItem.text;
+            button.setAttribute('data-id', index)
+            button.style.backgroundColor = legendItem.fillStyle;
+            button.style.width = '90% ';
+
+            let buttonOnly = document.createElement('buttonOnly')
+            buttonOnly.textContent = 'Only'
+            buttonOnly.setAttribute('data-id', index);
+            buttonOnly.style.backgroundColor = legendItem.fillStyle;
+            buttonOnly.style.textAlign = 'center';
+            buttonOnly.style.width = '90% ';
+
+
+            button.addEventListener('click', (event) => {
+                const datasetIndex = event.target.getAttribute('data-id');
+                const meta = chart.getDatasetMeta(datasetIndex);
+                meta.hidden = meta.hidden === null ? !chart.data.datasets[datasetIndex].hidden : null;
+                chart.update();
+            })
+
+            buttonOnly.addEventListener('click', (event) => {
+                const datasetIndex = event.target.getAttribute('data-id');
+
+                chart.legend.legendItems.forEach((legendItem, index) => {
+                    if (index != datasetIndex) {
+                        const meta = chart.getDatasetMeta(index);
+                        meta.hidden = meta.hidden === null ? !chart.data.datasets[datasetIndex].hidden : null;
+                        
+                    }
+                })
+                chart.update();
+            })
+                
+            legend.appendChild(button);
+            legend.appendChild(buttonOnly);
+        })
+    }
+
+    createLegend(myChart, legendDiv);
+    /* //ATTEMPT 2
     function drawCustomLegend(chart, legend) {
         legend.clearRect(0, 0, legend.canvas.width, legend.canvas.height);
 
@@ -306,7 +359,7 @@ async function updateChartPortStackVal() {
 
             console.log(legendItem.text);
         })
-        /*
+        
           ///ATTEMP 1
         const datasets = chart.data.datasets;
         //const labels = chart.data.labels;
@@ -327,11 +380,13 @@ async function updateChartPortStackVal() {
             legend.fillStyle = "#000";
             legend.fillText(label, 50, 10 + index * (lineHeight + lineGap));
         });
-        */
+        
     }
+    */
 
-    drawCustomLegend(myChart, legendPvc2D);
-
+    //drawCustomLegend(myChart, legendPvc2D);
+    /*
+    // ATTEMPT #2
     legendPvc.addEventListener('click', function(event) {
         
         const rect = legendPvc2D.canvas.getBoundingClientRect();
@@ -350,6 +405,7 @@ async function updateChartPortStackVal() {
             }
         })
     });
+    */
 
     
 
