@@ -221,6 +221,117 @@ async function updateChartPortStackVal() {
                 },
                 tooltip: {
                     mode: 'index',
+                    bodyFontFamily: '"Courier New", monospace',
+                    intersect: false,
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const index = tooltipItems[0].dataIndex;
+                            const origLabel = tooltipItems[0].chart.data.labels[index];
+                            return formatterDateMMDDYYYY.formatDate(new Date(`${origLabel}`));
+                        },
+
+                        label: function(context) {
+                            const chart = context.chart;
+                            //const datasetIndex = context.datasetIndex;
+                            const datasets = chart.data.datasets;
+
+                            //chart.options.tooltips.bodyFontFamily = '"Courier New", monospace';
+
+                            let maxAccountNameLength = 0;
+                            let maxBalanceLength = 0;
+
+                            datasets.forEach(dataset => {
+                                if (!chart.getDatasetMeta(context.datasetIndex).hidden) {
+                                    const accountName = dataset.label;
+                                    const balance = formatterCents.format(context.raw);
+
+                                    maxAccountNameLength = Math.max(maxAccountNameLength, accountName.length);
+                                    maxBalanceLength = Math.max(maxBalanceLength, balance.length);
+                                }
+                            });
+
+                            console.log(maxAccountNameLength);
+                            console.log(maxBalanceLength);
+
+                            // Format Each Label
+                            const accountName = context.dataset.label;
+                            const balance = formatterCents.format(context.raw);
+
+
+                            // Add padding based on the maximum lengths
+                            const paddedAccountName = accountName.padEnd(maxAccountNameLength, ' ');
+                            const paddedBalance = balance.padStart(maxBalanceLength, ' ');
+
+                            console.log(`length: ${paddedAccountName.length}, |${paddedAccountName}|`)
+
+                            return `${paddedAccountName}:${paddedBalance}`
+                        },
+                        afterBody: function(tooltipItems) {
+                            let total = 0
+                            tooltipItems.forEach(function(tooltipItem) {
+                                total += tooltipItem.raw ? tooltipItem.raw : 0;
+                            });
+                            return `    Total: ${formatterCents.format(total) }`;
+                        }
+                    }
+                }
+                /*
+                // Tooltip was failing from a presentation standpoint, trying a different way
+                tooltip: {
+                    enabled: false, // Disable default tooltip
+                    external: function(context) {
+                        let tooltip = document.getElementById('port-val-stacked-chart-tooltip');
+                        let tooltipModel = context.tooltip;
+
+                        console.log(tooltipModel);
+
+                        if (tooltipModel.opacity === 0) {
+                            tooltip.style.opacity = 0;
+                            return;
+                        }
+
+                        let bodyLines = tooltipModel.body.map(bodyItem => {
+                            return bodyItem.lines;
+                        });
+
+                        tooltip.innerHTML = '';
+
+                        bodyLines.forEach(function(body, i) {
+                            let leftText = `${body[0].split(':')[0].trim()}:` 
+                            let rightText = `${body[0].split(':')[1].trim()}` 
+
+                            var row = document.createElement('div');
+                            row.style.display = 'flex';
+                            row.style.justifyContent = 'space-between';
+
+                            var leftSpan = document.createElement('span');
+                            leftSpan.textContent = leftText;
+                            leftSpan.style.flex = '1 1 auto';
+                            leftSpan.style.textAlign = 'left';
+
+                            var rightSpan = document.createElement('span');
+                            rightSpan.textContent = rightText;
+                            rightSpan.style.flex = '1 1 auto';
+                            rightSpan.style.textAlign = 'right';
+
+                            row.appendChild(leftSpan);
+                            row.appendChild(rightSpan);
+
+                            tooltip.appendChild(row);
+                        });
+                        var position = context.chart.canvas.getBoundingClientRect();
+
+                        tooltip.style.opacity = 1;
+                        tooltip.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+                        tooltip.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+                        tooltip.style.display = 'block';
+                    }
+                }
+                */
+                /*
+                // Commenting this out to test using an external function to create tooltip content.
+                tooltip: {
+                    mode: 'index',
                     intersect: false,
                     callbacks: {
                         title: function(tooltipItems) {
@@ -259,7 +370,7 @@ async function updateChartPortStackVal() {
                             return `    Total: ${formatterCents.format(total) }`;
                         }
                     }
-                }
+                }*/
             },
             scales: {
                 y: {
